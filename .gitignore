@@ -1,41 +1,45 @@
-###
-# Unity folders and files
-###
-[Aa]ssets/AssetStoreTools*
+# =============== #
+# Unity generated #
+# =============== #
+[Tt]emp/
+[Oo]bj/
+[Bb]in/
+[Bb]uilds/
 [Bb]uild/
 [Ll]ibrary/
-[Ll]ocal[Cc]ache/
-[Oo]bj/
-[Tt]emp/
-[Uu]nityGenerated/
-# file on crash reports
-sysinfo.txt
-# Unity3D generated meta files
-*.pidb.meta
+[Aa]pp/
+UWP/
+WindowsStoreApp/
+UnityGenerated/
+UnityPackageManager/
+project.json
+project.lock.json
+WSATestCertificate.pfx
+WSATestCertificate.pfx.meta
 
-###
-# VS/MD solution and project files
-###
-[Ee]xportedObj/
-*.booproj
-*.csproj
-*.sln
-*.suo
+# ===================================== #
+# Visual Studio / MonoDevelop generated #
+# ===================================== #
+.vs/
+ExportedObj/
+obj/
 *.svd
-*.unityproj
-*.user
 *.userprefs
+/*.csproj
+*.csproj
 *.pidb
-.DS_Store
+*.suo
+/*.sln
+*.sln
+*.user
+*.unityproj
+*.ipch
+*.opensdf
+*.sdf
+*.tlog
+*.log
+*.idb
+*.opendb
 
-###
-# OS generated
-###
-.DS_Store
-.DS_Store?
-._*
-.Spotlight-V100
-.Trashes
-Icon?
-ehthumbs.db
-Thumbs.db
+Assets/ThirdParty/
+Assets/ThirdParty.meta
