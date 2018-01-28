@@ -27,8 +27,12 @@ Now, you have to install different softwares described in the part [Installation
 In summary:
  * Enable Developer mode : Go to Settings > Update & security > For developers
  * Download and install [Windows 10 Fall Creators Update](https://www.microsoft.com/en-us/software-download/windows10)
- * Download and install [Visual Studio 2017](https://developer.microsoft.com/en-us/windows/downloads). During the installation, select the following workloads : "Universal Windows Platform development", "Game Development with Unity" and "Desktop development with C++" ;
- * Download and install [Windows 10 Fall Creators Update SDK](https://developer.microsoft.com/en-US/windows/downloads/windows-10-sdk).
- * Download and install [HoloLens Emulator and Holographic Templates](https://go.microsoft.com/fwlink/?linkid=852626).
- * Download and install [Unity 2017](https://store.unity.com/download) and select "Windows Store .NET Scripting Backend" during the installation.
+ * Download and install [Visual Studio 2017](https://developer.microsoft.com/en-us/windows/downloads). During the installation, select the following workloads : "Universal Windows Platform development", "Game Development with Unity" and "Desktop development with C++"
+ * Download and install [Windows 10 Fall Creators Update SDK](https://developer.microsoft.com/en-US/windows/downloads/windows-10-sdk)
+ * Download and install [HoloLens Emulator and Holographic Templates](https://go.microsoft.com/fwlink/?linkid=852626)
+ * Download and install [Unity 2017](https://store.unity.com/download) and select "Windows Store .NET Scripting Backend" during the installation
  * [Update graphics drivers](https://developer.microsoft.com/en-us/windows/mixed-reality/updating_your_gpu_driver)
+
+## Installation of Node.js and launching the server
+
+Download and install [Node.js](https://nodejs.org/en/download/). After that, launch the program "Node.js command prompt" and go to the folder `HoloDocServer` with the command `cd [APP_PATH]HoloDocServer`. Then, type the command `npm start` to install and launch the server.
