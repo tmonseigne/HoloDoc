@@ -1,0 +1,32 @@
+{
+  "name": "holodocserver",
+  "version": "1.0.0",
+  "description": "Server side application for HoloDoc project",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "npm install && node index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/Rack07/HoloDoc.git"
+  },
+  "keywords": [
+    "nodejs",
+    "express",
+    "hololens",
+    "unity",
+    "mongodb",
+    "document",
+    "classification"
+  ],
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Rack07/HoloDoc/issues"
+  },
+  "homepage": "https://github.com/Rack07/HoloDoc#readme",
+  "dependencies": {
+    "express": "^4.16.2"
+  }
+}

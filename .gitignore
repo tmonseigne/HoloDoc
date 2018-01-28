@@ -43,3 +43,7 @@ obj/
 
 Assets/ThirdParty/
 Assets/ThirdParty.meta
+
+node_modules/
+
+*~
