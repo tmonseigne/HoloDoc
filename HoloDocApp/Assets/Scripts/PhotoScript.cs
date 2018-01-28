@@ -16,6 +16,21 @@ public class PhotoScript : MonoBehaviour {
 
     IEnumerator Wait() {
         yield return new WaitForSeconds(1);
+        PhotoCapturer.Instance.TakePhoto(onPhotoTaken);
         this.GetComponent<AudioSource>().Play();
+    }
+
+    void onPhotoTaken(Texture2D tex)
+    {
+        Debug.Log("Taaaadaaaaa!");
+
+        GameObject quad = GameObject.CreatePrimitive(PrimitiveType.Quad);
+        Renderer quadRenderer = quad.GetComponent<Renderer>() as Renderer;
+
+        quad.transform.parent = this.transform;
+        quad.transform.localPosition = new Vector3(0.0f, 0.0f, 3.0f);
+
+        quadRenderer.material.SetTexture("_MainTex", tex);
+
     }
 }
