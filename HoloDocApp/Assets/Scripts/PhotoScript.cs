@@ -32,5 +32,7 @@ public class PhotoScript : MonoBehaviour {
 
         quadRenderer.material.SetTexture("_MainTex", tex);
 
+        RequestLauncher.Instance.CreateNewDocument(tex);
+
     }
 }

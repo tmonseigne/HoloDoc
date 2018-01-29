@@ -1,6 +1,16 @@
 var express = require('express');
 var app = express();
 
+var bodyParser = require('body-parser');
+
+var options = {
+    inflate: true,
+    limit: '10000kb',
+    type: 'application/octet-stream'
+};
+
+app.use(bodyParser.raw(options));
+
 var mainRoutes = require('./routes');
 var docRoutes = require('./document_routes');
 

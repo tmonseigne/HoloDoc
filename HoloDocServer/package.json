@@ -27,6 +27,9 @@
   },
   "homepage": "https://github.com/Rack07/HoloDoc#readme",
   "dependencies": {
+    "body-parser": "^1.18.2",
+    "buffer-reverse": "^1.0.1",
+    "dxt": "^1.0.1",
     "express": "^4.16.2"
   }
 }

@@ -23,13 +23,10 @@ public class PhotoCapturer : MonoBehaviour {
         {
             DestroyImmediate(this);
         }
-
-        Debug.Log("ici");
+        
         cameraResolution = PhotoCapture.SupportedResolutions.OrderByDescending((res) => res.width * res.height).First();
         targetTexture = new Texture2D(cameraResolution.width, cameraResolution.height);
         PhotoCapturer.Instance = this;
-
-        Debug.Log("la");
     }
 
     void OnStoppedPhotoMode(PhotoCapture.PhotoCaptureResult result)
