@@ -28,11 +28,11 @@ public class PhotoScript : MonoBehaviour {
         Renderer quadRenderer = quad.GetComponent<Renderer>() as Renderer;
 
         quad.transform.parent = this.transform;
-        quad.transform.localPosition = new Vector3(0.0f, 0.0f, 3.0f);
+        quad.transform.localPosition = new Vector3(1.0f, 0.0f, 3.0f);
 
         quadRenderer.material.SetTexture("_MainTex", tex);
 
-        RequestLauncher.Instance.CreateNewDocument(tex);
+        //RequestLauncher.Instance.CreateNewDocument(tex);
 
     }
 }

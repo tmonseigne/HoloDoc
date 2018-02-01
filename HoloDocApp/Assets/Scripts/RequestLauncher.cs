@@ -20,17 +20,17 @@ public class RequestLauncher : MonoBehaviour {
 
     public void CreateNewDocument (Texture2D texture)
     {
-        StartCoroutine(newDocumentRequest(texture));
+        StartCoroutine(NewDocumentRequest(texture));
     }
 
-    private IEnumerator newDocumentRequest(Texture2D ploup)
+    private IEnumerator NewDocumentRequest(Texture2D ploup)
     {
         //byte[] payload = ploup.ToArray();
         //byte[] payload = tex.GetRawTextureData();
         byte[] payload = ploup.EncodeToPNG();
         Debug.Log("Display payload : " + BitConverter.ToString(payload));
 
-        string url = "http://localhost:8080/document/new";
+        string url = "http://192.168.43.14:8080/document/new";
         string method = UnityWebRequest.kHttpVerbPOST;
         UploadHandler uploader = new UploadHandlerRaw(payload);
         uploader.contentType = "custom/content-type";
