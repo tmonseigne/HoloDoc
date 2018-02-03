@@ -3,7 +3,6 @@
 #include <conio.h>	// _getch
 #include <opencv2/highgui.hpp>
 #include <opencv2/core.hpp>
-#include <opencv2/imgproc.hpp>
 #include "DocDetector.hpp"
 
 using namespace std;
@@ -23,7 +22,10 @@ int main(int argc, char *argv[])
 
 	//***** Computes *****
 	Mat edge, linesdraw, shapesdraws;
+	vector<Vec4i> lines;
 	BinaryEdgeDetector(src, edge);
+	LinesDetector(edge, lines);
+	DrawLines(src, linesdraw, lines);
 
 	cout << "Test End..." << endl;
 
@@ -34,8 +36,12 @@ int main(int argc, char *argv[])
 	cvNamedWindow("Edge", CV_WINDOW_AUTOSIZE);
 	imshow("Edge", edge);
 
+	cvNamedWindow("Linesdraw", CV_WINDOW_AUTOSIZE);
+	imshow("Linesdraw", linesdraw);
+
 	//**** Save *****
 	imwrite(path + "B.jpg", edge);
+	imwrite(path + "C.jpg", linesdraw);
 
 	cvWaitKey(0);			// Pause le temps que l'utilisateur appuie sur une touche
 	cvDestroyAllWindows();	// Destruction des fenetres

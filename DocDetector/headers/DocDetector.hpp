@@ -8,8 +8,9 @@
 /// <summary>
 /// Documents detector.
 /// </summary>
-/// <param name="docs">All Documents.</param>
-void DocDetector(/*const image unity en entrée& in, */ std::vector<int> &docs);
+/// <param name="in">Unity Image.</param>
+/// <param name="out">Documents definition for Unity.</param>
+void DocDetector(/*const image unity en entrée& in, */ std::vector<int> &out);
 
 //******************************
 //********** Computes **********
@@ -17,32 +18,52 @@ void DocDetector(/*const image unity en entrée& in, */ std::vector<int> &docs);
 /// <summary>
 /// Unity frame to OpenCV Mat.
 /// </summary>
-/// <param name="dst">OpenCV Mat.</param>
-void UnityToOpenCVMat(/*const blabla,*/ cv::Mat &dst);
+/// <param name="in">Unity Image.</param>
+/// <param name="dst">tri-channel 8-bit image.</param>
+void UnityToOpenCVMat(/*const image unity en entrée& in,*/ cv::Mat &dst);
+
+/// <summary>
+/// Docses to unity.
+/// </summary>
+/// <param name="docs">Vector of Documents. Each doc is represented by a 8-elements vector \f$(x_1, y_1, x_2, y_2, x_3, y_3, x_4, y_4)\f$,
+/// where \f$(x_1,y_1)\f$, \f$(x_2, y_2)\f$, \f$(x_3, y_3)\f$ and \f$(x_4, y_4)\f$ are the corner of each detected Document.</param>
+/// <param name="dst">The DST.</param>
+void DocsToUnity(std::vector<cv::Vec8i> &docs, std::vector<int> &dst);
 
 /// <summary>
 /// Binary edge detector.
 /// </summary>
-/// <param name="src">The source (8 bit 3 channels mat).</param>
-/// <param name="dst">The destimation (binary 8 bit mat).</param>
-/// <param name="min_tresh">The minimum treshold.</param>
-/// <param name="max_tresh">The maximum treshold.</param>
-/// <param name="aperture">The aperture size of Sobel.</param>
-void BinaryEdgeDetector(const cv::Mat &src, cv::Mat &dst, int min_tresh = 100, int max_tresh = 205, int aperture = 3);
+/// <param name="src">single or tri-channel 8-bit input image.</param>
+/// <param name="dst">8-bit, single-channel binary image.</param>
+/// <param name="min_tresh">first threshold for the hysteresis procedure.</param>
+/// <param name="max_tresh">second threshold for the hysteresis procedure.</param>
+/// <param name="aperture">aperture size for the Sobel operator.</param>
+void BinaryEdgeDetector(const cv::Mat &src, cv::Mat &dst,
+                        int min_tresh = 100, int max_tresh = 205, int aperture = 3);
 
 /// <summary>
 /// Lines detector.
 /// </summary>
-/// <param name="src">The source (binary 8 bit mat).</param>
-/// <param name="lines">The lines.</param>
-void LinesDetector(const cv::Mat &src, std::vector<cv::Vec4i> &lines);
+/// <param name="src">8-bit, single-channel binary source image. The image can't be modified by the function.</param>
+/// <param name="lines">Output vector of lines. Each line is represented by a 4-element vector \f$(x_1, y_1, x_2, y_2)\f$,
+/// where \f$(x_1,y_1)\f$ and \f$(x_2, y_2)\f$ are the ending points of each detected line segment.</param>
+/// <param name="rho">Distance resolution of the accumulator in pixels.</param>
+/// <param name="theta">Angle resolution of the accumulator in radians.</param>
+/// <param name="threshold">Accumulator threshold parameter. Only those lines are returned that get enough votes (>threshold).</param>
+/// <param name="minLineLength"> Minimum line length. Line segments shorter than that are rejected.</param>
+/// <param name="maxLineGap">Maximum allowed gap between points on the same line to link them.</param>
+void LinesDetector(const cv::Mat &src, std::vector<cv::Vec4i> &lines,
+                   double rho = 1, double theta = CV_PI / 180, int threshold = 50,
+                   double minLineLength = 30, double maxLineGap = 30);
 
 /// <summary>
 /// Lines to docs detection.
 /// </summary>
-/// <param name="lines">The lines.</param>
-/// <param name="docs">All Documents..</param>
-void LinesToDocs(const std::vector<cv::Vec4i> &lines, std::vector<int> &docs);
+/// <param name="lines">Vector of lines. Each line is represented by a 4-element vector \f$(x_1, y_1, x_2, y_2)\f$,
+/// where \f$(x_1,y_1)\f$ and \f$(x_2, y_2)\f$ are the ending points of each detected line segment.</param>
+/// <param name="docs">Vector of Documents. Each doc is represented by a 8-elements vector \f$(x_1, y_1, x_2, y_2, x_3, y_3, x_4, y_4)\f$,
+/// where \f$(x_1,y_1)\f$, \f$(x_2, y_2)\f$, \f$(x_3, y_3)\f$ and \f$(x_4, y_4)\f$ are the corner of each detected Document.</param>
+void LinesToDocs(const std::vector<cv::Vec4i> &lines, std::vector<cv::Vec8i> &docs);
 
 //******************************
 //********** Drawings **********
@@ -51,14 +72,15 @@ void LinesToDocs(const std::vector<cv::Vec4i> &lines, std::vector<int> &docs);
 /// Draws the lines.
 /// </summary>
 /// <param name="src">The source.</param>
-/// <param name="lines">The lines.</param>
 /// <param name="dst">The destination.</param>
-void DrawLines(const cv::Mat &src, const std::vector<cv::Vec4i> &lines, cv::Mat &dst);
+/// <param name="lines">The lines.</param>
+void DrawLines(const cv::Mat &src, cv::Mat &dst, const std::vector<cv::Vec4i> &lines);
 
 /// <summary>
 /// Draws the document shape.
 /// </summary>
-/// <param name="src">The source.</param>
-/// <param name="docs">The docs.</param>
-/// <param name="dst">The destination.</param>
-void DrawDocShape(const cv::Mat &src, const std::vector<int> &docs, cv::Mat &dst);
+/// <param name="src">tri-channel 8-bit input image.</param>
+/// <param name="dst">tri-channel 8-bit output image.</param>
+/// <param name="docs">Vector of Documents. Each doc is represented by a 8-elements vector \f$(x_1, y_1, x_2, y_2, x_3, y_3, x_4, y_4)\f$,
+/// where \f$(x_1,y_1)\f$, \f$(x_2, y_2)\f$, \f$(x_3, y_3)\f$ and \f$(x_4, y_4)\f$ are the corner of each detected Document.</param>
+void DrawDocShape(const cv::Mat &src, cv::Mat &dst, const std::vector<cv::Vec8i> &docs);
