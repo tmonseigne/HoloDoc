@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class PhotoScript : MonoBehaviour {
+    public GameObject quad;
 
     public AudioClip shutterSound;
     // Use this for initialization
@@ -10,29 +11,29 @@ public class PhotoScript : MonoBehaviour {
     {
         this.GetComponent<AudioSource>().clip = shutterSound;
         Debug.Log("Photo");
+
+
         StartCoroutine(Wait());
-        
     }
 
     IEnumerator Wait() {
         yield return new WaitForSeconds(1);
-        PhotoCapturer.Instance.TakePhoto(onPhotoTaken);
+
         this.GetComponent<AudioSource>().Play();
+        Texture2D tex = CameraStream.Frame;
+
+        Debug.Log("Taaaadaaaaa!");
+
+        Renderer quadRenderer = quad.GetComponent<Renderer>() as Renderer;
+
+
+        quadRenderer.material.SetTexture("_MainTex", tex);
+        //RequestLauncher.Instance.CreateNewDocument(tex);
     }
 
     void onPhotoTaken(Texture2D tex)
     {
-        Debug.Log("Taaaadaaaaa!");
-
-        GameObject quad = GameObject.CreatePrimitive(PrimitiveType.Quad);
-        Renderer quadRenderer = quad.GetComponent<Renderer>() as Renderer;
-
-        quad.transform.parent = this.transform;
-        quad.transform.localPosition = new Vector3(1.0f, 0.0f, 3.0f);
-
-        quadRenderer.material.SetTexture("_MainTex", tex);
-
-        //RequestLauncher.Instance.CreateNewDocument(tex);
+        
 
     }
 }

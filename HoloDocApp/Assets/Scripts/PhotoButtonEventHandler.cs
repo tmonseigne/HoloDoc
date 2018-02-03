@@ -11,6 +11,7 @@ public class PhotoButtonEventHandler : MonoBehaviour, IFocusable, IInputClickHan
     void Start()
     {
         m_audio = this.GetComponent<AudioSource>();
+        m_audio.clip = Resources.Load<AudioClip>("Sounds/Button_Press");
     }
 
     public void OnFocusEnter()
@@ -23,7 +24,7 @@ public class PhotoButtonEventHandler : MonoBehaviour, IFocusable, IInputClickHan
 
     public void OnInputClicked(InputClickedEventData data)
     {
-        m_audio.clip = Resources.Load<AudioClip>("Sounds/Button_Press");
+        
         m_audio.Play();
         this.GetComponent<PhotoScript>().TakePhoto();
     }
