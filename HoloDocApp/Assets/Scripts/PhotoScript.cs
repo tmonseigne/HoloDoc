@@ -20,7 +20,7 @@ public class PhotoScript : MonoBehaviour {
         yield return new WaitForSeconds(1);
 
         this.GetComponent<AudioSource>().Play();
-        Texture2D tex = CameraStream.Frame;
+        Texture2D tex = CameraStream.Instance.Frame;
 
         Debug.Log("Taaaadaaaaa!");
 
@@ -31,7 +31,7 @@ public class PhotoScript : MonoBehaviour {
         //RequestLauncher.Instance.CreateNewDocument(tex);
     }
 
-    void onPhotoTaken(Texture2D tex)
+    void OnPhotoTaken(Texture2D tex)
     {
         
 

@@ -56,6 +56,7 @@ public class IpButton : MonoBehaviour, IFocusable, IInputClickHandler
 
     public void OnInputClicked(InputClickedEventData data)
     {
+        Debug.Log("Clicked");
         // Single-line textbox
         Keyboard.Instance.Close();
         Keyboard.Instance.PresentKeyboard(ipAdress);

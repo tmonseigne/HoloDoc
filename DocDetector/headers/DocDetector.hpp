@@ -3,24 +3,48 @@
 #include <opencv2/core.hpp>
 
 //********************************
+//********** C# Types ************
+//********************************
+typedef uchar byte;
+
+struct Color32 {
+	byte r;
+	byte g;
+	byte b;
+	byte a;
+};
+
+//********************************
 //********** Unity Link **********
 //********************************
+
+/// <sumary>
+/// Simple document detection function.
+/// </summary>
+/// <param name="image">Unity image.</param>
+/// <param name="width">Image width.</param>
+/// <param name="height">Image height.</param>
+/// <return>Measured time (for performance check)</return>
+extern "C" double __declspec(dllexport) __stdcall SimpleDocumentDetection(Color32* image, uint width, uint height);
+
 /// <summary>
 /// Documents detector.
 /// </summary>
-/// <param name="in">Unity Image.</param>
+/// <param name="in">Unity image.</param>
 /// <param name="out">Documents definition for Unity.</param>
-void DocDetector(/*const image unity en entrée& in, */ std::vector<int> &out);
+extern "C" int __declspec(dllexport) __stdcall DocumentDetection(uint width, uint height, Color32* image, uint maxDocumentsCount, uint* outDocumentsCount, int* outDocumentsCorners);
 
 //******************************
 //********** Computes **********
 //******************************
 /// <summary>
-/// Unity frame to OpenCV Mat.
+/// Unity image to OpenCV Mat.
 /// </summary>
-/// <param name="in">Unity Image.</param>
+/// <param name="image">Unity image.</param>
+/// <param name="height">Image height.</param>
+/// <param name="width">Image width.</param>
 /// <param name="dst">tri-channel 8-bit image.</param>
-void UnityToOpenCVMat(/*const image unity en entrée& in,*/ cv::Mat &dst);
+int UnityToOpenCVMat(Color32* image, uint height, uint width, cv::Mat& dst);
 
 /// <summary>
 /// Docses to unity.
@@ -28,7 +52,7 @@ void UnityToOpenCVMat(/*const image unity en entrée& in,*/ cv::Mat &dst);
 /// <param name="docs">Vector of Documents. Each doc is represented by a 8-elements vector \f$(x_1, y_1, x_2, y_2, x_3, y_3, x_4, y_4)\f$,
 /// where \f$(x_1,y_1)\f$, \f$(x_2, y_2)\f$, \f$(x_3, y_3)\f$ and \f$(x_4, y_4)\f$ are the corner of each detected Document.</param>
 /// <param name="dst">The DST.</param>
-void DocsToUnity(std::vector<cv::Vec8i> &docs, std::vector<int> &dst);
+void DocsToUnity(std::vector<cv::Vec8i> &docs, int* dst, uint maxDocumentsCount, uint& nbDocuments);
 
 /// <summary>
 /// Binary edge detector.

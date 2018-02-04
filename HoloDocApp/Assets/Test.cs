@@ -13,6 +13,6 @@ public class Test : MonoBehaviour {
 	void Update () {
         Renderer quadRenderer = this.gameObject.GetComponent<Renderer>() as Renderer;
 
-        quadRenderer.material.mainTexture = CameraStream.Frame;
+        quadRenderer.material.mainTexture = CameraStream.Instance.Frame;
     }
 }
