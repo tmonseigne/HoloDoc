@@ -1,0 +1,26 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2017
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HoloDocApp", "HoloDocApp.csproj", "{FC411B85-8D9E-8578-3E99-9F68C211B5FD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HoloDocApp.Editor", "HoloDocApp.Editor.csproj", "{1EDDFD15-D2B3-599A-2E2B-9C800D2B522F}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{FC411B85-8D9E-8578-3E99-9F68C211B5FD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FC411B85-8D9E-8578-3E99-9F68C211B5FD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FC411B85-8D9E-8578-3E99-9F68C211B5FD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FC411B85-8D9E-8578-3E99-9F68C211B5FD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1EDDFD15-D2B3-599A-2E2B-9C800D2B522F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1EDDFD15-D2B3-599A-2E2B-9C800D2B522F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1EDDFD15-D2B3-599A-2E2B-9C800D2B522F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1EDDFD15-D2B3-599A-2E2B-9C800D2B522F}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

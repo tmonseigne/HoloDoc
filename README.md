@@ -2,7 +2,7 @@
 
 HoloDoc is a document classification application using augmented reality. This application is meant to be used with Microsoft **HoloLens**.
 
-# Setup application
+# Setting up application for development
 
 ## System requirements
 To be able to develop on our application, there is a requirement configuration, defined in the part [System requirements](https://developer.microsoft.com/en-us/windows/mixed-reality/install_the_tools#system_requirements).
@@ -34,5 +34,7 @@ In summary:
  * [Update graphics drivers](https://developer.microsoft.com/en-us/windows/mixed-reality/updating_your_gpu_driver)
 
 ## Installation of Node.js and launching the server
+
+Download and install [Python 2.7](https://www.python.org/downloads/).
 
 Download and install [Node.js](https://nodejs.org/en/download/). After that, launch the program "Node.js command prompt" and go to the folder `HoloDocServer` with the command `cd [APP_PATH]HoloDocServer`. Then, type the command `npm start` to install and launch the server.
