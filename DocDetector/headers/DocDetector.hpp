@@ -25,7 +25,7 @@ struct Color32 {
 /// <param name="width">Image width.</param>
 /// <param name="height">Image height.</param>
 /// <return>Measured time (for performance check)</return>
-extern "C" double __declspec(dllexport) __stdcall SimpleDocumentDetection(Color32* image, uint width, uint height);
+extern "C" double __declspec(dllexport) __stdcall SimpleDocumentDetection(Color32* image, uint width, uint height, byte* result);
 
 /// <summary>
 /// Documents detector.
@@ -45,6 +45,13 @@ extern "C" int __declspec(dllexport) __stdcall DocumentDetection(uint width, uin
 /// <param name="width">Image width.</param>
 /// <param name="dst">tri-channel 8-bit image.</param>
 int UnityToOpenCVMat(Color32* image, uint height, uint width, cv::Mat& dst);
+
+/// <summary>
+/// Unity image to OpenCV Mat, but here it is the inverse.
+/// </summary>
+/// <param name="image">Unity image.</param>
+/// <param name="dst">tri-channel 8-bit image.</param>
+int OpenCVMatToUnity(cv::Mat input, byte* output);
 
 /// <summary>
 /// Docses to unity.

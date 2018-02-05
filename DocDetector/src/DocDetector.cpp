@@ -36,7 +36,7 @@ static bool sortArea(vector<Point> a, vector<Point> b) {
 	return (contourArea(a) > contourArea(b));
 }
 
-extern "C" double __declspec(dllexport) __stdcall SimpleDocumentDetection(Color32* image, uint width, uint height) {
+extern "C" double __declspec(dllexport) __stdcall SimpleDocumentDetection(Color32* image, uint width, uint height, byte* result) {
 
 	// Timing things just to test perfomances really quick
 	double duration;
@@ -76,10 +76,12 @@ extern "C" double __declspec(dllexport) __stdcall SimpleDocumentDetection(Color3
 	}
 
 	// Useless display (just to check if it worked)
-	cvNamedWindow("DocFound", CV_WINDOW_AUTOSIZE);
-	imshow("DocFound", src);
-	cvWaitKey(0);
-	cvDestroyAllWindows();
+	//cvNamedWindow("DocFound", CV_WINDOW_AUTOSIZE);
+	//imshow("DocFound", src);
+	//cvWaitKey(0);
+	//cvDestroyAllWindows();
+
+	OpenCVMatToUnity(src, result);
 
 	return duration;
 }
@@ -104,6 +106,19 @@ int UnityToOpenCVMat(Color32* image, uint height, uint width, cv::Mat& dst)
 	return 0;
 }
 
+
+int OpenCVMatToUnity(cv::Mat input, byte* output) 
+{
+
+	flip(input, input, 0);
+	if (input.empty()) {
+		return 1;
+	}
+
+	cvtColor(input, input, CV_BGR2RGB);
+
+	memcpy(output, input.data, input.rows * input.cols * 3);
+}
 
 void DocsToUnity(std::vector<cv::Vec8i> &docs, int* dst, uint maxDocumentsCount, uint& nbDocuments)
 {

@@ -13,17 +13,27 @@ public class CameraStream : MonoBehaviour {
     private WebCamTexture cameraFrame;
     private Color32[] data;
 
-    private int frameWidth;
-    private int frameHeight;
+    private int frameWidth = 0;
+    private int frameHeight = 0;
+    private Resolution resolution;
+
+    private Texture2D frame;
+
+
+    public Resolution Resolution
+    {
+        get
+        {
+            return resolution;
+        }
+    }
 
     public Texture2D Frame
     {
         get {
-            Texture2D tex;
-            tex = new Texture2D(frameWidth, frameHeight);
-            tex.SetPixels32(data);
-            tex.Apply(true);
-            return tex;
+            frame.SetPixels32(data);
+            frame.Apply(true);
+            return frame;
         }
     }
 
@@ -56,7 +66,7 @@ public class CameraStream : MonoBehaviour {
                 cameraFrame.Play();
                 frameWidth = cameraFrame.width;
                 frameHeight = cameraFrame.height;
-                cameraFrame.GetPixels32(data);
+                data = cameraFrame.GetPixels32();
             } catch (System.Exception)
             {
                 // If the camera failed to get a frame and we have a substitution frame
@@ -80,6 +90,11 @@ public class CameraStream : MonoBehaviour {
         } else { 
             throw new System.Exception("No camera / substituable frame found !");
         }
+        resolution = new Resolution();
+        resolution.width = frameWidth;
+        resolution.height = frameHeight;
+
+        frame = new Texture2D(frameWidth, frameHeight);
         Instance = this;
     }
 
@@ -88,9 +103,6 @@ public class CameraStream : MonoBehaviour {
         if (substituableFrame == null || (!forceSubstitute && substituableFrame == null))
         {
             cameraFrame.GetPixels32(data);
-        } else
-        {
-            data = substituableFrame.GetPixels32();
-        }
+        } 
     }
 }
