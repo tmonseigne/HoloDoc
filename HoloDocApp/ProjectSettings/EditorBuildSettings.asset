@@ -6,8 +6,8 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/HoloDoc.unity
+    path: Assets/Scenes/HoloDoc.unity
     guid: 594d60c7cae461642a3df55cbcfac956
-  - enabled: 1
-    path: Assets/IpChooser.unity
+  - enabled: 0
+    path: Assets/Scenes/IpChooser.unity
     guid: 7ec77c62465a6b84da82f595bbe01c27
