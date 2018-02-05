@@ -100,7 +100,7 @@ int UnityToOpenCVMat(Color32* image, uint height, uint width, cv::Mat& dst)
 		return 1;
 	}
 
-	cvtColor(dst, dst, CV_BGRA2RGB);
+	cvtColor(dst, dst, CV_RGBA2BGR);
 	return 0;
 }
 
