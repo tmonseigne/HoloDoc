@@ -19,7 +19,6 @@ public class CameraStream : MonoBehaviour {
 
     private Texture2D frame;
 
-
     public Resolution Resolution
     {
         get
@@ -42,7 +41,6 @@ public class CameraStream : MonoBehaviour {
     {
         // Top quality code !
         // TODO: Clean this ASAP
-
         if (Instance)
         {
             DestroyImmediate(this);
@@ -87,12 +85,14 @@ public class CameraStream : MonoBehaviour {
             frameWidth = substituableFrame.width;
             frameHeight = substituableFrame.height;
             data = substituableFrame.GetPixels32();
-        } else { 
+        } else {
             throw new System.Exception("No camera / substituable frame found !");
         }
-        resolution = new Resolution();
-        resolution.width = frameWidth;
-        resolution.height = frameHeight;
+        resolution = new Resolution()
+        {
+            width = frameWidth,
+            height = frameHeight,
+        };
 
         frame = new Texture2D(frameWidth, frameHeight);
         Instance = this;
@@ -100,7 +100,7 @@ public class CameraStream : MonoBehaviour {
 
     // Update is called once per frame
     void Update () {
-        if (substituableFrame == null || (!forceSubstitute && substituableFrame == null))
+        if (substituableFrame == null || (substituableFrame && !forceSubstitute))
         {
             cameraFrame.GetPixels32(data);
         } 
