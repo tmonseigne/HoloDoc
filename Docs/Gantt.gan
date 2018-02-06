@@ -1,10 +1,10 @@
-<?xml version="1.0" encoding="UTF-8"?><project name="Untitled Gantt Project" company="" webLink="http://" view-date="2018-01-29" view-index="0" gantt-divider-location="565" resource-divider-location="300" version="2.8.5" locale="fr_FR">
+<?xml version="1.0" encoding="UTF-8"?><project name="Untitled Gantt Project" company="" webLink="http://" view-date="2018-01-15" view-index="0" gantt-divider-location="446" resource-divider-location="300" version="2.8.5" locale="fr">
     <description/>
-    <view zooming-state="default:2" id="gantt-chart">
-        <field id="tpd3" name="Nom" width="403" order="0"/>
-        <field id="tpd4" name="Date de début" width="71" order="1"/>
-        <field id="tpd5" name="Date de fin" width="72" order="2"/>
-        <option id="color.recent"><![CDATA[#3333ff #9966ff #6666ff #009933 #ff66ff #000000 #ffcc66 #ffcc33 #f4f4f4]]></option>
+    <view zooming-state="default:3" id="gantt-chart">
+        <field id="tpd3" name="Nom" width="283" order="0"/>
+        <field id="tpd4" name="Date de début" width="80" order="1"/>
+        <field id="tpd5" name="Date de fin" width="64" order="2"/>
+        <option id="color.recent"><![CDATA[#ffcc66 #9966ff #f4f4f4 #009933 #3333ff #6666ff #ff66ff #000000 #ffcc33]]></option>
     </view>
     <view id="resource-table">
         <field id="0" name="Nom" width="210" order="0"/>
@@ -46,14 +46,14 @@
             <task id="24" name="Jeu de Test" color="#009933" meeting="false" start="2018-01-26" duration="1" complete="0" expand="true"/>
             <task id="26" name="Choix des Techno à utiliser" color="#9966ff" meeting="false" start="2018-01-24" duration="3" complete="0" expand="true"/>
             <task id="28" name="Premier Serveur" color="#3333ff" meeting="false" start="2018-01-29" duration="1" complete="0" expand="true"/>
-            <task id="105" name="Envoie d'une Photo au serveur" color="#3333ff" meeting="false" start="2018-01-29" duration="1" complete="0" expand="true"/>
             <task id="51" name="Release" color="#000000" meeting="false" start="2018-01-29" duration="1" complete="0" expand="true"/>
         </task>
         <task id="8" name="Itération 2 - Première Application Hololens" color="#000000" meeting="false" start="2018-01-30" duration="5" complete="0" expand="true">
             <task id="49" name="3e Réunion" color="#ffcc66" meeting="false" start="2018-01-30" duration="1" complete="0" expand="true"/>
+            <task id="34" name="Envoie d'une Photo au serveur" color="#3333ff" meeting="false" start="2018-01-30" duration="1" complete="0" expand="true"/>
             <task id="36" name="Mise en Place de la structure pour la base de donnée" color="#3333ff" meeting="false" start="2018-02-01" duration="3" complete="0" expand="true"/>
             <task id="38" name="Première Esquisse d'une interface pour les informations du document" color="#3333ff" meeting="false" start="2018-01-31" duration="3" complete="0" expand="true"/>
-            <task id="42" name="Recherche d'algorithme oour la détection de Document" color="#3333ff" meeting="false" start="2018-01-30" duration="5" complete="0" expand="true"/>
+            <task id="42" name="Recherche d'algorithme pour la détection de Document" color="#3333ff" meeting="false" start="2018-01-30" duration="5" complete="0" expand="true"/>
             <task id="54" name="Release" color="#000000" meeting="false" start="2018-02-05" duration="1" complete="0" expand="true"/>
         </task>
         <task id="2" name="Itération 3 -Détection de Document" color="#000000" meeting="false" start="2018-02-06" duration="5" complete="0" expand="true">
@@ -62,28 +62,40 @@
             <task id="47" name="Recherche de Features à extraire pour une image" color="#3333ff" meeting="false" start="2018-02-07" duration="4" complete="0" expand="true"/>
             <task id="59" name="Release" color="#000000" meeting="false" start="2018-02-12" duration="1" complete="0" expand="true"/>
         </task>
-        <task id="3" name="Itération 4 - ..." color="#000000" meeting="false" start="2018-02-13" duration="5" complete="0" expand="true">
+        <task id="3" name="Itération 4 - Création Serveur" color="#000000" meeting="false" start="2018-02-13" duration="5" complete="0" expand="true">
             <task id="64" name="5e Réunion" color="#ffcc66" meeting="false" start="2018-02-13" duration="1" complete="0" expand="true"/>
+            <task id="133" name="Extraction des Features des photos prises" color="#3333ff" meeting="false" start="2018-02-13" duration="2" complete="0" expand="true"/>
+            <task id="105" name="Création Serveur" color="#3333ff" meeting="false" start="2018-02-13" duration="2" complete="0" expand="true"/>
+            <task id="112" name="Mise en place BD" color="#3333ff" meeting="false" start="2018-02-15" duration="2" complete="0" expand="true"/>
+            <task id="108" name="Liaison Serveur &lt;-&gt; HoloLens" color="#3333ff" meeting="false" start="2018-02-19" duration="1" complete="0" expand="true"/>
             <task id="66" name="Release" color="#000000" meeting="false" start="2018-02-19" duration="1" complete="0" expand="true"/>
         </task>
-        <task id="70" name="Itération 5 - ..." color="#000000" meeting="false" start="2018-02-20" duration="5" complete="0" expand="true">
+        <task id="70" name="Itération 5 - Création Client" color="#000000" meeting="false" start="2018-02-20" duration="5" complete="0" expand="true">
             <task id="72" name="6e Réunion" color="#ffcc66" meeting="false" start="2018-02-20" duration="1" complete="0" expand="true"/>
+            <task id="115" name="Création d'une interface Web Basique" color="#3333ff" meeting="false" start="2018-02-21" duration="1" complete="0" expand="true"/>
+            <task id="117" name="Ajout des éléments de la BD à la visualisation" color="#3333ff" meeting="false" start="2018-02-22" duration="1" complete="0" expand="true"/>
+            <task id="121" name="Utilisation d'un élément graphique avancé" color="#3333ff" meeting="false" start="2018-02-23" duration="1" complete="0" expand="true"/>
             <task id="74" name="Release" color="#000000" meeting="false" start="2018-02-26" duration="1" complete="0" expand="true"/>
         </task>
-        <task id="77" name="Itération 6 - ..." color="#000000" meeting="false" start="2018-02-27" duration="5" complete="0" expand="true">
-            <task id="79" name="7e Réunion" color="#ffcc66" meeting="false" start="2018-02-27" duration="1" complete="0" expand="true"/>
+        <task id="77" name="Itération 6 - Amélioration client / Serveur" color="#000000" meeting="false" start="2018-02-23" duration="7" complete="0" expand="true">
+            <task id="79" name="7e Réunion" color="#ffcc66" meeting="false" start="2018-02-23" duration="1" complete="0" expand="true"/>
+            <task id="127" name="Mise en place d'une recherche et de filtre côté client" color="#3333ff" meeting="false" start="2018-02-26" duration="1" complete="0" expand="true"/>
+            <task id="130" name="Recherche d'un document sur le serveur à partir d'une photo" color="#3333ff" meeting="false" start="2018-02-27" duration="5" complete="0" expand="true"/>
             <task id="81" name="Release" color="#000000" meeting="false" start="2018-03-05" duration="1" complete="0" expand="true"/>
         </task>
-        <task id="86" name="Itération 7 - ..." color="#000000" meeting="false" start="2018-03-06" duration="5" complete="0" expand="true">
+        <task id="86" name="Itération 7 - Documentation" color="#000000" meeting="false" start="2018-03-06" duration="5" complete="0" expand="true">
             <task id="88" name="8e Réunion" color="#ffcc66" meeting="false" start="2018-03-06" duration="1" complete="0" expand="true"/>
+            <task id="136" name="Finalisation d'écriture de la Documentation" color="#009933" meeting="false" start="2018-03-06" duration="5" complete="0" expand="true"/>
             <task id="90" name="Release" color="#000000" meeting="false" start="2018-03-12" duration="1" complete="0" expand="true"/>
         </task>
-        <task id="92" name="Itération 8 - ..." color="#000000" meeting="false" start="2018-03-13" duration="5" complete="0" expand="true">
+        <task id="92" name="Itération 8 - Rapport" color="#000000" meeting="false" start="2018-03-13" duration="5" complete="0" expand="true">
             <task id="94" name="9e Réunion" color="#ffcc66" meeting="false" start="2018-03-13" duration="1" complete="0" expand="true"/>
+            <task id="138" name="Finalisation écriture Rapport" color="#9966ff" meeting="false" start="2018-03-13" duration="5" complete="0" expand="true"/>
             <task id="96" name="Release" color="#000000" meeting="false" start="2018-03-19" duration="1" complete="0" expand="true"/>
         </task>
         <task id="100" name="Itération 9 - Installation Client" color="#000000" meeting="false" start="2018-03-20" duration="5" complete="0" expand="true">
             <task id="102" name="10e Réunion" color="#ffcc66" meeting="false" start="2018-03-20" duration="1" complete="0" expand="true"/>
+            <task id="140" name="Réglage des problèmes d'installation avec le clientCopie_Finalisation écriture Rapport" color="#ffcc66" meeting="false" start="2018-03-20" duration="5" complete="0" expand="true"/>
             <task id="104" name="Release Finale" color="#000000" meeting="false" start="2018-03-26" duration="1" complete="0" expand="true"/>
         </task>
     </tasks>
