@@ -39,7 +39,7 @@ public class GetFrameFromCameraScriptAndExtractDocumentsWithOpenCVWrapper : Mono
         Renderer renderer = quad.GetComponent<Renderer>();
         renderer.material.mainTexture = tex;
         
-        Debug.Log(duration * 1000 + "ms");
+        //Debug.Log(duration * 1000 + "ms");
     }
 }
 
