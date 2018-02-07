@@ -6,13 +6,13 @@ using HoloToolkit.Unity.InputModule;
 
 public class PhotoButtonEventHandler : MonoBehaviour, IFocusable, IInputClickHandler
 {
-    private AudioSource m_audioSource;
-    private AudioClip m_audioClip;
+    private AudioSource audioSource;
+    private AudioClip audioClip;
 
     void Start()
     {
-        m_audioSource = this.GetComponent<AudioSource>();
-        m_audioClip = Resources.Load<AudioClip>("Sounds/Button_Press");
+        audioSource = this.GetComponent<AudioSource>();
+        audioClip = Resources.Load<AudioClip>("Sounds/Button_Press");
     }
 
     public void OnFocusEnter()
@@ -23,8 +23,7 @@ public class PhotoButtonEventHandler : MonoBehaviour, IFocusable, IInputClickHan
 
     public void OnInputClicked(InputClickedEventData data)
     {
-        m_audioSource.PlayOneShot(m_audioClip, 1);
-
+        audioSource.PlayOneShot(audioClip, 1);
         this.GetComponent<PhotoScript>().TakePhoto();
     }
 }
