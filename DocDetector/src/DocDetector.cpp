@@ -39,12 +39,13 @@ static bool sortArea(vector<Point> a, vector<Point> b) {
 extern "C" double __declspec(dllexport) __stdcall SimpleDocumentDetection(Color32* image, uint width, uint height, byte* result) {
 
 	// Timing things just to test perfomances really quick
-	double duration;
+	double duration = 0;
 	std::clock_t start;
 	start = std::clock();
 
 	Mat src, edgeDetect;
 	UnityToOpenCVMat(image, height, width, src);
+	
 	BinaryEdgeDetector(src, edgeDetect);
 
 	vector<vector<Point>> contours;
@@ -75,14 +76,7 @@ extern "C" double __declspec(dllexport) __stdcall SimpleDocumentDetection(Color3
 		drawContours(src, contours, viableContoursIndexes[i], Scalar(0, 255, 0), 2);
 	}
 
-	// Useless display (just to check if it worked)
-	//cvNamedWindow("DocFound", CV_WINDOW_AUTOSIZE);
-	//imshow("DocFound", src);
-	//cvWaitKey(0);
-	//cvDestroyAllWindows();
-
 	OpenCVMatToUnity(src, result);
-
 	return duration;
 }
 
@@ -92,12 +86,11 @@ extern "C" double __declspec(dllexport) __stdcall SimpleDocumentDetection(Color3
 int UnityToOpenCVMat(Color32* image, uint height, uint width, cv::Mat& dst)
 {
 	dst = Mat(height, width, CV_8UC4, image);
+
 	if (dst.empty()) {
 		return 1;
 	}
 
-	// Unity sends reversed image so we need to flip it around the x axis.
-	flip(dst, dst, 0);
 	if (dst.empty()) {
 		return 1;
 	}
@@ -106,17 +99,13 @@ int UnityToOpenCVMat(Color32* image, uint height, uint width, cv::Mat& dst)
 	return 0;
 }
 
-
 int OpenCVMatToUnity(cv::Mat input, byte* output) 
 {
-
-	flip(input, input, 0);
 	if (input.empty()) {
 		return 1;
 	}
 
 	cvtColor(input, input, CV_BGR2RGB);
-
 	memcpy(output, input.data, input.rows * input.cols * 3);
 }
 

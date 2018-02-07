@@ -6,32 +6,34 @@ public class PhotoScript : MonoBehaviour {
 
     public GameObject quad;
 
-    private AudioSource m_audioSource;
-    private AudioClip m_audioClip;
+    private AudioSource audioSource;
+    private AudioClip audioClip;
+    private Texture2D renderTexture;
+
+    void Start()
+    {
+        audioSource = this.GetComponent<AudioSource>();
+        audioClip = Resources.Load<AudioClip>("Sounds/Camera_Shutter");
+    }
 
     public void TakePhoto()
     {
-        m_audioSource = this.GetComponent<AudioSource>();
-        m_audioClip = Resources.Load<AudioClip>("Sounds/Camera_Shutter");
+        Resolution frameResolution = CameraStream.Instance.Resolution;
+        renderTexture = new Texture2D(frameResolution.width, frameResolution.height);
 
         StartCoroutine(Wait());
     }
 
     IEnumerator Wait()
     {
-        yield return new WaitForSeconds(0.5F);
+        yield return new WaitForSeconds(0.5f);
+        audioSource.PlayOneShot(audioClip, 1);
 
-        m_audioSource.PlayOneShot(m_audioClip, 1);
-        
-        Texture2D tex = CameraStream.Instance.Frame;
+        renderTexture.SetPixels32(CameraStream.Instance.Frame.Data);
+        renderTexture.Apply(true);
 
         Renderer quadRenderer = quad.GetComponent<Renderer>() as Renderer;
-
-        quadRenderer.material.SetTexture("_MainTex", tex);
+        quadRenderer.material.mainTexture = renderTexture;
         //RequestLauncher.Instance.CreateNewDocument(tex);
     }
-
-    void OnPhotoTaken(Texture2D tex)
-    { }
-
 }

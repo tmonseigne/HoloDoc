@@ -3,26 +3,25 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Runtime.InteropServices;
 
-public class GetFrameFromCameraScriptAndExtractDocumentsWithOpenCVWrapper : MonoBehaviour {
+public class DocumentDetectionTest : MonoBehaviour {
 
     public GameObject quad;
-
-    private Texture2D tex;
+    private Texture2D renderTexture;
 
     // Use this for initialization
     void Start ()
     {
-        Resolution res = CameraStream.Instance.Resolution;
-        tex = new Texture2D((int)res.width, (int)res.height, TextureFormat.RGB24, false);
+        Resolution frameResolution = CameraStream.Instance.Resolution;
+        renderTexture = new Texture2D(frameResolution.width, frameResolution.height, TextureFormat.RGB24, false);
     }
 	
 	// Update is called once per frame
 	void Update ()
-    { 
-        Texture2D frame = CameraStream.Instance.Frame;
-        Color32[] image = frame.GetPixels32();
-        uint height = (uint)frame.height;
-        uint width  = (uint)frame.width;
+    {
+        Frame frame = CameraStream.Instance.Frame;
+        Color32[] image = frame.Data;
+        uint width = (uint)frame.Resolution.width;
+        uint height = (uint)frame.Resolution.height;
         
         byte[] result = new byte[width * height * 3];
 
@@ -32,13 +31,13 @@ public class GetFrameFromCameraScriptAndExtractDocumentsWithOpenCVWrapper : Mono
             duration = OpenCVInterop.SimpleDocumentDetection(ref image[0], width, height, ref result[0]);
         }
         
-        tex.LoadRawTextureData(result);
-        tex.Apply(true);
+        renderTexture.LoadRawTextureData(result);
+        renderTexture.Apply(true);
 
         Renderer renderer = quad.GetComponent<Renderer>();
-        renderer.material.mainTexture = tex;
+        renderer.material.mainTexture = renderTexture;
         
-        //Debug.Log(duration * 1000 + "ms");
+        Debug.Log(duration * 1000 + "ms");
     }
 }
 
