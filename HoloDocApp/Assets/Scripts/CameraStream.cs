@@ -10,6 +10,7 @@ public class CameraStream : MonoBehaviour
 
     [Tooltip("You can provide a substitution frame if you do not have a camera or for testing purpose.")]
     public Texture2D substituableFrame;
+
     [Tooltip("If you have a camera and you still want to use a special substitution frame you can force the substitution.")]
     public bool substitute = false;
 
@@ -61,7 +62,8 @@ public class CameraStream : MonoBehaviour
             cameraFrame = new WebCamTexture(frameResolution.width, frameResolution.height);
             cameraFrame.Play();
             frame = new Frame(frameResolution, cameraFrame.GetPixels32());
-        } else
+        }
+        else
         {
             throw new System.Exception("No camera/substitution frame found.");
         }
