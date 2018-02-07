@@ -10,26 +10,25 @@ public class GetFrameFromCameraScriptAndExtractDocumentsWithOpenCVWrapper : Mono
     private Texture2D tex;
 
     // Use this for initialization
-    void Start () {
-
+    void Start ()
+    {
         Resolution res = CameraStream.Instance.Resolution;
         tex = new Texture2D((int)res.width, (int)res.height, TextureFormat.RGB24, false);
     }
 	
 	// Update is called once per frame
-	void Update () {
-        
+	void Update ()
+    { 
         Texture2D frame = CameraStream.Instance.Frame;
         Color32[] image = frame.GetPixels32();
         uint height = (uint)frame.height;
-        uint width = (uint)frame.width;
+        uint width  = (uint)frame.width;
         
         byte[] result = new byte[width * height * 3];
 
         double duration = 0;
         unsafe
         {
-
             duration = OpenCVInterop.SimpleDocumentDetection(ref image[0], width, height, ref result[0]);
         }
         

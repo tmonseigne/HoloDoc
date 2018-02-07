@@ -4,28 +4,27 @@ using UnityEngine;
 using UnityEngine.Events;
 using HoloToolkit.Unity.InputModule;
 
-public class PhotoButtonEventHandler : MonoBehaviour, IFocusable, IInputClickHandler {
-
-    private AudioSource m_audio;
+public class PhotoButtonEventHandler : MonoBehaviour, IFocusable, IInputClickHandler
+{
+    private AudioSource m_audioSource;
+    private AudioClip m_audioClip;
 
     void Start()
     {
-        m_audio = this.GetComponent<AudioSource>();
-        m_audio.clip = Resources.Load<AudioClip>("Sounds/Button_Press");
+        m_audioSource = this.GetComponent<AudioSource>();
+        m_audioClip = Resources.Load<AudioClip>("Sounds/Button_Press");
     }
 
     public void OnFocusEnter()
     { }
 
     public void OnFocusExit()
-    {
-        m_audio.Stop();
-    }
+    { }
 
     public void OnInputClicked(InputClickedEventData data)
     {
-        
-        m_audio.Play();
+        m_audioSource.PlayOneShot(m_audioClip, 1);
+
         this.GetComponent<PhotoScript>().TakePhoto();
     }
 }

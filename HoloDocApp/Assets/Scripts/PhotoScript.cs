@@ -3,37 +3,35 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class PhotoScript : MonoBehaviour {
+
     public GameObject quad;
 
-    public AudioClip shutterSound;
-    // Use this for initialization
+    private AudioSource m_audioSource;
+    private AudioClip m_audioClip;
+
     public void TakePhoto()
     {
-        this.GetComponent<AudioSource>().clip = shutterSound;
-        Debug.Log("Photo");
-
+        m_audioSource = this.GetComponent<AudioSource>();
+        m_audioClip = Resources.Load<AudioClip>("Sounds/Camera_Shutter");
 
         StartCoroutine(Wait());
     }
 
-    IEnumerator Wait() {
-        yield return new WaitForSeconds(1);
+    IEnumerator Wait()
+    {
+        yield return new WaitForSeconds(0.5F);
 
-        this.GetComponent<AudioSource>().Play();
+        m_audioSource.PlayOneShot(m_audioClip, 1);
+        
         Texture2D tex = CameraStream.Instance.Frame;
 
-        Debug.Log("Taaaadaaaaa!");
-
         Renderer quadRenderer = quad.GetComponent<Renderer>() as Renderer;
-
 
         quadRenderer.material.SetTexture("_MainTex", tex);
         //RequestLauncher.Instance.CreateNewDocument(tex);
     }
 
     void OnPhotoTaken(Texture2D tex)
-    {
-        
+    { }
 
-    }
 }

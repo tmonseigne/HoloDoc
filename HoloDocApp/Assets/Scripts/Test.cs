@@ -5,14 +5,13 @@ using UnityEngine;
 public class Test : MonoBehaviour {
 
 	// Use this for initialization
-	void Start () {
-		
-	}
+	void Start ()
+    { }
 	
 	// Update is called once per frame
-	void Update () {
+	void Update ()
+    {
         Renderer quadRenderer = this.gameObject.GetComponent<Renderer>() as Renderer;
-
         quadRenderer.material.mainTexture = CameraStream.Instance.Frame;
     }
 }
