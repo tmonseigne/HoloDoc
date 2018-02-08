@@ -37,6 +37,9 @@ obj/
 *.tlog
 *.log
 *.idb
+*.ipdb
+*.iobj
+*.exp
 *.opendb
 
 Assets/ThirdParty/
