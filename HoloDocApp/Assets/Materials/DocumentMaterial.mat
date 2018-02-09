@@ -7,14 +7,13 @@ Material:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_Name: DocumentMaterial
-  m_Shader: {fileID: 4800000, guid: b41b88257b4affd458eb5ec647d29517, type: 3}
+  m_Shader: {fileID: 4800000, guid: be2beeff1360d024f858ff797562a496, type: 3}
   m_ShaderKeywords: _USERIMLIGHTING_ON _USEWIREFRAME_ON
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
   m_CustomRenderQueue: 3000
-  stringTagMap:
-    RenderType: Transparent
+  stringTagMap: {}
   disabledShaderPasses: []
   m_SavedProperties:
     serializedVersion: 3
@@ -94,7 +93,8 @@ Material:
     - _Metallic: 0
     - _Mode: 2
     - _OcclusionStrength: 1
-    - _Outline: 0
+    - _Outline: 0.008
+    - _OutlineWidth: 0.008
     - _Parallax: 0.02
     - _PulseWidth: 1
     - _Radius: 9.19

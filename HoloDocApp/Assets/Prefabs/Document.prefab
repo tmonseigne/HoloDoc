@@ -19,9 +19,11 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 4281145439266716}
-  - component: {fileID: 114457559166143818}
+  - component: {fileID: 64907832744982528}
   - component: {fileID: 23457324142126588}
   - component: {fileID: 33503569076134394}
+  - component: {fileID: 114457559166143818}
+  - component: {fileID: 114646523179559174}
   m_Layer: 0
   m_Name: Document
   m_TagString: Untagged
@@ -36,7 +38,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1550893981541542}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.46471375, y: -0.3950308, z: 5.637476}
+  m_LocalPosition: {x: 0.5, y: 0.5, z: 5}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -83,6 +85,20 @@ MeshFilter:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1550893981541542}
   m_Mesh: {fileID: 0}
+--- !u!64 &64907832744982528
+MeshCollider:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1550893981541542}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Convex: 0
+  m_CookingOptions: 14
+  m_SkinWidth: 0.01
+  m_Mesh: {fileID: 0}
 --- !u!114 &114457559166143818
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -94,4 +110,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c58b163020764a7488db66353e302595, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  material: {fileID: 2100000, guid: b489ba50db788b140945a45c35ac3f82, type: 2}
+  material: {fileID: 2100000, guid: 602a43243c95d6f4890d80b80eefceb9, type: 2}
+--- !u!114 &114646523179559174
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1550893981541542}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f7d964519f52eec418ca6166d6c52e41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  color: {r: 0, g: 0.503448, b: 1, a: 0}
+  focusColor: {r: 0, g: 1, b: 0.5034485, a: 0}
+  clickedColor: {r: 0.85294116, g: 0.2822232, b: 0.2822232, a: 0}

@@ -27,6 +27,8 @@ obj/
 *.userprefs
 /*.csproj
 *.csproj
+*.vcxproj
+*.vcxproj.filters
 *.pidb
 *.suo
 *.user
@@ -41,6 +43,11 @@ obj/
 *.iobj
 *.exp
 *.opendb
+
+x64/
+x86/
+Release/
+Debug/
 
 Assets/ThirdParty/
 Assets/ThirdParty.meta

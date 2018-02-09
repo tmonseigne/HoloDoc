@@ -6,13 +6,13 @@ using System.Linq;
 
 public class CameraStream : MonoBehaviour
 {
-    public static CameraStream Instance;
+	public static CameraStream Instance;
 
-    [Tooltip("You can provide a substitution frame if you do not have a camera or for testing purpose.")]
-    public Texture2D substituableFrame;
+	[Tooltip("You can provide a substitution frame if you do not have a camera or for testing purpose.")]
+	public Texture2D substituableFrame;
 
-    [Tooltip("If you have a camera and you still want to use a special substitution frame you can force the substitution.")]
-    public bool substitute = false;
+	[Tooltip("If you have a camera and you still want to use a special substitution frame you can force the substitution.")]
+	public bool substitute = false;
 
     private WebCamTexture cameraFrame;
     private CameraFrame frame;
@@ -26,27 +26,27 @@ public class CameraStream : MonoBehaviour
         }
     }
 
-    public Resolution Resolution
-    {
-        get
-        {
-            return this.resolution;
-        }
-    }
+	public Resolution Resolution
+	{
+		get
+		{
+			return this.resolution;
+		}
+	}
 
-    void Start()
-    {
-        // Ensure singleton
-        if (Instance)
-        {
-            DestroyImmediate(this);
-        }
+	void Start()
+	{
+		// Ensure singleton
+		if (Instance)
+		{
+			DestroyImmediate(this);
+		}
 
-        // If no substituable frame is provided we can not force substitution
-        if (substituableFrame == null)
-        {
-            substitute = false;
-        }
+		// If no substituable frame is provided we can not force substitution
+		if (substituableFrame == null)
+		{
+			substitute = false;
+		}
 
         Resolution frameResolution = new Resolution();
         WebCamDevice[] devices = WebCamTexture.devices;
@@ -68,18 +68,18 @@ public class CameraStream : MonoBehaviour
             throw new System.Exception("No camera/substitution frame found.");
         }
 
-        this.resolution = frameResolution;
-        Instance = this;
+		this.resolution = frameResolution;
+		Instance = this;
 
-    }
+	}
 
-    void Update()
-    {
-        if (cameraFrame != null)
-        {
-            frame.Data = cameraFrame.GetPixels32();
-        }
-    }
+	void Update()
+	{
+		if (cameraFrame != null)
+		{
+			frame.Data = cameraFrame.GetPixels32();
+		}
+	}
 
 
 }
