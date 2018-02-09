@@ -13,7 +13,7 @@ public class DocumentManager : MonoBehaviour, IFocusable, IInputClickHandler
 
 	private Material material;
 	private Texture2D photoTex;
-	private Frame photo;
+	private CameraFrame photo;
 
 	// Use this for initialization
 	void Start()
@@ -45,7 +45,7 @@ public class DocumentManager : MonoBehaviour, IFocusable, IInputClickHandler
 		material.SetColor("_OutlineColor", clickedColor);
 	}
 
-	private void OnPhotoTaken(Frame result)
+	private void OnPhotoTaken(CameraFrame result)
 	{
 		photo = result;
 

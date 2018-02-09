@@ -1,9 +1,9 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 11.00
-# Visual Studio 2010
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HoloDocApp", "Assembly-CSharp.csproj", "{1E179BC0-8506-435B-7B98-B9E6241825B2}"
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2017
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HoloDocApp", "HoloDocApp.csproj", "{FC411B85-8D9E-8578-3E99-9F68C211B5FD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HoloDocApp", "Assembly-CSharp-Editor.csproj", "{92AA0A40-8348-74C9-63F3-0657AE88DE5E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HoloDocApp.Editor", "HoloDocApp.Editor.csproj", "{1EDDFD15-D2B3-599A-2E2B-9C800D2B522F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -11,19 +11,16 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{1E179BC0-8506-435B-7B98-B9E6241825B2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{1E179BC0-8506-435B-7B98-B9E6241825B2}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{1E179BC0-8506-435B-7B98-B9E6241825B2}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{1E179BC0-8506-435B-7B98-B9E6241825B2}.Release|Any CPU.Build.0 = Release|Any CPU
-		{92AA0A40-8348-74C9-63F3-0657AE88DE5E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{92AA0A40-8348-74C9-63F3-0657AE88DE5E}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{92AA0A40-8348-74C9-63F3-0657AE88DE5E}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{92AA0A40-8348-74C9-63F3-0657AE88DE5E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FC411B85-8D9E-8578-3E99-9F68C211B5FD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FC411B85-8D9E-8578-3E99-9F68C211B5FD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FC411B85-8D9E-8578-3E99-9F68C211B5FD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FC411B85-8D9E-8578-3E99-9F68C211B5FD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1EDDFD15-D2B3-599A-2E2B-9C800D2B522F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1EDDFD15-D2B3-599A-2E2B-9C800D2B522F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1EDDFD15-D2B3-599A-2E2B-9C800D2B522F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1EDDFD15-D2B3-599A-2E2B-9C800D2B522F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
-	EndGlobalSection
-	GlobalSection(MonoDevelopProperties) = preSolution
-		StartupItem = Assembly-CSharp.csproj
 	EndGlobalSection
 EndGlobal

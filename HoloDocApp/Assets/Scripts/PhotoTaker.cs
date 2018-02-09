@@ -14,10 +14,10 @@ public class PhotoTaker : MonoBehaviour
 	public float photoDelay = 0.1f;
 
 	private AudioSource audioSource;
-	private Frame currentPhoto;
+	private CameraFrame currentPhoto;
 
 	// Callback is invoked when a photo has been taken
-	public delegate void OnPhotoTakenCallback(Frame resultFrame);
+	public delegate void OnPhotoTakenCallback(CameraFrame resultFrame);
 
 	// Use this for initialization
 	void Start()

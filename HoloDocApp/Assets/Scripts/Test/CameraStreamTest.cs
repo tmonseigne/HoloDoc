@@ -17,7 +17,7 @@ public class CameraStreamTest : MonoBehaviour
 	void Update()
 	{
 		Renderer quadRenderer = this.gameObject.GetComponent<Renderer>() as Renderer;
-		Frame frame = CameraStream.Instance.Frame;
+		CameraFrame frame = CameraStream.Instance.Frame;
 		renderTexture.SetPixels32(frame.Data);
 		renderTexture.Apply(true);
 		quadRenderer.material.mainTexture = renderTexture;
