@@ -8,22 +8,21 @@ using UnityEngine.SceneManagement;
 
 public class EnterButton : MonoBehaviour, IFocusable, IInputClickHandler
 {
+	void Start()
+	{
+	}
 
-    void Start()
-    {
-    }
+	public void OnFocusEnter()
+	{ }
 
-    public void OnFocusEnter()
-    { }
+	public void OnFocusExit()
+	{
+	}
 
-    public void OnFocusExit()
-    {
-    }
-
-    public void OnInputClicked(InputClickedEventData data)
-    {
-        Debug.Log("Enter");
-        Keyboard.Instance.Close();
-        SceneManager.LoadScene("HoloDoc");
-    }
+	public void OnInputClicked(InputClickedEventData data)
+	{
+		Debug.Log("Enter");
+		Keyboard.Instance.Close();
+		SceneManager.LoadScene("HoloDoc");
+	}
 }
