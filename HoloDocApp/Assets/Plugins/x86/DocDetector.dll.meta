@@ -1,6 +1,6 @@
 fileFormatVersion: 2
-guid: 2b4dda106d8d7f446916dfd9735ad10b
-timeCreated: 1517847269
+guid: 09e199876b76b2b429801b3b883c30ca
+timeCreated: 1518194441
 licenseType: Free
 PluginImporter:
   externalObjects: {}
@@ -24,7 +24,7 @@ PluginImporter:
         Exclude WebGL: 1
         Exclude Win: 1
         Exclude Win64: 1
-        Exclude WindowsStoreApps: 1
+        Exclude WindowsStoreApps: 0
         Exclude iOS: 1
         Exclude tvOS: 1
   - first:
@@ -109,13 +109,13 @@ PluginImporter:
   - first:
       Windows Store Apps: WindowsStoreApps
     second:
-      enabled: 0
+      enabled: 1
       settings:
         CPU: X86
         DontProcess: False
         PlaceholderPath: 
         SDK: AnySDK
-        ScriptingBackend: DotNet
+        ScriptingBackend: AnyScriptingBackend
   - first:
       iPhone: iOS
     second:

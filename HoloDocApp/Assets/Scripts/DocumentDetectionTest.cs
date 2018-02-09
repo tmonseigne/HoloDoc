@@ -18,7 +18,7 @@ public class DocumentDetectionTest : MonoBehaviour {
 	// Update is called once per frame
 	void Update ()
     {
-        Frame frame = CameraStream.Instance.Frame;
+        CameraFrame frame = CameraStream.Instance.Frame;
         Color32[] image = frame.Data;
         uint width = (uint)frame.Resolution.width;
         uint height = (uint)frame.Resolution.height;

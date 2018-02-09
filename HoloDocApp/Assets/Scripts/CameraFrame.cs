@@ -2,12 +2,12 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public struct Frame {
+public struct CameraFrame {
 
     public Color32[] Data { get; set; }
     public Resolution Resolution { get; set; }
 
-    public Frame(Resolution resolution, Color32[] data)
+    public CameraFrame(Resolution resolution, Color32[] data)
     {
         this.Resolution = resolution;
         this.Data = data;

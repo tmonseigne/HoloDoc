@@ -103,7 +103,7 @@ int OpenCVMatToUnity(const Mat& input, byte* output)
 	if (input.empty()) 	return EMPTY_MAT;
 	Mat tmp;
 
-	cvtColor(tmp, tmp, CV_BGR2RGB);
+	cvtColor(input, tmp, CV_BGR2RGB);
 
 	memcpy(output, tmp.data, tmp.rows * tmp.cols * 3);
 	return NO_ERROR;

@@ -15,10 +15,10 @@ public class CameraStream : MonoBehaviour
     public bool substitute = false;
 
     private WebCamTexture cameraFrame;
-    private Frame frame;
+    private CameraFrame frame;
     private Resolution resolution;
 
-    public Frame Frame
+    public CameraFrame Frame
     {
         get
         {
@@ -54,14 +54,14 @@ public class CameraStream : MonoBehaviour
         {
             frameResolution.width = substituableFrame.width;
             frameResolution.height = substituableFrame.height;
-            frame = new Frame(frameResolution, substituableFrame.GetPixels32());
+            frame = new CameraFrame(frameResolution, substituableFrame.GetPixels32());
         }
         else if (devices.Length > 0)
         {
             frameResolution = PhotoCapture.SupportedResolutions.OrderByDescending((res) => res.width * res.height).First();
             cameraFrame = new WebCamTexture(frameResolution.width, frameResolution.height);
             cameraFrame.Play();
-            frame = new Frame(frameResolution, cameraFrame.GetPixels32());
+            frame = new CameraFrame(frameResolution, cameraFrame.GetPixels32());
         }
         else
         {
