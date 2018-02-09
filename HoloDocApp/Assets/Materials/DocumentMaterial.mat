@@ -7,13 +7,14 @@ Material:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_Name: DocumentMaterial
-  m_Shader: {fileID: 10755, guid: 0000000000000000f000000000000000, type: 0}
-  m_ShaderKeywords: _SPECULARHIGHLIGHTS_ON _USEAMBIENT_ON _USEDIFFUSE_ON _USEWIREFRAME_ON
+  m_Shader: {fileID: 4800000, guid: b41b88257b4affd458eb5ec647d29517, type: 3}
+  m_ShaderKeywords: _USERIMLIGHTING_ON _USEWIREFRAME_ON
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
-  m_CustomRenderQueue: -1
-  stringTagMap: {}
+  m_CustomRenderQueue: 3000
+  stringTagMap:
+    RenderType: Transparent
   disabledShaderPasses: []
   m_SavedProperties:
     serializedVersion: 3
@@ -42,14 +43,18 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _EmissionTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _GlossMap:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MainTex:
         m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
+        m_Scale: {x: 3, y: 3}
+        m_Offset: {x: 3, y: 3}
     - _MetallicGlossMap:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
@@ -72,11 +77,11 @@ Material:
     - _BumpScale: 1
     - _CalibrationSpaceReflections: 0
     - _ColorMask: 15
-    - _ColorWriteMask: 15
+    - _ColorWriteMask: 1
     - _Cull: 2
-    - _Cutoff: 0.5
+    - _Cutoff: 0.431
     - _DetailNormalMapScale: 1
-    - _DstBlend: 0
+    - _DstBlend: 10
     - _Falloff_Dst_Max: 1.9
     - _Falloff_Dst_Min: 0
     - _Falloff_Scale: 1
@@ -87,41 +92,43 @@ Material:
     - _GlossyReflections: 1
     - _Limiter: 0.67
     - _Metallic: 0
-    - _Mode: 3
+    - _Mode: 2
     - _OcclusionStrength: 1
     - _Outline: 0
     - _Parallax: 0.02
     - _PulseWidth: 1
-    - _Radius: 9.97
+    - _Radius: 9.19
     - _ReflectionScale: 2
-    - _RimPower: 0.7
+    - _RimPower: 1
     - _Shade4: 0
     - _SmoothnessTextureChannel: 0
     - _Specular: 10
-    - _SpecularHighlights: 1
-    - _SrcBlend: 1
+    - _SpecularHighlights: 0
+    - _SrcBlend: 5
     - _Stencil: 0
     - _StencilComp: 8
     - _StencilOp: 0
     - _StencilReadMask: 255
     - _StencilWriteMask: 255
     - _UVSec: 0
-    - _UseAmbient: 1
+    - _UseAmbient: 0
     - _UseBumpMap: 0
-    - _UseDiffuse: 1
+    - _UseColor: 0
+    - _UseDiffuse: 0
     - _UseEmissionColor: 0
     - _UseEmissionMap: 0
+    - _UseEmissionTex: 0
     - _UseGlossMap: 0
     - _UseMainColor: 0
     - _UseMainTex: 0
     - _UseOcclusionMap: 0
     - _UseReflections: 0
-    - _UseRimLighting: 0
+    - _UseRimLighting: 1
     - _UseSpecularMap: 0
     - _UseVertexColor: 0
     - _UseWireframe: 1
-    - _WireThickness: 710
-    - _WireframeFill: 0.165
+    - _WireThickness: 701
+    - _WireframeFill: 0.027
     - _ZTest: 4
     - _ZWrite: 1
     m_Colors:
@@ -130,9 +137,9 @@ Material:
     - _Color: {r: 0, g: 0.5034485, b: 1, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _OutlineColor: {r: 1, g: 0, b: 0, a: 1}
-    - _PulseColor: {r: 0.145, g: 0.447, b: 0.922, a: 1}
-    - _RimColor: {r: 1, g: 1, b: 1, a: 1}
+    - _PulseColor: {r: 0.145, g: 0.447, b: 0.922, a: 0.284}
+    - _RimColor: {r: 0.29498702, g: 0.09439879, b: 0.71323526, a: 0}
     - _SpecColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
     - _TextureScaleOffset: {r: 1, g: 1, b: 0, a: 0}
-    - _WireColor: {r: 1, g: 1, b: 1, a: 1}
+    - _WireColor: {r: 0.37525335, g: 0.35294116, b: 1, a: 1}
     - _WireframeColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
