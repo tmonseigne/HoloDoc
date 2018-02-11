@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.3731193, g: 0.38073996, b: 0.35872698, a: 1}
+  m_IndirectSpecularColor: {r: 0.37311992, g: 0.38074034, b: 0.35872713, a: 1}
 --- !u!157 &3
 LightmapSettings:
   m_ObjectHideFlags: 0
@@ -767,6 +767,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   quad: {fileID: 1008787749}
+  maxDocumentsCount: 20
 --- !u!4 &1384780662
 Transform:
   m_ObjectHideFlags: 0
@@ -869,7 +870,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7c8a8b98edbeeae42a650e17432a0587, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  substituableFrame: {fileID: 2800000, guid: 8825f6f1559b300419ba9527d8962b91, type: 3}
+  substituableFrame: {fileID: 2800000, guid: ded70081180fcac4cb2cf31edf6bc1a6, type: 3}
   substitute: 1
 --- !u!4 &1777127266
 Transform:
@@ -926,6 +927,16 @@ Prefab:
     - target: {fileID: 1000012674329276, guid: f68d7d2d60a65f84f914f1f9dcfaa876, type: 2}
       propertyPath: m_IsActive
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 114960019048302630, guid: f68d7d2d60a65f84f914f1f9dcfaa876,
+        type: 2}
+      propertyPath: drawVisualMeshes
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 114000012342941982, guid: f68d7d2d60a65f84f914f1f9dcfaa876,
+        type: 2}
+      propertyPath: m_CurrentRenderState
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: f68d7d2d60a65f84f914f1f9dcfaa876, type: 2}

@@ -20,6 +20,16 @@ static bool sortArea(const vector<Point> &a, const vector<Point> &b)
 	return (contourArea(a) > contourArea(b));
 }
 
+static bool sortPointsX(const Point &a, const Point &b)
+{
+	return (a.x < b.x);
+}
+
+static bool sortPointsY(const Point &a, const Point &b)
+{
+	return (a.y > b.y);
+}
+
 //********************************
 //********** Unity Link **********
 //********************************
@@ -44,9 +54,9 @@ extern "C" int __declspec(dllexport) __stdcall DocumentDetection(uint width, uin
 	return errCode;
 }
 
-extern "C" double __declspec(dllexport) __stdcall SimpleDocumentDetection(Color32* image, uint width, uint height, byte* result) 
+extern "C" int __declspec(dllexport) __stdcall SimpleDocumentDetection(Color32* image, uint width, uint height, byte* result, uint maxDocumentsCount, uint* outDocumentsCount, int* outDocumentsCorners)
 {
-	const std::clock_t start = std::clock();
+	//const std::clock_t start = std::clock();
 
 	Mat src, edgeDetect;
 	UnityToOpenCVMat(image, height, width, src);
@@ -61,28 +71,43 @@ extern "C" double __declspec(dllexport) __stdcall SimpleDocumentDetection(Color3
 	int index = 0;
 	vector<int> viableContoursIndexes;
 	vector<Point> approx;
+	vector<Vec8i> docsPoints;
 	for (const vector<Point> &contour : contours) {
 		const double peri = arcLength(contour, true);
 		approxPolyDP(contour, approx, 0.02 * peri, true);
-		if (approx.size() >= 4) {
-			viableContoursIndexes.push_back(index);
-			// TODO: Remove magic number : nb of document detected
-			if (viableContoursIndexes.size() == 10) {
+		if (approx.size() == 4) {
+			// Sorting points
+			std::sort(approx.begin(), approx.end(), sortPointsX);
+			std::sort(approx.begin() + 1, approx.end() - 1, sortPointsY);
+
+			Vec8i points = { approx.at(0).x, (int) height - approx.at(0).y,
+							 approx.at(1).x, (int) height - approx.at(1).y,
+							 approx.at(3).x, (int) height - approx.at(3).y,
+							 approx.at(2).x, (int) height - approx.at(2).y };
+
+			docsPoints.emplace_back(points);
+
+			if (docsPoints.size() == maxDocumentsCount) {
 				break;
 			}
+
+			viableContoursIndexes.push_back(index);
 		}
 		index++;
 	}
 
-	const double duration = (std::clock() - start) / double(CLOCKS_PER_SEC);
-
+	//const double duration = (std::clock() - start) / double(CLOCKS_PER_SEC);
+	
 	for (int viableContoursIndex : viableContoursIndexes) {
 		drawContours(src, contours, viableContoursIndex, Scalar(0, 255, 0), 2);
 	}
+	
+	*outDocumentsCount = docsPoints.size();
 
 	OpenCVMatToUnity(src, result);
 
-	return duration;
+	int errCode = DocsToUnity(docsPoints, outDocumentsCorners, maxDocumentsCount, *outDocumentsCount);
+	return errCode;
 }
 
 //******************************
@@ -91,7 +116,7 @@ extern "C" double __declspec(dllexport) __stdcall SimpleDocumentDetection(Color3
 int UnityToOpenCVMat(Color32* image, uint height, uint width, Mat& dst)
 {
 	dst = Mat(height, width, CV_8UC4, image);
-	if (dst.empty()) return EMPTY_MAT;
+	if (dst.empty())	return EMPTY_MAT;
 
 	cvtColor(dst, dst, CV_RGBA2BGR);
 	return NO_ERROR;
@@ -100,7 +125,7 @@ int UnityToOpenCVMat(Color32* image, uint height, uint width, Mat& dst)
 
 int OpenCVMatToUnity(const Mat& input, byte* output) 
 {
-	if (input.empty()) 	return EMPTY_MAT;
+	if (input.empty())	return EMPTY_MAT;
 	Mat tmp;
 
 	cvtColor(input, tmp, CV_BGR2RGB);
@@ -113,7 +138,7 @@ int DocsToUnity(std::vector<Vec8i> &docs, int* dst, uint maxDocumentsCount, uint
 {
 	if (docs.empty())	return NO_DOCS;
 
-	nbDocuments = std::min(maxDocumentsCount, (uint) docs.size());
+	//nbDocuments = std::min(maxDocumentsCount, (uint) docs.size());
 
 	uint index = 0;
 	for (uint i = 0; i < nbDocuments; i++) {
@@ -122,6 +147,7 @@ int DocsToUnity(std::vector<Vec8i> &docs, int* dst, uint maxDocumentsCount, uint
 			dst[index++] = doc[j];
 		}
 	}
+
 	return NO_ERROR;
 }
 
