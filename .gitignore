@@ -52,4 +52,8 @@ Assets/ThirdParty.meta
 
 node_modules/
 
+# ============== #
+# Personnal Temp #
+# ============== #
 *~
+*_[Tt]ests/
