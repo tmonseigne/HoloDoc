@@ -44,8 +44,6 @@ obj/
 *.exp
 *.opendb
 
-x64/
-x86/
 Release/
 Debug/
 
