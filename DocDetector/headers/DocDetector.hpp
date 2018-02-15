@@ -34,7 +34,7 @@ struct Color32 {
 /// <param name="width">Image width.</param>
 /// <param name="height">Image height.</param>
 /// <return>Measured time (for performance check)</return>
-extern "C" double __declspec(dllexport) __stdcall SimpleDocumentDetection(Color32* image, uint width, uint height, byte* result);
+extern "C" int __declspec(dllexport) __stdcall SimpleDocumentDetection(Color32* image, uint width, uint height, byte* result, uint maxDocumentsCount, uint* outDocumentsCount, int* outDocumentsCorners);
 
 /// <summary>
 /// Documents detector.

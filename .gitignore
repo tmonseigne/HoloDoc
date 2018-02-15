@@ -44,8 +44,6 @@ obj/
 *.exp
 *.opendb
 
-x64/
-x86/
 Release/
 Debug/
 
@@ -54,4 +52,8 @@ Assets/ThirdParty.meta
 
 node_modules/
 
+# ============== #
+# Personnal Temp #
+# ============== #
 *~
+*_[Tt]ests/
