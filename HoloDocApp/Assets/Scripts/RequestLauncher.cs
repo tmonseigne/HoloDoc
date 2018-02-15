@@ -31,7 +31,7 @@ public class RequestLauncher : MonoBehaviour
 		byte[] payload = ploup.EncodeToPNG();
 		Debug.Log("Display payload : " + BitConverter.ToString(payload));
 
-		string url = "http://192.168.43.14:8080/document/new";
+		string url = "http://localhost:8080/document/new";
 		string method = UnityWebRequest.kHttpVerbPOST;
 		UploadHandler uploader = new UploadHandlerRaw(payload);
 		uploader.contentType = "custom/content-type";

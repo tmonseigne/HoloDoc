@@ -2,6 +2,11 @@ var express = require('express');
 var router = express.Router();
 const fs = require('fs');
 const dxt = require('dxt');
+const cv = require('opencv4nodejs');
+
+const utils = require('./route-utils');
+const improc = require('../improc/improc');
+
 
 // middleware that is specific to this router
 router.use(function timeLog (req, res, next) {
@@ -31,26 +36,14 @@ router.get('/link', function (req, res) {
 
 // Add a new document into the database
 router.post('/new', function (req, res) {
-    console.log('document - post - /new');
-    let body = [];
+  console.log('document - post - /new');
 
-    req.on('data', function (chunk) {
-        body.push(chunk);
-    });
+  utils.asyncGetDataStream(req, function(buffer) {
+    const image = improc.streamToMat(buffer);
+    improc.write(image, 'result.png');
 
-    req.on('end', function () {
-        body = Buffer.concat(body);
-
-        fs.writeFile('test.png', body, 'binary', function (err, written) {
-            if (err) {
-                console.log(err);
-            } else {
-                console.log("Successfully written");
-            }
-        });
-
-        res.status(500).send({ error: 'something blew up' });
-    });
+    res.status(500).send({ error: 'something blew up' });
+  });
 });
 
 // Update a document of the database

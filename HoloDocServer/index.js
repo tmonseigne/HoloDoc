@@ -11,8 +11,8 @@ var options = {
 
 app.use(bodyParser.raw(options));
 
-var mainRoutes = require('./routes');
-var docRoutes = require('./document_routes');
+var mainRoutes = require('./routes/routes');
+var docRoutes = require('./routes/document_routes');
 
 app.use('/', mainRoutes);
 app.use('/document', docRoutes);

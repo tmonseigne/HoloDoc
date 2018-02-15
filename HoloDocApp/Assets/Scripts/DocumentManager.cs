@@ -54,5 +54,7 @@ public class DocumentManager : MonoBehaviour, IFocusable, IInputClickHandler
 		photoTex.Apply(true);
 		Renderer qR = quad.GetComponent<Renderer>() as Renderer;
 		qR.material.mainTexture = photoTex;
+
+        RequestLauncher.Instance.CreateNewDocument(photoTex);
 	}
 }
