@@ -8,8 +8,10 @@ public class RequestLauncher : MonoBehaviour
 {
 	public static RequestLauncher Instance;
 
-	// Use this for initialization
-	void Awake()
+    public delegate void OnDetectRequestCallback(Vector2Int[] points, int nbDocuments);
+
+    // Use this for initialization
+    void Awake()
 	{
 		if (Instance)
 		{
@@ -56,8 +58,57 @@ public class RequestLauncher : MonoBehaviour
 		}
 	}
 
-	// Update is called once per frame
-	void Update()
+    public void DetectDocuments(Texture2D texture, OnDetectRequestCallback callback)
+    {
+        DetectDocumentRequest(texture, callback);
+    }
+
+    private void DetectDocumentRequest(Texture2D ploup, OnDetectRequestCallback callback)
+    {
+        //byte[] payload = ploup.ToArray();
+        //byte[] payload = tex.GetRawTextureData();
+
+        DateTime start = DateTime.Now;
+
+        byte[] payload = ploup.EncodeToJPG();
+        Debug.Log("Display payload : " + BitConverter.ToString(payload));
+
+        string url = "http://localhost:8080/document/detect";
+        string method = UnityWebRequest.kHttpVerbPOST;
+        UploadHandler uploader = new UploadHandlerRaw(payload);
+        uploader.contentType = "custom/content-type";
+
+        DownloadHandler downloader = new DownloadHandlerBuffer();
+        UnityWebRequest www;
+        www = new UnityWebRequest(url, method, downloader, uploader);
+
+        Debug.Log("ici");
+        UnityWebRequestAsyncOperation request = www.SendWebRequest();
+
+        request.completed += delegate (AsyncOperation op)
+        {
+            if (www.isNetworkError || www.isHttpError)
+            {
+                Debug.Log(www.error);
+            }
+            else
+            {
+                // Show results as text
+                Debug.Log(www.downloadHandler.text);
+
+                // Or retrieve results as binary data
+                byte[] results = www.downloadHandler.data;
+                DateTime end = DateTime.Now;
+
+                Debug.Log((end.Ticks - start.Ticks) / 10000.0f);
+            }
+        };
+
+        
+    }
+
+    // Update is called once per frame
+    void Update()
 	{
 
 	}

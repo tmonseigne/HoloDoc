@@ -22,28 +22,21 @@ router.get('/',function (req, res) {
   res.status(500).send({ error: 'something blew up' });
 });
 
-router.get('/detect', function(req, res){
+router.post('/detect', function(req, res){
     console.log('document - get - /detect');
 
     utils.asyncGetDataStream(req, function(buffer) {
       const image = improc.streamToMat(buffer);
       let contours = improc.detectDocuments(image, new cv.Vec(0,0,0), new cv.Vec(50,50,50));
 
-      let result = [];
-      for (let i = 0; i < contours.length; ++i) {
-        result.concat(contours[i].getPoints());
-      }
-
-      console.log(result);
-
-      res.status(500).send({ error: 'something blew up' });
+      res.status(200).json(contours);
     });
 });
 
 // Try to find a match for the given document in the DB
 router.get('/match', function (req, res) {
   console.log('document - get - /match');
-  res.status(500).send({ error: 'something blew up' });
+  res.status(500).json({ error: 'something blew up' });
 });
 
 // Get all the linked documents for a given document
