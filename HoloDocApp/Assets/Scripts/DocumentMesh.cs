@@ -7,18 +7,6 @@ public class DocumentMesh : MonoBehaviour
 {
 	public Material material;
 
-	// Use this for initialization
-	void Start()
-	{
-
-	}
-
-	// Update is called once per frame
-	void Update()
-	{
-
-	}
-
 	public void CreateDocumentMesh(Vector3[] corners)
 	{
 		Mesh mesh = new Mesh();
@@ -36,5 +24,14 @@ public class DocumentMesh : MonoBehaviour
 		this.GetComponent<MeshRenderer>().material = material;
 		this.GetComponent<MeshFilter>().mesh = mesh;
 		this.GetComponent<MeshCollider>().sharedMesh = mesh;
+
+		Vector3 centroid3f = Vector3.zero;
+		foreach (Vector3 v in corners)
+		{
+			centroid3f += v;
+		}
+		centroid3f /= corners.Length;
+		Vector4 centroid4f = new Vector4(centroid3f.x, centroid3f.y, centroid3f.z, 1.0f);
+		this.material.SetVector("_centroid", centroid4f);
 	}
 }

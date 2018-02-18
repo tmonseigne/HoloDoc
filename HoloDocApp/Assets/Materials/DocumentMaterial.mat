@@ -94,7 +94,7 @@ Material:
     - _Mode: 2
     - _OcclusionStrength: 1
     - _Outline: 0.008
-    - _OutlineWidth: 0.008
+    - _OutlineWidth: 0.05
     - _Parallax: 0.02
     - _PulseWidth: 1
     - _Radius: 9.19
