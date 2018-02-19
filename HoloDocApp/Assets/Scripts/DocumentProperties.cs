@@ -8,6 +8,7 @@ public class DocumentProperties : MonoBehaviour
 	public string author { get; set; }
 	public string description { get; set; }
 	public string date { get; set; }
+	public bool photographied { get; set; }
 
 	private int id;
 
@@ -18,7 +19,7 @@ public class DocumentProperties : MonoBehaviour
 		this.author = "author";
 		this.description = "description";
 		this.date = "date";
-		Debug.LogFormat("Unique ID {0}", this.id);
+		this.photographied = false;
 	}
 
 	void Start()
@@ -40,6 +41,6 @@ public class DocumentProperties : MonoBehaviour
 
 	override public string ToString()
 	{
-		return "Unique ID: " + this.id + "\nauthor: " + this.author + "\nlabel: " + this.label + "\ndescription: " + description + "\ndate: " + date;
+		return "Unique ID: " + this.id + "\nauthor: " + this.author + "\nlabel: " + this.label + "\ndescription: " + description + "\ndate: " + date + "\nphoto available: " + photographied;
 	}
 }

@@ -134,6 +134,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f7d964519f52eec418ca6166d6c52e41, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  documentInformationsPrefab: {fileID: 1125761064943428, guid: 26884548c54739b4b851a53717bc11e5,
+    type: 2}
   color: {r: 0, g: 0.503448, b: 1, a: 0}
   focusColor: {r: 0, g: 1, b: 0.5034485, a: 0}
   clickedColor: {r: 0.85294116, g: 0.2822232, b: 0.2822232, a: 0}

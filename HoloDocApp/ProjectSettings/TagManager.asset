@@ -5,6 +5,11 @@ TagManager:
   serializedVersion: 2
   tags:
   - Document
+  - Label
+  - Description
+  - Author
+  - Date
+  - InfoMax
   layers:
   - Default
   - TransparentFX

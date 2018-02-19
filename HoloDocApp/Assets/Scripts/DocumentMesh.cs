@@ -6,6 +6,7 @@ using UnityEngine;
 public class DocumentMesh : MonoBehaviour
 {
 	public Material material;
+	public Vector3 centroid { get; set; }
 
 	public void CreateDocumentMesh(Vector3[] corners)
 	{
@@ -25,13 +26,13 @@ public class DocumentMesh : MonoBehaviour
 		this.GetComponent<MeshFilter>().mesh = mesh;
 		this.GetComponent<MeshCollider>().sharedMesh = mesh;
 
-		Vector3 centroid3f = Vector3.zero;
+		centroid = Vector3.zero;
 		foreach (Vector3 v in corners)
 		{
-			centroid3f += v;
+			centroid += v;
 		}
-		centroid3f /= corners.Length;
-		Vector4 centroid4f = new Vector4(centroid3f.x, centroid3f.y, centroid3f.z, 1.0f);
+		centroid /= corners.Length;
+		Vector4 centroid4f = new Vector4(centroid.x, centroid.y, centroid.z, 1.0f);
 		this.material.SetVector("_centroid", centroid4f);
 	}
 }
