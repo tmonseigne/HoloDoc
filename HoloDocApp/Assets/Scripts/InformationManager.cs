@@ -5,10 +5,12 @@ using TMPro;
 
 public class InformationManager : MonoBehaviour {
 
-	private TextMeshPro label;
-	private TextMeshPro author;
-	private TextMeshPro description;
-	private TextMeshPro date;
+	public TextMeshPro label { get; set; }
+	public TextMeshPro author { get; set; }
+	public TextMeshPro description { get; set; }
+	public TextMeshPro date { get; set; }
+
+	private GameObject infoMax;
 
 	void Awake()
 	{
@@ -18,7 +20,8 @@ public class InformationManager : MonoBehaviour {
 		date = transform.Find("InfoMax/Date").gameObject.GetComponent<TextMeshPro>();
 
 		// Hide full informations in the first place
-		transform.Find("InfoMax").gameObject.SetActive(false);
+		infoMax = transform.Find("InfoMax").gameObject;
+		infoMax.SetActive(false);
 	}
 
 	public void UpdateInformations(DocumentProperties props)
