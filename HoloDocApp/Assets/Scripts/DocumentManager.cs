@@ -16,17 +16,21 @@ public class DocumentManager : MonoBehaviour, IFocusable, IInputClickHandler, II
 	private CameraFrame photo;
 	private DocumentMesh mesh;
 
-	private DocumentProperties props;
-	private GameObject documentInformations;
-
+	private DocumentProperties properties;
+	private GameObject informations;
 
 	// Use this for initialization
 	void Start()
 	{
 		material = this.GetComponent<Renderer>().material;
-		props = this.GetComponent<DocumentProperties>();
+		properties = this.GetComponent<DocumentProperties>();
 		mesh = this.GetComponent<DocumentMesh>();
+
+		informations = Instantiate(documentInformationsPrefab, new Vector3(mesh.centroid.x, mesh.centroid.y, mesh.centroid.z - 0.2f), this.transform.rotation);
+		informations.SetActive(false);
+
 		this.SetColor(color);
+
 	}
 
 	public void SetColor(Color color)
@@ -46,18 +50,18 @@ public class DocumentManager : MonoBehaviour, IFocusable, IInputClickHandler, II
 
 	public void OnInputClicked(InputClickedEventData eventData)
 	{
-		if (props.photographied)
+		// If the document is already photographied, toogle the informations
+		if (properties.photographied)
 		{
-			if (documentInformations == null)
+			informations.SetActive(!informations.activeInHierarchy);
+			if (informations.activeInHierarchy)
 			{
-				Debug.Log(mesh.centroid);
-				documentInformations = Instantiate(documentInformationsPrefab, new Vector3(mesh.centroid.x, mesh.centroid.y, mesh.centroid.z - 0.2f), this.transform.rotation);
+				informations.GetComponent<InformationManager>().UpdateInformations(this.properties);
 			}
-			documentInformations.GetComponent<InformationManager>().UpdateInformations(this.props);
 		}
 		else
 		{
-			props.photographied = true;
+			properties.photographied = true;
 			//PhotoTaker.Instance.Photo(OnPhotoTaken);
 		}
 		//this.SetColor(clickedColor);

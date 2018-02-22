@@ -6,7 +6,7 @@ Material:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
-  m_Name: InfoDocColor
+  m_Name: HUXShowButtonMaterial
   m_Shader: {fileID: 4800000, guid: ae1fce81c3b00634e8bca27be9706b21, type: 3}
   m_ShaderKeywords: 
   m_LightmapFlags: 4
