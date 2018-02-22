@@ -10,17 +10,15 @@ public class DocumentMesh : MonoBehaviour
 
 	public void CreateDocumentMesh(Vector3[] corners)
 	{
-		Mesh mesh = new Mesh();
-		Vector3[] vertices = corners;
-
-		int[] faces = new int[]
+		Mesh mesh = new Mesh
 		{
-			0, 1, 2,
-			1, 3, 2,
+			vertices = corners,
+			triangles = new int[] 
+			{
+				0, 1, 2,
+				1, 3, 2,
+			}
 		};
-
-		mesh.vertices = vertices;
-		mesh.triangles = faces;
 
 		this.GetComponent<MeshRenderer>().material = material;
 		this.GetComponent<MeshFilter>().mesh = mesh;
@@ -32,7 +30,8 @@ public class DocumentMesh : MonoBehaviour
 			centroid += v;
 		}
 		centroid /= corners.Length;
+	
 		Vector4 centroid4f = new Vector4(centroid.x, centroid.y, centroid.z, 1.0f);
-		this.material.SetVector("_centroid", centroid4f);
+		this.GetComponent<Renderer>().material.SetVector("_Centroid", centroid4f);
 	}
 }
