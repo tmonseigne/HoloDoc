@@ -5,9 +5,6 @@
 #include <opencv2/highgui.hpp>
 #include <opencv2/core.hpp>
 
-// Meant to disapear (used to compute perfomance)
-#include <ctime>
-
 using namespace std;
 using namespace cv;
 
@@ -80,10 +77,10 @@ extern "C" int __declspec(dllexport) __stdcall SimpleDocumentDetection(Color32* 
 			std::sort(approx.begin(), approx.end(), sortPointsX);
 			std::sort(approx.begin() + 1, approx.end() - 1, sortPointsY);
 
-			Vec8i points = { approx.at(0).x, (int) height - approx.at(0).y,
-							 approx.at(1).x, (int) height - approx.at(1).y,
-							 approx.at(3).x, (int) height - approx.at(3).y,
-							 approx.at(2).x, (int) height - approx.at(2).y };
+			Vec8i points = { approx.at(0).x, int (height - approx.at(0).y),
+							 approx.at(1).x, int (height - approx.at(1).y),
+							 approx.at(3).x, int (height - approx.at(3).y),
+							 approx.at(2).x, int (height - approx.at(2).y) };
 
 			docsPoints.emplace_back(points);
 
@@ -102,7 +99,7 @@ extern "C" int __declspec(dllexport) __stdcall SimpleDocumentDetection(Color32* 
 		drawContours(src, contours, viableContoursIndex, Scalar(0, 255, 0), 2);
 	}
 	
-	*outDocumentsCount = docsPoints.size();
+	*outDocumentsCount = uint(docsPoints.size());
 
 	OpenCVMatToUnity(src, result);
 

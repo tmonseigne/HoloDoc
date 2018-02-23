@@ -2,14 +2,13 @@
 
 #include <opencv2/core.hpp>
 
-const enum ERROR_CODE
+enum ERROR_CODE
 {
 	NO_ERROR = 0,
 	EMPTY_MAT,
 	TYPE_MAT,
 	NO_LINES,
 	NO_DOCS,
-
 };
 //********************************
 //********** C# Types ************
@@ -27,7 +26,7 @@ struct Color32 {
 //********** Unity Link **********
 //********************************
 
-/// <sumary>
+/// <summary>
 /// Simple document detection function.
 /// </summary>
 /// <param name="image">Unity image.</param>
