@@ -1,0 +1,203 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+  <ItemGroup>
+
+    <Reference Include="opencv_aruco310">
+      <HintPath>$(MSBuildThisFileDirectory)..\..\lib\native\opencv_aruco310.winmd</HintPath>
+      <IsWinMDFile>true</IsWinMDFile>
+    </Reference>
+
+    <Reference Include="opencv_bgsegm310">
+      <HintPath>$(MSBuildThisFileDirectory)..\..\lib\native\opencv_bgsegm310.winmd</HintPath>
+      <IsWinMDFile>true</IsWinMDFile>
+    </Reference>
+
+    <Reference Include="opencv_bioinspired310">
+      <HintPath>$(MSBuildThisFileDirectory)..\..\lib\native\opencv_bioinspired310.winmd</HintPath>
+      <IsWinMDFile>true</IsWinMDFile>
+    </Reference>
+
+    <Reference Include="opencv_calib3d310">
+      <HintPath>$(MSBuildThisFileDirectory)..\..\lib\native\opencv_calib3d310.winmd</HintPath>
+      <IsWinMDFile>true</IsWinMDFile>
+    </Reference>
+
+    <Reference Include="opencv_ccalib310">
+      <HintPath>$(MSBuildThisFileDirectory)..\..\lib\native\opencv_ccalib310.winmd</HintPath>
+      <IsWinMDFile>true</IsWinMDFile>
+    </Reference>
+
+    <Reference Include="opencv_core310">
+      <HintPath>$(MSBuildThisFileDirectory)..\..\lib\native\opencv_core310.winmd</HintPath>
+      <IsWinMDFile>true</IsWinMDFile>
+    </Reference>
+
+    <Reference Include="opencv_datasets310">
+      <HintPath>$(MSBuildThisFileDirectory)..\..\lib\native\opencv_datasets310.winmd</HintPath>
+      <IsWinMDFile>true</IsWinMDFile>
+    </Reference>
+
+    <Reference Include="opencv_dpm310">
+      <HintPath>$(MSBuildThisFileDirectory)..\..\lib\native\opencv_dpm310.winmd</HintPath>
+      <IsWinMDFile>true</IsWinMDFile>
+    </Reference>
+
+    <Reference Include="opencv_face310">
+      <HintPath>$(MSBuildThisFileDirectory)..\..\lib\native\opencv_face310.winmd</HintPath>
+      <IsWinMDFile>true</IsWinMDFile>
+    </Reference>
+
+    <Reference Include="opencv_features2d310">
+      <HintPath>$(MSBuildThisFileDirectory)..\..\lib\native\opencv_features2d310.winmd</HintPath>
+      <IsWinMDFile>true</IsWinMDFile>
+    </Reference>
+
+    <Reference Include="opencv_flann310">
+      <HintPath>$(MSBuildThisFileDirectory)..\..\lib\native\opencv_flann310.winmd</HintPath>
+      <IsWinMDFile>true</IsWinMDFile>
+    </Reference>
+
+    <Reference Include="opencv_fuzzy310">
+      <HintPath>$(MSBuildThisFileDirectory)..\..\lib\native\opencv_fuzzy310.winmd</HintPath>
+      <IsWinMDFile>true</IsWinMDFile>
+    </Reference>
+
+    <Reference Include="opencv_highgui310">
+      <HintPath>$(MSBuildThisFileDirectory)..\..\lib\native\opencv_highgui310.winmd</HintPath>
+      <IsWinMDFile>true</IsWinMDFile>
+    </Reference>
+
+    <Reference Include="opencv_imgcodecs310">
+      <HintPath>$(MSBuildThisFileDirectory)..\..\lib\native\opencv_imgcodecs310.winmd</HintPath>
+      <IsWinMDFile>true</IsWinMDFile>
+    </Reference>
+
+    <Reference Include="opencv_imgproc310">
+      <HintPath>$(MSBuildThisFileDirectory)..\..\lib\native\opencv_imgproc310.winmd</HintPath>
+      <IsWinMDFile>true</IsWinMDFile>
+    </Reference>
+
+    <Reference Include="opencv_line_descriptor310">
+      <HintPath>$(MSBuildThisFileDirectory)..\..\lib\native\opencv_line_descriptor310.winmd</HintPath>
+      <IsWinMDFile>true</IsWinMDFile>
+    </Reference>
+
+    <Reference Include="opencv_ml310">
+      <HintPath>$(MSBuildThisFileDirectory)..\..\lib\native\opencv_ml310.winmd</HintPath>
+      <IsWinMDFile>true</IsWinMDFile>
+    </Reference>
+
+    <Reference Include="opencv_objdetect310">
+      <HintPath>$(MSBuildThisFileDirectory)..\..\lib\native\opencv_objdetect310.winmd</HintPath>
+      <IsWinMDFile>true</IsWinMDFile>
+    </Reference>
+
+    <Reference Include="opencv_optflow310">
+      <HintPath>$(MSBuildThisFileDirectory)..\..\lib\native\opencv_optflow310.winmd</HintPath>
+      <IsWinMDFile>true</IsWinMDFile>
+    </Reference>
+
+    <Reference Include="opencv_phase_unwrapping310">
+      <HintPath>$(MSBuildThisFileDirectory)..\..\lib\native\opencv_phase_unwrapping310.winmd</HintPath>
+      <IsWinMDFile>true</IsWinMDFile>
+    </Reference>
+
+    <Reference Include="opencv_photo310">
+      <HintPath>$(MSBuildThisFileDirectory)..\..\lib\native\opencv_photo310.winmd</HintPath>
+      <IsWinMDFile>true</IsWinMDFile>
+    </Reference>
+
+    <Reference Include="opencv_plot310">
+      <HintPath>$(MSBuildThisFileDirectory)..\..\lib\native\opencv_plot310.winmd</HintPath>
+      <IsWinMDFile>true</IsWinMDFile>
+    </Reference>
+
+    <Reference Include="opencv_reg310">
+      <HintPath>$(MSBuildThisFileDirectory)..\..\lib\native\opencv_reg310.winmd</HintPath>
+      <IsWinMDFile>true</IsWinMDFile>
+    </Reference>
+
+    <Reference Include="opencv_rgbd310">
+      <HintPath>$(MSBuildThisFileDirectory)..\..\lib\native\opencv_rgbd310.winmd</HintPath>
+      <IsWinMDFile>true</IsWinMDFile>
+    </Reference>
+
+    <Reference Include="opencv_saliency310">
+      <HintPath>$(MSBuildThisFileDirectory)..\..\lib\native\opencv_saliency310.winmd</HintPath>
+      <IsWinMDFile>true</IsWinMDFile>
+    </Reference>
+
+    <Reference Include="opencv_shape310">
+      <HintPath>$(MSBuildThisFileDirectory)..\..\lib\native\opencv_shape310.winmd</HintPath>
+      <IsWinMDFile>true</IsWinMDFile>
+    </Reference>
+
+    <Reference Include="opencv_stereo310">
+      <HintPath>$(MSBuildThisFileDirectory)..\..\lib\native\opencv_stereo310.winmd</HintPath>
+      <IsWinMDFile>true</IsWinMDFile>
+    </Reference>
+
+    <Reference Include="opencv_stitching310">
+      <HintPath>$(MSBuildThisFileDirectory)..\..\lib\native\opencv_stitching310.winmd</HintPath>
+      <IsWinMDFile>true</IsWinMDFile>
+    </Reference>
+
+    <Reference Include="opencv_structured_light310">
+      <HintPath>$(MSBuildThisFileDirectory)..\..\lib\native\opencv_structured_light310.winmd</HintPath>
+      <IsWinMDFile>true</IsWinMDFile>
+    </Reference>
+
+    <Reference Include="opencv_surface_matching310">
+      <HintPath>$(MSBuildThisFileDirectory)..\..\lib\native\opencv_surface_matching310.winmd</HintPath>
+      <IsWinMDFile>true</IsWinMDFile>
+    </Reference>
+
+    <Reference Include="opencv_text310">
+      <HintPath>$(MSBuildThisFileDirectory)..\..\lib\native\opencv_text310.winmd</HintPath>
+      <IsWinMDFile>true</IsWinMDFile>
+    </Reference>
+
+    <Reference Include="opencv_tracking310">
+      <HintPath>$(MSBuildThisFileDirectory)..\..\lib\native\opencv_tracking310.winmd</HintPath>
+      <IsWinMDFile>true</IsWinMDFile>
+    </Reference>
+
+    <Reference Include="opencv_video310">
+      <HintPath>$(MSBuildThisFileDirectory)..\..\lib\native\opencv_video310.winmd</HintPath>
+      <IsWinMDFile>true</IsWinMDFile>
+    </Reference>
+
+    <Reference Include="opencv_videoio310">
+      <HintPath>$(MSBuildThisFileDirectory)..\..\lib\native\opencv_videoio310.winmd</HintPath>
+      <IsWinMDFile>true</IsWinMDFile>
+    </Reference>
+
+    <Reference Include="opencv_videostab310">
+      <HintPath>$(MSBuildThisFileDirectory)..\..\lib\native\opencv_videostab310.winmd</HintPath>
+      <IsWinMDFile>true</IsWinMDFile>
+    </Reference>
+
+    <Reference Include="opencv_xfeatures2d310">
+      <HintPath>$(MSBuildThisFileDirectory)..\..\lib\native\opencv_xfeatures2d310.winmd</HintPath>
+      <IsWinMDFile>true</IsWinMDFile>
+    </Reference>
+
+    <Reference Include="opencv_ximgproc310">
+      <HintPath>$(MSBuildThisFileDirectory)..\..\lib\native\opencv_ximgproc310.winmd</HintPath>
+      <IsWinMDFile>true</IsWinMDFile>
+    </Reference>
+
+    <Reference Include="opencv_xobjdetect310">
+      <HintPath>$(MSBuildThisFileDirectory)..\..\lib\native\opencv_xobjdetect310.winmd</HintPath>
+      <IsWinMDFile>true</IsWinMDFile>
+    </Reference>
+
+    <Reference Include="opencv_xphoto310">
+      <HintPath>$(MSBuildThisFileDirectory)..\..\lib\native\opencv_xphoto310.winmd</HintPath>
+      <IsWinMDFile>true</IsWinMDFile>
+    </Reference>
+
+  </ItemGroup>
+
+</Project>

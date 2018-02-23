@@ -4,7 +4,7 @@
 
 const enum ERROR_CODE
 {
-	NO_ERROR = 0,
+	NO_ERRORS = 0,
 	EMPTY_MAT,
 	TYPE_MAT,
 	NO_LINES,
@@ -79,7 +79,7 @@ int DocsToUnity(std::vector<cv::Vec8i> &docs, int* dst, uint maxDocumentsCount, 
 /// <param name="max_tresh">second threshold for the hysteresis procedure.</param>
 /// <param name="aperture">aperture size for the Sobel operator.</param>
 int BinaryEdgeDetector(const cv::Mat &src, cv::Mat &dst,
-                        int min_tresh = 50, int max_tresh = 205, int aperture = 3);
+	int min_tresh = 50, int max_tresh = 205, int aperture = 3);
 
 /// <summary>
 /// Segment detector.
@@ -93,8 +93,8 @@ int BinaryEdgeDetector(const cv::Mat &src, cv::Mat &dst,
 /// <param name="minLineLength"> Minimum line length. Line segments shorter than that are rejected.</param>
 /// <param name="maxLineGap">Maximum allowed gap between points on the same line to link them.</param>
 int SegmentsDetector(const cv::Mat &src, std::vector<cv::Vec4i> &lines,
-                   double rho = 1, double theta = CV_PI / 180, int threshold = 50,
-                   double minLineLength = 30, double maxLineGap = 30);
+	double rho = 1, double theta = CV_PI / 180, int threshold = 50,
+	double minLineLength = 30, double maxLineGap = 30);
 
 /// <summary>
 /// Lines detector.
