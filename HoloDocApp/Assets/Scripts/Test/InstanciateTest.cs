@@ -9,54 +9,28 @@ public class InstanciateTest : MonoBehaviour
 	// Use this for initialization
 	void Start()
 	{
-		GameObject document1 = Instantiate(prefab, this.transform.position, this.transform.rotation);
-		Vector3[] corners1 = new Vector3[]
-		{
-			new Vector3(0, 0, 5),
-			new Vector3(0, 0.3f, 5),
-			new Vector3(0.3f, 0, 5),
-			new Vector3(0.3f, 0.3f, 5),
-		};
-		document1.GetComponent<DocumentMesh>().CreateDocumentMesh(corners1);
-		DocumentProperties prop = document1.GetComponent<DocumentProperties>();
-		//Debug.Log(prop.ToString());
+		int nbLines = 2, nbColumn = 2;
+		float offset = 0.4f;
 
-		GameObject document2 = Instantiate(prefab, this.transform.position, this.transform.rotation);
-		Vector3[] corners2 = new Vector3[]
+		for (int i = 0; i < nbLines; i++)
 		{
-			new Vector3(0.4f, 0, 5),
-			new Vector3(0.4f, 0.3f, 5),
-			new Vector3(0.7f, 0, 5),
-			new Vector3(0.7f, 0.3f, 5),
-		};
-		document2.GetComponent<DocumentMesh>().CreateDocumentMesh(corners2);
-		prop = document2.GetComponent<DocumentProperties>();
-		prop.SetProperties("Exam", "Pierre Benard", "Impossible SIA Exam", "10/01/2018");
-		//Debug.Log(prop.ToString());
+			float offsetI = i * offset;
+			for (int j = 0; j < nbColumn; j++)
+			{
+				float offsetJ = j * offset;
 
-		GameObject document3 = Instantiate(prefab, this.transform.position, this.transform.rotation);
-		Vector3[] corners3 = new Vector3[]
-		{
-			new Vector3(0, 0.4f, 5),
-			new Vector3(0, 0.7f, 5),
-			new Vector3(0.3f, 0.4f, 5),
-			new Vector3(0.3f, 0.7f, 5),
-		};
-		document3.GetComponent<DocumentMesh>().CreateDocumentMesh(corners3);
-		prop = document3.GetComponent<DocumentProperties>();
-		//Debug.Log(prop.ToString());
-
-		GameObject document4 = Instantiate(prefab, this.transform.position, this.transform.rotation);
-		Vector3[] corners4 = new Vector3[]
-		{
-			new Vector3(0.4f, 0.4f, 5),
-			new Vector3(0.4f, 0.7f, 5),
-			new Vector3(0.7f, 0.4f, 5),
-			new Vector3(0.7f, 0.7f, 5),
-		};
-		document4.GetComponent<DocumentMesh>().CreateDocumentMesh(corners4);
-		prop = document4.GetComponent<DocumentProperties>();
-		//Debug.Log(prop.ToString());
+				GameObject document = Instantiate(prefab, this.transform.position, this.transform.rotation);
+				Vector3[] corners = new Vector3[]
+				{
+					new Vector3(0    + offsetI, 0    + offsetJ, 5),
+					new Vector3(0    + offsetI, 0.3f + offsetJ, 5),
+					new Vector3(0.3f + offsetI, 0    + offsetJ, 5),
+					new Vector3(0.3f + offsetI, 0.3f + offsetJ, 5)
+				};
+				document.GetComponent<DocumentMesh>().CreateDocumentMesh(corners);
+				DocumentProperties DocProperties = document.GetComponent<DocumentProperties>();
+			}
+		}
 	}
 
 	// Update is called once per frame

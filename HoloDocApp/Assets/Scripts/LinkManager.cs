@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class LinkManager : MonoBehaviour {
@@ -10,7 +11,7 @@ public class LinkManager : MonoBehaviour {
 	private GameObject linkHead;
 	private GameObject linkTail;
 
-	Color[] linkColors = new Color[] { Color.magenta, Color.yellow, Color.red, Color.gray, Color.blue, Color.cyan, Color.green };
+	Color[] linkColors = new Color[] { Color.magenta, Color.yellow, Color.red, Color.blue, Color.cyan, Color.green, Color.gray };
 	
 	void Awake()
 	{
@@ -34,7 +35,7 @@ public class LinkManager : MonoBehaviour {
 
 	public void OnLinkEnded(GameObject document)
 	{
-		if (document.CompareTag("Document") && linkHead != null && document != linkHead)
+		if (document.CompareTag("Document") && linkHead && (document != linkHead))
 		{
 			linkTail = document;
 			DocumentProperties head = linkHead.GetComponent<DocumentProperties>();
@@ -61,7 +62,7 @@ public class LinkManager : MonoBehaviour {
 						links[oldTailLinkId][i].GetComponent<DocumentManager>().SetColor(linkColors[head.linkId]);
 					}
 					// 2: We merge the lists
-					links[head.linkId].AddRange(links[oldTailLinkId]);
+					links[head.linkId].Union(links[oldTailLinkId]);
 					// 3: We remove the merged list
 					links.RemoveAt(oldTailLinkId);
 				}

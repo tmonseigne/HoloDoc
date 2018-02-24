@@ -27,7 +27,7 @@ public class CreateContours : MonoBehaviour {
 			corners.Clear();
 		}
 	}
-
+	
 	public void CreateContour(List<Vector3> corners, float thickness, Color color)
 	{
 		GameObject documentContour = new GameObject { name = "DocumentContour" };

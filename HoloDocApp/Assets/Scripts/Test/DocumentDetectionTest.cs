@@ -5,8 +5,8 @@ using System.Runtime.InteropServices;
 
 public class DocumentDetectionTest : MonoBehaviour
 {
+	[Range(0, 20)] public uint maxDocumentsCount = 5;
 	public GameObject quad;
-	[Range(0,20)] public uint maxDocumentsCount = 5;
 	private Texture2D renderTexture;
 
 	private byte[] result;
@@ -16,14 +16,17 @@ public class DocumentDetectionTest : MonoBehaviour
 	// Use this for initialization
 	void Start()
 	{
-		Resolution frameResolution = CameraStream.Instance.Resolution;
-		renderTexture = new Texture2D(frameResolution.width, frameResolution.height, TextureFormat.RGB24, false);
+		sizeResolution = new uint[]
+		{
+			(uint)CameraStream.Instance.Resolution.width,
+			(uint)CameraStream.Instance.Resolution.height
+		};
+
+		renderTexture = new Texture2D((int)sizeResolution[0], (int)sizeResolution[1], TextureFormat.RGB24, false);
 
 		outDocumentsCorners = new int[maxDocumentsCount * 8];
 
-		Resolution resolution = CameraStream.Instance.Frame.Resolution;
-		sizeResolution = new uint[] { (uint)resolution.width, (uint)resolution.height };
-		result = renderTexture.GetRawTextureData(); // new byte[resolution.width * resolution.height * 3];
+		result = renderTexture.GetRawTextureData(); // new byte[frameResolution.width * frameResolution.height * 3];
 	}
 
 	// Update is called once per frame
