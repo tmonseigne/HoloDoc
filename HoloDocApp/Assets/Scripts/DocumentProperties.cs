@@ -8,6 +8,7 @@ public class DocumentProperties : MonoBehaviour
 	public string author { get; set; }
 	public string description { get; set; }
 	public string date { get; set; }
+	public int linkId { get; set; }
 	public bool photographied { get; set; }
 
 	private int id;
@@ -20,6 +21,7 @@ public class DocumentProperties : MonoBehaviour
 		this.description = "description";
 		this.date = "date";
 		this.photographied = false;
+		this.linkId = -1;
 	}
 
 	void Start()
