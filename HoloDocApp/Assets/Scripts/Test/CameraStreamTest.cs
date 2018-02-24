@@ -9,17 +9,15 @@ public class CameraStreamTest : MonoBehaviour
 	// Use this for initialization
 	void Start()
 	{
-		Resolution res = CameraStream.Instance.Resolution;
-		renderTexture = new Texture2D(res.width, res.height);
+		Resolution resolution = CameraStream.Instance.Resolution;
+		renderTexture = new Texture2D(resolution.width, resolution.height);
 	}
 
 	// Update is called once per frame
 	void Update()
 	{
-		Renderer quadRenderer = this.gameObject.GetComponent<Renderer>() as Renderer;
-		CameraFrame frame = CameraStream.Instance.Frame;
-		renderTexture.SetPixels32(frame.Data);
+		renderTexture.SetPixels32(CameraStream.Instance.Frame.Data);
 		renderTexture.Apply(true);
-		quadRenderer.material.mainTexture = renderTexture;
+		this.gameObject.GetComponent<Renderer>().material.mainTexture = renderTexture;
 	}
 }

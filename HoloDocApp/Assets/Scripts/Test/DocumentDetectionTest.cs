@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System.Runtime.InteropServices;
+using System;
 
 public class DocumentDetectionTest : MonoBehaviour
 {
@@ -11,22 +12,17 @@ public class DocumentDetectionTest : MonoBehaviour
 
 	private byte[] result;
 	private int[]  outDocumentsCorners;
-	private uint[] sizeResolution;
+	private Resolution resolution;
 
 	// Use this for initialization
 	void Start()
 	{
-		sizeResolution = new uint[]
-		{
-			(uint)CameraStream.Instance.Resolution.width,
-			(uint)CameraStream.Instance.Resolution.height
-		};
-
-		renderTexture = new Texture2D((int)sizeResolution[0], (int)sizeResolution[1], TextureFormat.RGB24, false);
+		resolution = CameraStream.Instance.Resolution;
+		renderTexture = new Texture2D(resolution.width, resolution.height, TextureFormat.RGB24, false);
 
 		outDocumentsCorners = new int[maxDocumentsCount * 8];
 
-		result = renderTexture.GetRawTextureData(); // new byte[frameResolution.width * frameResolution.height * 3];
+		result = renderTexture.GetRawTextureData(); 
 	}
 
 	// Update is called once per frame
@@ -37,7 +33,7 @@ public class DocumentDetectionTest : MonoBehaviour
 
 		unsafe
 		{
-			OpenCVInterop.SimpleDocumentDetection(ref image[0], sizeResolution[0], sizeResolution[1], ref result[0], maxDocumentsCount, ref outDocumentsCount, ref outDocumentsCorners[0]);
+			OpenCVInterop.SimpleDocumentDetection(ref image[0], (uint)resolution.width, (uint)resolution.height, ref result[0], maxDocumentsCount, ref outDocumentsCount, ref outDocumentsCorners[0]);
 		}
 		
 		renderTexture.LoadRawTextureData(result);

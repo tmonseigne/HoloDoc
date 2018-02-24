@@ -44,29 +44,27 @@ public class CameraStream : MonoBehaviour
 			DestroyImmediate(this);
 		}
 
-		Resolution frameResolution;
         if (substituableFrame && (substitute || WebCamTexture.devices.Length == 0))
         {
-			frameResolution = new Resolution
+			this.resolution = new Resolution
 			{
 				width = substituableFrame.width,
 				height = substituableFrame.height
 			};
-			frame = new CameraFrame(frameResolution, substituableFrame.GetPixels32());
+			frame = new CameraFrame(this.resolution, substituableFrame.GetPixels32());
         }
         else if (WebCamTexture.devices.Length > 0)
         {
-            frameResolution = PhotoCapture.SupportedResolutions.OrderByDescending(res => res.width * res.height).First();
-			webCamTexture = new WebCamTexture(frameResolution.width, frameResolution.height);
+			this.resolution = PhotoCapture.SupportedResolutions.OrderByDescending((res) => res.width * res.height).First();
+			webCamTexture = new WebCamTexture(this.resolution.width, this.resolution.height);
 			webCamTexture.Play();
-            frame = new CameraFrame(frameResolution, webCamTexture.GetPixels32());
+            frame = new CameraFrame(this.resolution, new Color32[webCamTexture.width * webCamTexture.height]);
         }
         else
         {
             throw new System.Exception("No camera/substitution frame found.");
         }
 
-		this.resolution = frameResolution;
 		Instance = this;
 	}
 
@@ -74,7 +72,7 @@ public class CameraStream : MonoBehaviour
 	{
 		if (webCamTexture)
 		{
-			frame.Data = webCamTexture.GetPixels32();
+			webCamTexture.GetPixels32(frame.Data);
 		}
 	}
 }

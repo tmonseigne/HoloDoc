@@ -9,6 +9,7 @@ public struct CameraFrame {
 
     public CameraFrame(Resolution resolution, Color32[] data)
     {
+		Debug.Log("cameraFrame: " + data.Length);
         this.Resolution = resolution;
         this.Data = data;
     }
