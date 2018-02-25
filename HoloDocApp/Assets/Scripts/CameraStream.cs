@@ -51,19 +51,27 @@ public class CameraStream : MonoBehaviour
 				width = substituableFrame.width,
 				height = substituableFrame.height
 			};
+
 			frame = new CameraFrame(this.resolution, substituableFrame.GetPixels32());
-        }
-        else if (WebCamTexture.devices.Length > 0)
+		}
+		else if (WebCamTexture.devices.Length > 0)
         {
-			this.resolution = PhotoCapture.SupportedResolutions.OrderByDescending((res) => res.width * res.height).First();
-			webCamTexture = new WebCamTexture(this.resolution.width, this.resolution.height);
+			webCamTexture = new WebCamTexture();
 			webCamTexture.Play();
-            frame = new CameraFrame(this.resolution, new Color32[webCamTexture.width * webCamTexture.height]);
-        }
-        else
+
+			this.resolution = new Resolution
+			{
+				width = webCamTexture.width,
+				height = webCamTexture.height
+			};
+
+			frame = new CameraFrame(this.resolution, new Color32[this.resolution.width * this.resolution.height]);
+		}
+		else
         {
             throw new System.Exception("No camera/substitution frame found.");
         }
+
 
 		Instance = this;
 	}
@@ -72,6 +80,7 @@ public class CameraStream : MonoBehaviour
 	{
 		if (webCamTexture)
 		{
+			Debug.Log("WebcamTexture : " + webCamTexture.width + "x" + webCamTexture.height);
 			webCamTexture.GetPixels32(frame.Data);
 		}
 	}
