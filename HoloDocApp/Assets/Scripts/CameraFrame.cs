@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public struct CameraFrame {
 
@@ -9,7 +7,6 @@ public struct CameraFrame {
 
     public CameraFrame(Resolution resolution, Color32[] data)
     {
-		Debug.Log("cameraFrame: " + data.Length);
         this.Resolution = resolution;
         this.Data = data;
     }

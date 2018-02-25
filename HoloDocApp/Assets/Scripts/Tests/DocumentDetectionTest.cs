@@ -1,8 +1,5 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using System.Runtime.InteropServices;
-using System;
 
 public class DocumentDetectionTest : MonoBehaviour
 {
@@ -17,7 +14,7 @@ public class DocumentDetectionTest : MonoBehaviour
 	// Use this for initialization
 	void Start()
 	{
-		resolution = CameraStream.Instance.Resolution;
+		resolution = CameraStream.Instance.Frame.Resolution;
 		renderTexture = new Texture2D(resolution.width, resolution.height, TextureFormat.RGB24, false);
 
 		outDocumentsCorners = new int[maxDocumentsCount * 8];
@@ -38,13 +35,14 @@ public class DocumentDetectionTest : MonoBehaviour
 		
 		renderTexture.LoadRawTextureData(result);
 		renderTexture.Apply(true);
-		quad.GetComponent<Renderer>().material.mainTexture = renderTexture;
+		//quad.GetComponent<Renderer>().material.mainTexture = renderTexture;
 	}
 }
 
+/*
 // Define the functions which can be called from the .dll.
 internal static class OpenCVInterop
 {
 	[DllImport("DocDetector")]
 	internal unsafe static extern int SimpleDocumentDetection(ref Color32 image, uint width, uint height, ref byte result, uint maxDocumentsCount, ref uint outDocumentsCount, ref int outDocumentsCorners);
-}
+}*/

@@ -8,11 +8,9 @@ public class LinkManager : MonoBehaviour {
 
 	public List<List<GameObject>> links;
 
-	private GameObject linkHead;
-	private GameObject linkTail;
+	private GameObject linkHead, linkTail;
+	private Color[] linkColors;
 
-	Color[] linkColors = new Color[] { Color.magenta, Color.yellow, Color.red, Color.blue, Color.cyan, Color.green, Color.gray };
-	
 	void Awake()
 	{
 		Instance = this;
@@ -21,6 +19,7 @@ public class LinkManager : MonoBehaviour {
 	void Start()
 	{
 		links = new List<List<GameObject>>();
+		linkColors = CreateColorList(6);
 	}
 
 	public void OnLinkStarted(GameObject document)
@@ -131,5 +130,17 @@ public class LinkManager : MonoBehaviour {
 	public int GetLinksCount()
 	{
 		return this.links.Count;
+	}
+
+	Color[] CreateColorList(int nbColors)
+	{
+		Color[] colors = new Color[nbColors];
+
+		for (int i = 0; i < nbColors; i++)
+		{
+			colors[i] = Color.HSVToRGB(i / (float)nbColors, 1, 1);
+		}
+
+		return colors;
 	}
 }

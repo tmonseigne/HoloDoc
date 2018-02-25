@@ -1,8 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using UnityEngine.XR.WSA.WebCam;
-using System.Linq;
+﻿using UnityEngine;
 
 public class CameraStream : MonoBehaviour
 {
@@ -16,7 +12,6 @@ public class CameraStream : MonoBehaviour
 
     private WebCamTexture webCamTexture;
     private CameraFrame frame;
-    private Resolution resolution;
 
 	// Getter CameraFrame
 	public CameraFrame Frame
@@ -26,15 +21,6 @@ public class CameraStream : MonoBehaviour
             return this.frame;
         }
     }
-
-	// Getter Resolution
-	public Resolution Resolution
-	{
-		get
-		{
-			return this.resolution;
-		}
-	}
 
 	void Start()
 	{
@@ -46,32 +32,31 @@ public class CameraStream : MonoBehaviour
 
         if (substituableFrame && (substitute || WebCamTexture.devices.Length == 0))
         {
-			this.resolution = new Resolution
+			Resolution resolution =  new Resolution
 			{
 				width = substituableFrame.width,
 				height = substituableFrame.height
 			};
 
-			frame = new CameraFrame(this.resolution, substituableFrame.GetPixels32());
+			frame = new CameraFrame(resolution, substituableFrame.GetPixels32());
 		}
 		else if (WebCamTexture.devices.Length > 0)
         {
 			webCamTexture = new WebCamTexture();
 			webCamTexture.Play();
 
-			this.resolution = new Resolution
+			Resolution resolution = new Resolution
 			{
 				width = webCamTexture.width,
 				height = webCamTexture.height
 			};
 
-			frame = new CameraFrame(this.resolution, new Color32[this.resolution.width * this.resolution.height]);
+			frame = new CameraFrame(resolution, new Color32[resolution.width * resolution.height]);
 		}
 		else
         {
             throw new System.Exception("No camera/substitution frame found.");
         }
-
 
 		Instance = this;
 	}
@@ -80,8 +65,7 @@ public class CameraStream : MonoBehaviour
 	{
 		if (webCamTexture)
 		{
-			Debug.Log("WebcamTexture : " + webCamTexture.width + "x" + webCamTexture.height);
-			webCamTexture.GetPixels32(frame.Data);
+			webCamTexture.GetPixels32(this.frame.Data);
 		}
 	}
 }

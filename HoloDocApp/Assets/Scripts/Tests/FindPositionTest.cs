@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class FindPosition : MonoBehaviour
 {
@@ -15,14 +13,6 @@ public class FindPosition : MonoBehaviour
 		Vector2Int posPixel = new Vector2Int(Camera.main.pixelHeight / 2, Camera.main.pixelWidth / 2);
 		Vector3? position = ConvertPixelToScreen(posPixel.x, posPixel.y);
 		Debug.Log("posConv : " + position);
-
-		Ray ray = Camera.main.ScreenPointToRay(new Vector3(posPixel.x, posPixel.y));
-		RaycastHit hit;
-
-		if (Physics.Raycast(ray, out hit, 100))
-		{
-			Debug.Log("posForward : " + hit.point);
-		}
 	}
 
 	// pixelX to [0 ; Camera.main.pixelHeight], pixelY to [0 ; Camera.main.pixelWidth]
