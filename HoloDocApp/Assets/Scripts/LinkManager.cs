@@ -53,6 +53,7 @@ public class LinkManager : MonoBehaviour {
 						Debug.Log("Tail and head are already part of different links → Instant merge of both links.");
 						// The tail has a link too => fusion of the two lists into one
 						int oldTailLinkId = tail.linkId;
+						Debug.Log(tail.linkId);
 						// 1: We need to switch the tail link id to be the new id
 						for (int i = 0; i < links[oldTailLinkId].Count; i++)
 						{
@@ -62,9 +63,23 @@ public class LinkManager : MonoBehaviour {
 							links[oldTailLinkId][i].GetComponent<DocumentManager>().SetColor(linkColors[head.linkId]);
 						}
 						// 2: We merge the lists
-						links[head.linkId].Union(links[oldTailLinkId]);
+						links[head.linkId].AddRange(links[oldTailLinkId]);
 						// 3: We remove the merged list
 						links.RemoveAt(oldTailLinkId);
+						
+						// Note : Since lists can not have empty places, removeAt moves everything after the removed element. 
+						// TODO : Find a better way to do this (i.e move the last element in the list in the empty places and modify only the last one)
+						// TODO : Find a better way to deal with the color (color switch is not that best)
+						// HINT : Do a struct called Link with is a list of game object + a color.
+						for(int i = 0; i < links.Count; i++)
+						{
+							foreach(GameObject go in links[i])
+							{
+								go.GetComponent<DocumentProperties>().linkId = i;
+								go.GetComponent<DocumentManager>().SetColor(linkColors[i]);
+							}
+						}
+						
 					}
 				}
 				else

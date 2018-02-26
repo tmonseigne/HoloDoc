@@ -67,14 +67,14 @@ public class DocumentManager : MonoBehaviour, IFocusable, IInputClickHandler, II
 		//this.SetColor(clickedColor);
 	}
 
-	public void OnInputUp(InputEventData eventData)
-	{
-		LinkManager.Instance.OnLinkEnded(this.gameObject);
-	}
-
 	public void OnInputDown(InputEventData eventData)
 	{
 		LinkManager.Instance.OnLinkStarted(this.gameObject);
+	}
+
+	public void OnInputUp(InputEventData eventData)
+	{
+		LinkManager.Instance.OnLinkEnded(this.gameObject);
 	}
 
 	private void OnPhotoTaken(CameraFrame result)
