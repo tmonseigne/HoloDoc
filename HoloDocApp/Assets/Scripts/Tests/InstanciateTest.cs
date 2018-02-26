@@ -4,12 +4,17 @@ using UnityEngine;
 
 public class InstanciateTest : MonoBehaviour
 {
+	[Range(1, 20)]
+	public int nbLines = 2;
+
+	[Range(1, 20)]
+	public int nbColumn = 2;
+
 	public GameObject prefab;
 
 	// Use this for initialization
 	void Start()
 	{
-		int nbLines = 2, nbColumn = 2;
 		float offset = 0.4f;
 
 		for (int i = 0; i < nbLines; i++)

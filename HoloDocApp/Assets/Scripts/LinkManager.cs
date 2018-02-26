@@ -44,26 +44,28 @@ public class LinkManager : MonoBehaviour {
 				// The head has a link
 				if (tail.linkId != -1)
 				{
-					if(head.linkId == tail.linkId)
+					if (head.linkId == tail.linkId)
 					{
 						Debug.Log("Tail and head are already linked and plus they are in the same link → Over !");
-						// DO NOT PUT A RETURN HERE JIMMY OTHERWISE THE LAST LINES WONT EXECUTE (clear head is necessary)
 					}
-					Debug.Log("Tail and head are already part of different links → Instant merge of both links.");
-					// The tail has a link too => fusion of the two lists into one
-					int oldTailLinkId = tail.linkId;
-					// 1: We need to switch the tail link id to be the new id
-					for (int i = 0; i < links[oldTailLinkId].Count; i++)
+					else
 					{
-						// 1.1: Switch ids
-						links[oldTailLinkId][i].GetComponent<DocumentProperties>().linkId = head.linkId;
-						// 1.2: Switch colors
-						links[oldTailLinkId][i].GetComponent<DocumentManager>().SetColor(linkColors[head.linkId]);
+						Debug.Log("Tail and head are already part of different links → Instant merge of both links.");
+						// The tail has a link too => fusion of the two lists into one
+						int oldTailLinkId = tail.linkId;
+						// 1: We need to switch the tail link id to be the new id
+						for (int i = 0; i < links[oldTailLinkId].Count; i++)
+						{
+							// 1.1: Switch ids
+							links[oldTailLinkId][i].GetComponent<DocumentProperties>().linkId = head.linkId;
+							// 1.2: Switch colors
+							links[oldTailLinkId][i].GetComponent<DocumentManager>().SetColor(linkColors[head.linkId]);
+						}
+						// 2: We merge the lists
+						links[head.linkId].Union(links[oldTailLinkId]);
+						// 3: We remove the merged list
+						links.RemoveAt(oldTailLinkId);
 					}
-					// 2: We merge the lists
-					links[head.linkId].Union(links[oldTailLinkId]);
-					// 3: We remove the merged list
-					links.RemoveAt(oldTailLinkId);
 				}
 				else
 				{
