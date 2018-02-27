@@ -19,7 +19,7 @@ exports.detectDocuments = function (image, lower, upper) {
 
     if (c.numPoints >= 4 && minLength <= perimeter && perimeter <= maxLength) {
       result = result.concat(rotatedRectToPoints(c.minAreaRect()));
-      console.log(c.numPoints);
+      //console.log(c.numPoints);
     }
     i++;
   }
