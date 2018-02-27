@@ -1,12 +1,8 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using UnityEngine.XR.WSA.WebCam;
-using System.Linq;
+﻿using UnityEngine;
 
 public class CameraStream : MonoBehaviour
 {
-	public static CameraStream Instance;
+	public static CameraStream Instance; // Singleton
 
 	[Tooltip("You can provide a substitution frame if you do not have a camera or for testing purpose.")]
 	public Texture2D substituableFrame;
@@ -14,25 +10,17 @@ public class CameraStream : MonoBehaviour
 	[Tooltip("If you have a camera and you still want to use a special substitution frame you can force the substitution.")]
 	public bool substitute = false;
 
-    private WebCamTexture cameraFrame;
+    private WebCamTexture webCamTexture;
     private CameraFrame frame;
-    private Resolution resolution;
 
-    public CameraFrame Frame
+	// Getter CameraFrame
+	public CameraFrame Frame
     {
         get
         {
             return this.frame;
         }
     }
-
-	public Resolution Resolution
-	{
-		get
-		{
-			return this.resolution;
-		}
-	}
 
 	void Start()
 	{
@@ -42,44 +30,42 @@ public class CameraStream : MonoBehaviour
 			DestroyImmediate(this);
 		}
 
-		// If no substituable frame is provided we can not force substitution
-		if (substituableFrame == null)
-		{
-			substitute = false;
-		}
+        if (substituableFrame && (substitute || WebCamTexture.devices.Length == 0))
+        {
+			Resolution resolution =  new Resolution
+			{
+				width = substituableFrame.width,
+				height = substituableFrame.height
+			};
 
-        Resolution frameResolution = new Resolution();
-        WebCamDevice[] devices = WebCamTexture.devices;
-        if (substitute || (devices.Length == 0 && substituableFrame))
+			frame = new CameraFrame(resolution, substituableFrame.GetPixels32());
+		}
+		else if (WebCamTexture.devices.Length > 0)
         {
-            frameResolution.width = substituableFrame.width;
-            frameResolution.height = substituableFrame.height;
-            frame = new CameraFrame(frameResolution, substituableFrame.GetPixels32());
-        }
-        else if (devices.Length > 0)
-        {
-            frameResolution = PhotoCapture.SupportedResolutions.OrderByDescending((res) => res.width * res.height).First();
-            cameraFrame = new WebCamTexture(frameResolution.width, frameResolution.height);
-            cameraFrame.Play();
-            frame = new CameraFrame(frameResolution, cameraFrame.GetPixels32());
-        }
-        else
+			webCamTexture = new WebCamTexture();
+			webCamTexture.Play();
+
+			Resolution resolution = new Resolution
+			{
+				width = webCamTexture.width,
+				height = webCamTexture.height
+			};
+
+			frame = new CameraFrame(resolution, new Color32[resolution.width * resolution.height]);
+		}
+		else
         {
             throw new System.Exception("No camera/substitution frame found.");
         }
 
-		this.resolution = frameResolution;
 		Instance = this;
-
 	}
 
 	void Update()
 	{
-		if (cameraFrame != null)
+		if (webCamTexture)
 		{
-			frame.Data = cameraFrame.GetPixels32();
+			webCamTexture.GetPixels32(this.frame.Data);
 		}
 	}
-
-
 }

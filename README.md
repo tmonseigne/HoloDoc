@@ -38,3 +38,13 @@ In summary:
 Download and install [Python 2.7](https://www.python.org/downloads/).
 
 Download and install [Node.js](https://nodejs.org/en/download/). After that, launch the program "Node.js command prompt" and go to the folder `HoloDocServer` with the command `cd [APP_PATH]HoloDocServer`. Then, type the command `npm start` to install and launch the server.
+
+# Project architecture
+```
+HoloDoc
+  ├── HoloDocApp      // Code Unity
+  ├── HoloDocDetector // Code C++ with OpenCV
+  │     ├── DocDetectorDLL - UWP  // DLL UWP for Hololens/emulator (x86)
+  │     └── DocDetectorDLL        // DLL for Unity (x86-x64)
+  └── HoloDocServer   // Server Node.js
+  ```

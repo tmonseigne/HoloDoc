@@ -6,32 +6,32 @@ using UnityEngine;
 public class DocumentMesh : MonoBehaviour
 {
 	public Material material;
+	public Vector3 centroid { get; set; }
 
 	public void CreateDocumentMesh(Vector3[] corners)
 	{
-		Mesh mesh = new Mesh();
-		Vector3[] vertices = corners;
-
-		int[] faces = new int[]
+		Mesh mesh = new Mesh
 		{
-			0, 1, 2,
-			1, 3, 2,
+			vertices = corners,
+			triangles = new int[] 
+			{
+				0, 1, 2,
+				1, 3, 2,
+			}
 		};
-
-		mesh.vertices = vertices;
-		mesh.triangles = faces;
 
 		this.GetComponent<MeshRenderer>().material = material;
 		this.GetComponent<MeshFilter>().mesh = mesh;
 		this.GetComponent<MeshCollider>().sharedMesh = mesh;
 
-		Vector3 centroid3f = Vector3.zero;
+		centroid = Vector3.zero;
 		foreach (Vector3 v in corners)
 		{
-			centroid3f += v;
+			centroid += v;
 		}
-		centroid3f /= corners.Length;
-		Vector4 centroid4f = new Vector4(centroid3f.x, centroid3f.y, centroid3f.z, 1.0f);
-		this.material.SetVector("_centroid", centroid4f);
+		centroid /= corners.Length;
+	
+		Vector4 centroid4f = new Vector4(centroid.x, centroid.y, centroid.z, 1.0f);
+		this.GetComponent<Renderer>().material.SetVector("_Centroid", centroid4f);
 	}
 }

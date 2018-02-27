@@ -94,7 +94,7 @@ Material:
     - _Mode: 2
     - _OcclusionStrength: 1
     - _Outline: 0.008
-    - _OutlineWidth: 0.05
+    - _OutlineWidth: 1.1
     - _Parallax: 0.02
     - _PulseWidth: 1
     - _Radius: 9.19
@@ -134,6 +134,7 @@ Material:
     m_Colors:
     - _BaseColor: {r: 0, g: 0, b: 0, a: 1}
     - _Center: {r: 0, g: 0, b: 0, a: -1}
+    - _Centroid: {r: 0, g: 0, b: 0, a: 0}
     - _Color: {r: 0, g: 0.5034485, b: 1, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _OutlineColor: {r: 1, g: 0, b: 0, a: 1}
