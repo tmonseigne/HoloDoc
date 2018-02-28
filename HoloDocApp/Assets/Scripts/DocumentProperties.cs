@@ -9,7 +9,7 @@ public class DocumentProperties : MonoBehaviour {
 	public int linkId { get; set; }
 	public bool photographied { get; set; }
 
-	private int _id;
+	public int _id { get; set; }
 
 	void Awake() {
 		this._id = this.GetHashCode();
@@ -29,10 +29,6 @@ public class DocumentProperties : MonoBehaviour {
 		this.author = author;
 		this.description = description;
 		this.date = date;
-	}
-
-	public int GetId() {
-		return this._id;
 	}
 
 	override public string ToString() {

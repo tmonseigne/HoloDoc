@@ -12,26 +12,26 @@ public class InformationEventManager : MonoBehaviour, IInputClickHandler {
 
 	void Awake() {
 		_infoManager = this.transform.root.GetComponent<InformationManager>();
-		Keyboard.Instance.OnTextSubmitted += KeyboardOnTextSubmitted;
-		Keyboard.Instance.OnClosed += KeyboardOnClosed;
+		Keyboard.Instance.OnTextSubmitted += OnKeyboardSubmitted;
+		Keyboard.Instance.OnClosed += OnKeyboardClosed;
 	}
 
-	private void KeyboardOnClosed(object sender, EventArgs e) {
+	private void OnKeyboardClosed(object sender, EventArgs e) {
 		// It is really important to unsubscribe to these events as soon as the text is submitted/keyboard closed
 		// otherwise modifications will be propagated to the other edited fields.
-		Keyboard.Instance.OnTextUpdated -= KeyboardOnTextUpdated;
-		Keyboard.Instance.OnClosed -= KeyboardOnClosed;
+		Keyboard.Instance.OnTextUpdated -= OnKeyboardTextUpdated;
+		Keyboard.Instance.OnClosed -= OnKeyboardClosed;
 		Keyboard.Instance.Close();
 	}
 
-	private void KeyboardOnTextSubmitted(object sender, EventArgs e) {
+	private void OnKeyboardSubmitted(object sender, EventArgs e) {
 		// It is really important to unsubscribe to these events as soon as the text is submitted/keyboard closed 
 		// otherwise modifications will be propagated to the other edited fields.
-		Keyboard.Instance.OnTextUpdated -= KeyboardOnTextUpdated;
-		Keyboard.Instance.OnClosed -= KeyboardOnClosed;
+		Keyboard.Instance.OnTextUpdated -= OnKeyboardTextUpdated;
+		Keyboard.Instance.OnClosed -= OnKeyboardClosed;
 	}
 
-	private void KeyboardOnTextUpdated(string content) {
+	private void OnKeyboardTextUpdated(string content) {
 		if (!string.IsNullOrEmpty(content)) {
 			_currentField.text = content;
 		}
@@ -71,7 +71,7 @@ public class InformationEventManager : MonoBehaviour, IInputClickHandler {
 
 			if (edit) {
 				// We need to subscribe to this event after we set the variable currentField otherwise it is not working (???)
-				Keyboard.Instance.OnTextUpdated += KeyboardOnTextUpdated;
+				Keyboard.Instance.OnTextUpdated += OnKeyboardTextUpdated;
 				if (date)
 					Keyboard.Instance.PresentKeyboard(_currentField.text, Keyboard.LayoutType.Symbol);
 				else

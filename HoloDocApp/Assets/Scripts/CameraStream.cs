@@ -4,6 +4,9 @@ public class CameraStream : MonoBehaviour {
 
 	public static CameraStream Instance; // Singleton
 
+	[Range(15, 60)]
+	public int Framerate = 25;
+
 	[Tooltip("You can provide a substitution frame if you do not have a camera or for testing purpose.")]
 	public Texture2D substituableFrame;
 
@@ -33,7 +36,12 @@ public class CameraStream : MonoBehaviour {
 			_frame = new CameraFrame(resolution, substituableFrame.GetPixels32());
 		}
 		else if (WebCamTexture.devices.Length > 0) {
-			_webCamTexture = new WebCamTexture();
+			_webCamTexture = new WebCamTexture
+			{
+				// This may help reduce lag in the application
+				requestedFPS = Framerate
+			};
+
 			_webCamTexture.Play();
 
 			Resolution resolution = new Resolution {
