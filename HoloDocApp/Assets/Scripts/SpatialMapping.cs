@@ -1,12 +1,11 @@
 ﻿using UnityEngine;
 using UnityEngine.XR.WSA;
 
-public class SpatialMapping : MonoBehaviour
-{
+public class SpatialMapping : MonoBehaviour {
+
 	public static SpatialMapping Instance { private set; get; }
 
-	[HideInInspector]
-	public static int PhysicsRaycastMask;
+	[HideInInspector] public static int PhysicsRaycastMask;
 
 	[Tooltip("The material to use when rendering Spatial Mapping data.")]
 	public Material DrawMaterial;
@@ -15,38 +14,31 @@ public class SpatialMapping : MonoBehaviour
 	public bool drawVisualMeshes = false;
 
 	// If true, Spatial Mapping will be enabled. 
-	private bool mappingEnabled = true;
+	private bool _mappingEnabled = true;
 
 	// The layer to use for spatial mapping collisions.
-	private int physicsLayer = 31;
+	private int _physicsLayer = 31;
 
 	// Handles rendering of spatial mapping meshes.
-	private SpatialMappingRenderer spatialMappingRenderer;
+	private SpatialMappingRenderer _spatialMappingRenderer;
 
 	// Creates/updates environment colliders to work with physics.
-	private SpatialMappingCollider spatialMappingCollider;
+	private SpatialMappingCollider _spatialMappingCollider;
 
 	/// <summary>
 	/// Determines if the spatial mapping meshes should be rendered.
 	/// </summary>
-	public bool DrawVisualMeshes
-	{
-		get
-		{
-			return drawVisualMeshes;
-		}
-		set
-		{
+	public bool DrawVisualMeshes {
+		get { return drawVisualMeshes; }
+		set {
 			drawVisualMeshes = value;
 
-			if (drawVisualMeshes)
-			{
-				spatialMappingRenderer.visualMaterial = DrawMaterial;
-				spatialMappingRenderer.renderState = SpatialMappingRenderer.RenderState.Visualization;
+			if (drawVisualMeshes) {
+				_spatialMappingRenderer.visualMaterial = DrawMaterial;
+				_spatialMappingRenderer.renderState = SpatialMappingRenderer.RenderState.Visualization;
 			}
-			else
-			{
-				spatialMappingRenderer.renderState = SpatialMappingRenderer.RenderState.None;
+			else {
+				_spatialMappingRenderer.renderState = SpatialMappingRenderer.RenderState.None;
 			}
 		}
 	}
@@ -54,36 +46,29 @@ public class SpatialMapping : MonoBehaviour
 	/// <summary>
 	/// Enables/disables spatial mapping rendering and collision.
 	/// </summary>
-	public bool MappingEnabled
-	{
-		get
-		{
-			return mappingEnabled;
-		}
-		set
-		{
-			mappingEnabled = value;
-			spatialMappingCollider.freezeUpdates = !mappingEnabled;
-			spatialMappingRenderer.freezeUpdates = !mappingEnabled;
-			gameObject.SetActive(mappingEnabled);
+	public bool MappingEnabled {
+		get { return _mappingEnabled; }
+		set {
+			_mappingEnabled = value;
+			_spatialMappingCollider.freezeUpdates = !_mappingEnabled;
+			_spatialMappingRenderer.freezeUpdates = !_mappingEnabled;
+			gameObject.SetActive(_mappingEnabled);
 		}
 	}
 
-	void Awake()
-	{
+	void Awake() {
 		Instance = this;
 	}
 
 	// Use this for initialization
-	void Start()
-	{
-		spatialMappingRenderer = gameObject.GetComponent<SpatialMappingRenderer>();
-		spatialMappingRenderer.surfaceParent = this.gameObject;
-		spatialMappingCollider = gameObject.GetComponent<SpatialMappingCollider>();
-		spatialMappingCollider.surfaceParent = this.gameObject;
-		spatialMappingCollider.layer = physicsLayer;
-		PhysicsRaycastMask = 1 << physicsLayer;
+	void Start() {
+		_spatialMappingRenderer = gameObject.GetComponent<SpatialMappingRenderer>();
+		_spatialMappingRenderer.surfaceParent = this.gameObject;
+		_spatialMappingCollider = gameObject.GetComponent<SpatialMappingCollider>();
+		_spatialMappingCollider.surfaceParent = this.gameObject;
+		_spatialMappingCollider.layer = _physicsLayer;
+		PhysicsRaycastMask = 1 << _physicsLayer;
 		DrawVisualMeshes = drawVisualMeshes;
-		MappingEnabled = mappingEnabled;
+		MappingEnabled = _mappingEnabled;
 	}
 }

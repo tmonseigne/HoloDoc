@@ -1,12 +1,7 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
+﻿using UnityEngine;
 using System;
 using System.Net;
 using System.Net.Sockets;
-using System.Text;
-using System.IO;
 using System.Threading;
 using System.Diagnostics;
 
@@ -18,7 +13,9 @@ public class UDPTest : MonoBehaviour {
 	double cumulative = 0;
 
 	Texture2D currentTexture;
+
 	byte[] data;
+
 	// read Thread
 	Thread readThread;
 
@@ -34,26 +31,23 @@ public class UDPTest : MonoBehaviour {
 	public string allReceivedPackets = ""; // this one has to be cleaned up from time to time
 
 	// start from unity3d
-	void Start()
-	{
-		Resolution res = CameraStream.Instance.Resolution;
+	void Start() {
+		Resolution res = CameraStream.Instance.Frame.Resolution;
 
 		currentTexture = new Texture2D(res.width, res.height);
 		data = new byte[0];
 		// create thread for reading UDP messages
 		readThread = new Thread(new ThreadStart(ReceiveData));
-		ipep = new IPEndPoint (IPAddress.Parse ("127.0.0.1"), 33333);
+		ipep = new IPEndPoint(IPAddress.Parse("127.0.0.1"), 33333);
 		readThread.IsBackground = true;
 		readThread.Start();
 	}
 
 	// Unity Update Function
-	void Update()
-	{
-
-		currentTexture.SetPixels32 (CameraStream.Instance.Frame.Data);
-		currentTexture.Apply (false);
-		data = currentTexture.EncodeToJPG ();
+	void Update() {
+		currentTexture.SetPixels32(CameraStream.Instance.Frame.Data);
+		currentTexture.Apply(false);
+		data = currentTexture.EncodeToJPG();
 
 		// check button "s" to abort the read-thread
 		if (Input.GetKeyDown("q"))
@@ -61,38 +55,32 @@ public class UDPTest : MonoBehaviour {
 	}
 
 	// Unity Application Quit Function
-	void OnApplicationQuit()
-	{
+	void OnApplicationQuit() {
 		if (cumulative > 0 && nbOfTimes > 0)
-			UnityEngine.Debug.Log ("Execution time mean in milliseconds: " + cumulative / nbOfTimes);
-		
+			UnityEngine.Debug.Log("Execution time mean in milliseconds: " + cumulative / nbOfTimes);
+
 		stopThread();
 	}
 
 	// Stop reading UDP messages
-	private void stopThread()
-	{
-		if (readThread.IsAlive)
-		{
+	private void stopThread() {
+		if (readThread.IsAlive) {
 			readThread.Abort();
 		}
+
 		client.Close();
 	}
 
 	// receive thread function
-	private void ReceiveData()
-	{
-		
-		while (true)
-		{
+	private void ReceiveData() {
+		while (true) {
 			client = new UdpClient("localhost", 33333);
 			client.Client.Blocking = true;
 			Stopwatch sw = new Stopwatch();
 
-			sw.Start(); 
+			sw.Start();
 			bool keeptime = false;
-			try
-			{
+			try {
 				int written = sendImageData(client);
 
 				if (written > 0) { // succesfully written
@@ -101,19 +89,19 @@ public class UDPTest : MonoBehaviour {
 					if (result.Length > 0) {
 						LOG("Number of received bytes: " + result.Length);
 
-						LOG ("Buffer beginning: x=" + BitConverter.ToInt32 (result, 0) + " y=" + BitConverter.ToInt32 (result, 4));
+						LOG("Buffer beginning: x=" + BitConverter.ToInt32(result, 0) + " y=" + BitConverter.ToInt32(result, 4));
 						keeptime = true;
-					} else {
-						throw new Exception ("Not receiving data");
 					}
-				} 
+					else {
+						throw new Exception("Not receiving data");
+					}
+				}
 			}
-			catch (Exception err)
-			{
+			catch (Exception err) {
 				LOG(err.ToString());
 			}
 
-			client.Close ();
+			client.Close();
 
 			sw.Stop();
 
@@ -121,22 +109,23 @@ public class UDPTest : MonoBehaviour {
 			if (keeptime) {
 				nbOfTimes++;
 				cumulative += sw.Elapsed.TotalMilliseconds;
-				string ExecutionTimeTaken = string.Format("Minutes :{0} Seconds :{1}  Mili seconds :{2}",sw.Elapsed.Minutes,sw.Elapsed.Seconds, sw.Elapsed.TotalMilliseconds);
-				LOG (ExecutionTimeTaken);
+				string ExecutionTimeTaken = string.Format("Minutes :{0} Seconds :{1}  Mili seconds :{2}", sw.Elapsed.Minutes,
+					sw.Elapsed.Seconds, sw.Elapsed.TotalMilliseconds);
+				LOG(ExecutionTimeTaken);
 			}
 		}
 	}
 
-	private byte[] receiveData (UdpClient socket, IPEndPoint endPoint) {
-		byte[] dataLength = socket.Receive (ref endPoint);
+	private byte[] receiveData(UdpClient socket, IPEndPoint endPoint) {
+		byte[] dataLength = socket.Receive(ref endPoint);
 
 		if (dataLength.Length == 4) {
-			int nbBytes = BitConverter.ToInt32 (dataLength, 0);
+			int nbBytes = BitConverter.ToInt32(dataLength, 0);
 
 			byte[] response = new byte[nbBytes];
 			int readed = 0;
 			do {
-				byte[] data = socket.Receive (ref endPoint);
+				byte[] data = socket.Receive(ref endPoint);
 
 				data.CopyTo(response, readed);
 				readed += data.Length;
@@ -144,13 +133,13 @@ public class UDPTest : MonoBehaviour {
 
 
 			return response;
-		} else {
-			throw new Exception ("Not receiving the dataLength");
+		}
+		else {
+			throw new Exception("Not receiving the dataLength");
 		}
 	}
 
-	private int sendImageData (UdpClient socket) {
-		
+	private int sendImageData(UdpClient socket) {
 		byte[] dataLength = BitConverter.GetBytes(data.Length);
 
 		client.Send(dataLength, dataLength.Length);
@@ -172,17 +161,17 @@ public class UDPTest : MonoBehaviour {
 					int index = j + at;
 					if (index >= data.Length) {
 						break;
-					} 
+					}
 
-					result [j] = data [index];
+					result[j] = data[index];
 				}
+
 				extract = j;
 
 				sended += extract;
 
-				socket.Send (result, extract); 
+				socket.Send(result, extract);
 				i++;
-
 			}
 		}
 
@@ -190,16 +179,14 @@ public class UDPTest : MonoBehaviour {
 	}
 
 	// return the latest message
-	public string getLatestPacket()
-	{
+	public string getLatestPacket() {
 		allReceivedPackets = "";
 		return lastReceivedPacket;
 	}
 
-	void LOG(string messsage)
-	{
-		if (enableLog)
+	void LOG(string messsage) {
+		if (enableLog) {
 			UnityEngine.Debug.Log(messsage);
+		}
 	}
-
 }

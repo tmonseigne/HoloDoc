@@ -1,89 +1,77 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using HoloToolkit.Unity.InputModule;
 
-public class DocumentManager : MonoBehaviour, IFocusable, IInputClickHandler, IInputHandler
-{
+public class DocumentManager : MonoBehaviour, IFocusable, IInputClickHandler, IInputHandler {
+
 	public GameObject documentInformationsPrefab;
 
 	public Color color;
 	public Color focusColor;
 	public Color clickedColor;
 
-	private Material material;
-	private Texture2D photoTex;
-	private CameraFrame photo;
-	private DocumentMesh mesh;
+	private Material _material;
+	private Texture2D _photoTex;
+	private CameraFrame _photo;
+	private DocumentMesh _mesh;
 
-	private DocumentProperties properties;
-	private GameObject informations;
+	private DocumentProperties _properties;
+	private GameObject _informations;
 
 	// Use this for initialization
-	void Start()
-	{
-		material = this.GetComponent<Renderer>().material;
-		properties = this.GetComponent<DocumentProperties>();
-		mesh = this.GetComponent<DocumentMesh>();
+	void Start() {
+		_material = this.GetComponent<Renderer>().material;
+		_properties = this.GetComponent<DocumentProperties>();
+		_mesh = this.GetComponent<DocumentMesh>();
 
-		informations = Instantiate(documentInformationsPrefab, new Vector3(mesh.centroid.x, mesh.centroid.y, mesh.centroid.z - 0.2f), this.transform.rotation);
-		informations.SetActive(false);
+		_informations = Instantiate(documentInformationsPrefab,
+			new Vector3(_mesh.centroid.x, _mesh.centroid.y, _mesh.centroid.z - 0.2f), this.transform.rotation);
+		_informations.SetActive(false);
 
 		this.SetColor(color);
-
 	}
 
-	public void SetColor(Color color)
-	{
-		material.SetColor("_OutlineColor", color);
+	public void SetColor(Color color) {
+		_material.SetColor("_OutlineColor", color);
 	}
 
-	public void OnFocusEnter()
-	{
+	public void OnFocusEnter() {
 		//this.SetColor(focusColor);
 	}
 
-	public void OnFocusExit()
-	{
+	public void OnFocusExit() {
 		//this.SetColor(color);
 	}
 
-	public void OnInputClicked(InputClickedEventData eventData)
-	{
+	public void OnInputClicked(InputClickedEventData eventData) {
 		// If the document is already photographied, toogle the informations
-		if (properties.photographied)
-		{
-			informations.SetActive(!informations.activeInHierarchy);
-			if (informations.activeInHierarchy)
-			{
-				informations.GetComponent<InformationManager>().UpdateInformations(this.properties);
+		if (_properties.photographied) {
+			_informations.SetActive(!_informations.activeInHierarchy);
+			if (_informations.activeInHierarchy) {
+				_informations.GetComponent<InformationManager>().UpdateInformations(this._properties);
 			}
 		}
-		else
-		{
-			properties.photographied = true;
+		else {
+			_properties.photographied = true;
 			//PhotoTaker.Instance.Photo(OnPhotoTaken);
 		}
+
 		//this.SetColor(clickedColor);
 	}
 
-	public void OnInputDown(InputEventData eventData)
-	{
+	public void OnInputDown(InputEventData eventData) {
 		LinkManager.Instance.OnLinkStarted(this.gameObject);
 	}
 
-	public void OnInputUp(InputEventData eventData)
-	{
+	public void OnInputUp(InputEventData eventData) {
 		LinkManager.Instance.OnLinkEnded(this.gameObject);
 	}
 
-	private void OnPhotoTaken(CameraFrame result)
-	{
-		photo = result;
+	private void OnPhotoTaken(CameraFrame result) {
+		_photo = result;
 		// Debug lines (Only used to draw result on a quad)
-		photoTex.SetPixels32(photo.Data);
-		photoTex.Apply(true);
+		_photoTex.SetPixels32(_photo.Data);
+		_photoTex.Apply(true);
 
-        RequestLauncher.Instance.DetectDocuments(photoTex, null);
+		RequestLauncher.Instance.DetectDocuments(_photoTex, null);
 	}
 }

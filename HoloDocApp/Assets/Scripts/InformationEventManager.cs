@@ -6,20 +6,17 @@ using TMPro;
 
 public class InformationEventManager : MonoBehaviour, IInputClickHandler {
 
-	private InformationManager iManager;
-	private GameObject infoMax;
-	private TextMeshPro currentField = null;
-	private string test;
+	private InformationManager _infoManager;
+	private GameObject _infoMax;
+	private TextMeshPro _currentField = null;
 
-	void Awake()
-	{
-		iManager = this.transform.root.GetComponent<InformationManager>();
+	void Awake() {
+		_infoManager = this.transform.root.GetComponent<InformationManager>();
 		Keyboard.Instance.OnTextSubmitted += KeyboardOnTextSubmitted;
 		Keyboard.Instance.OnClosed += KeyboardOnClosed;
 	}
 
-	private void KeyboardOnClosed(object sender, EventArgs e)
-	{
+	private void KeyboardOnClosed(object sender, EventArgs e) {
 		// It is really important to unsubscribe to these events as soon as the text is submitted/keyboard closed
 		// otherwise modifications will be propagated to the other edited fields.
 		Keyboard.Instance.OnTextUpdated -= KeyboardOnTextUpdated;
@@ -27,35 +24,28 @@ public class InformationEventManager : MonoBehaviour, IInputClickHandler {
 		Keyboard.Instance.Close();
 	}
 
-	private void KeyboardOnTextSubmitted(object sender, EventArgs e)
-	{
+	private void KeyboardOnTextSubmitted(object sender, EventArgs e) {
 		// It is really important to unsubscribe to these events as soon as the text is submitted/keyboard closed 
 		// otherwise modifications will be propagated to the other edited fields.
 		Keyboard.Instance.OnTextUpdated -= KeyboardOnTextUpdated;
 		Keyboard.Instance.OnClosed -= KeyboardOnClosed;
 	}
 
-	private void KeyboardOnTextUpdated(string content)
-	{
-		if (!string.IsNullOrEmpty(content))
-		{
-			currentField.text = content;
+	private void KeyboardOnTextUpdated(string content) {
+		if (!string.IsNullOrEmpty(content)) {
+			_currentField.text = content;
 		}
 	}
 
-	public void OnInputClicked(InputClickedEventData eventData)
-	{
-		if(eventData.selectedObject == null)
-		{
+	public void OnInputClicked(InputClickedEventData eventData) {
+		if (eventData.selectedObject == null) {
 			return;
 		}
-		else
-		{
+		else {
 			string editField = eventData.selectedObject.name;
 			bool edit = true;
 			bool date = false;
-			switch (editField)
-			{
+			switch (editField) {
 				case "ShowButton":
 					edit = false;
 					ToogleShow();
@@ -65,49 +55,46 @@ public class InformationEventManager : MonoBehaviour, IInputClickHandler {
 					Close();
 					break;
 				case "Label":
-					currentField = iManager.label;
+					_currentField = _infoManager.label;
 					break;
 				case "Author":
-					currentField = iManager.author;
+					_currentField = _infoManager.author;
 					break;
 				case "Date":
 					date = true;
-					currentField = iManager.date;
+					_currentField = _infoManager.date;
 					break;
 				case "Description":
-					currentField = iManager.description;
+					_currentField = _infoManager.description;
 					break;
 			}
 
-			if (edit)
-			{
+			if (edit) {
 				// We need to subscribe to this event after we set the variable currentField otherwise it is not working (???)
 				Keyboard.Instance.OnTextUpdated += KeyboardOnTextUpdated;
 				if (date)
-					Keyboard.Instance.PresentKeyboard(currentField.text, Keyboard.LayoutType.Symbol);
+					Keyboard.Instance.PresentKeyboard(_currentField.text, Keyboard.LayoutType.Symbol);
 				else
-					Keyboard.Instance.PresentKeyboard(currentField.text);
+					Keyboard.Instance.PresentKeyboard(_currentField.text);
 			}
 		}
 	}
 
-	public void Close()
-	{
-		if (infoMax == null)
-		{
-			infoMax = this.transform.Find("../InfoMax").gameObject;
+	public void Close() {
+		if (_infoMax == null) {
+			_infoMax = this.transform.Find("../InfoMax").gameObject;
 		}
-		infoMax.SetActive(false);
+
+		_infoMax.SetActive(false);
 		this.transform.root.gameObject.SetActive(false);
 	}
 
-	public void ToogleShow()
-	{
-		if (infoMax == null)
-		{
-			infoMax = this.transform.Find("../InfoMax").gameObject;
+	public void ToogleShow() {
+		if (_infoMax == null) {
+			_infoMax = this.transform.Find("../InfoMax").gameObject;
 		}
-		infoMax.SetActive(!infoMax.activeInHierarchy);
+
+		_infoMax.SetActive(!_infoMax.activeInHierarchy);
 		//this.GetComponent<ButtonIconProfileTexture>().GetIcon("ChevronUp", this.GetComponent<MeshRenderer>(), this.GetComponent<MeshFilter>(), true);
 	}
 }

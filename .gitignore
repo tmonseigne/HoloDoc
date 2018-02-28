@@ -27,7 +27,6 @@ obj/
 *.userprefs
 /*.csproj
 *.csproj
-*.vcxproj
 *.vcxproj.filters
 *.pidb
 *.suo

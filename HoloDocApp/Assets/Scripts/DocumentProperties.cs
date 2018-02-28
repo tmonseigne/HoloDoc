@@ -1,9 +1,7 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
-public class DocumentProperties : MonoBehaviour
-{
+public class DocumentProperties : MonoBehaviour {
+
 	public string label { get; set; }
 	public string author { get; set; }
 	public string description { get; set; }
@@ -11,11 +9,10 @@ public class DocumentProperties : MonoBehaviour
 	public int linkId { get; set; }
 	public bool photographied { get; set; }
 
-	private int id;
+	private int _id;
 
-	void Awake()
-	{
-		this.id = this.GetHashCode();
+	void Awake() {
+		this._id = this.GetHashCode();
 		this.label = "label";
 		this.author = "author";
 		this.description = "description";
@@ -24,25 +21,22 @@ public class DocumentProperties : MonoBehaviour
 		this.linkId = -1;
 	}
 
-	void Start()
-	{
+	void Start() {
 	}
 
-	public void SetProperties(string label, string author, string description, string date)
-	{
+	public void SetProperties(string label, string author, string description, string date) {
 		this.label = label;
 		this.author = author;
 		this.description = description;
 		this.date = date;
 	}
 
-	public int GetId()
-	{
-		return this.id;
+	public int GetId() {
+		return this._id;
 	}
 
-	override public string ToString()
-	{
-		return "Unique ID: " + this.id + "\nauthor: " + this.author + "\nlabel: " + this.label + "\ndescription: " + description + "\ndate: " + date + "\nphoto available: " + photographied;
+	override public string ToString() {
+		return "Unique ID: " + this._id + "\nauthor: " + this.author + "\nlabel: " + this.label + "\ndescription: " +
+		       description + "\ndate: " + date + "\nphoto available: " + photographied;
 	}
 }
