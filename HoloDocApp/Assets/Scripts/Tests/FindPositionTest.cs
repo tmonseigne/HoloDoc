@@ -2,9 +2,6 @@
 
 public class FindPosition : MonoBehaviour {
 
-	// Use this for initialization
-	void Start() {}
-
 	// Update is called once per frame
 	void Update() {
 		Vector2Int posPixel = new Vector2Int(Camera.main.pixelHeight / 2, Camera.main.pixelWidth / 2);

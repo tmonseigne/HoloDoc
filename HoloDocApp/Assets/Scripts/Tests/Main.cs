@@ -2,23 +2,25 @@
 
 public class Main : MonoBehaviour {
 
-	[Range(0, 20)] public uint nbDocumentsMax = 5;
+	[Range(0, 20)]
+	public uint nbDocumentsMax = 5;
+
 	public GameObject prefab;
 
-	private Resolution _resolution;
-	private byte[] _result;
-	private int[] _documentsCorners;
-	private GameObject[] _documents;
+	private Resolution		resolution;
+	private byte[]			result;
+	private int[]			documentsCorners;
+	private GameObject[]	documents;
 
 	// Use this for initialization
 	void Start() {
-		_resolution = CameraStream.Instance.Frame.Resolution;
-		_result = new byte[_resolution.width * _resolution.height * 3];
-		_documentsCorners = new int[nbDocumentsMax * 8];
+		resolution = CameraStream.Instance.Frame.Resolution;
+		result = new byte[resolution.width * resolution.height * 3];
+		documentsCorners = new int[nbDocumentsMax * 8];
 
-		_documents = new GameObject[nbDocumentsMax];
+		documents = new GameObject[nbDocumentsMax];
 		for (int i = 0; i < nbDocumentsMax; i++) {
-			_documents[i] = Instantiate(prefab) as GameObject;
+			documents[i] = Instantiate(prefab) as GameObject;
 		}
 	}
 
@@ -29,8 +31,8 @@ public class Main : MonoBehaviour {
 		uint nbDocuments = 0;
 
 		unsafe {
-			OpenCVInterop.SimpleDocumentDetection(ref image[0], (uint) _resolution.width, (uint) _resolution.height,
-				ref _result[0], nbDocumentsMax, ref nbDocuments, ref _documentsCorners[0]);
+			OpenCVInterop.SimpleDocumentDetection(ref image[0], (uint) resolution.width, (uint) resolution.height,
+				ref result[0], nbDocumentsMax, ref nbDocuments, ref documentsCorners[0]);
 		}
 
 		// Step 2 - We translate pixel position to 3D position.
@@ -39,10 +41,10 @@ public class Main : MonoBehaviour {
 		Vector3[] corners = new Vector3[nbCorners];
 		for (int i = 0; i < nbDocuments; i++) {
 			for (int j = 0; j < nbCorners; j++) {
-				corners[j] = ConvertPixelTo3DPos(_documentsCorners[j * 2], _documentsCorners[j * 2 + 1]);
+				corners[j] = ConvertPixelTo3DPos(documentsCorners[j * 2], documentsCorners[j * 2 + 1]);
 			}
 
-			_documents[i].GetComponent<DocumentMesh>().CreateDocumentMesh(corners);
+			documents[i].GetComponent<DocumentMesh>().CreateDocumentMesh(corners);
 		}
 	}
 

@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.37311992, g: 0.38074034, b: 0.35872713, a: 1}
+  m_IndirectSpecularColor: {r: 0.3731193, g: 0.38073996, b: 0.35872698, a: 1}
 --- !u!157 &3
 LightmapSettings:
   m_ObjectHideFlags: 0
@@ -196,8 +196,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7c8a8b98edbeeae42a650e17432a0587, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  substituableFrame: {fileID: 2800000, guid: 5712ebd413da1424e9487f8d686fdd31, type: 3}
-  substitute: 0
+  Framerate: 25
+  SubstituableFrame: {fileID: 2800000, guid: 5712ebd413da1424e9487f8d686fdd31, type: 3}
+  Substitute: 1
 --- !u!1 &297958677
 GameObject:
   m_ObjectHideFlags: 0
@@ -660,7 +661,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8cde705eaea0cb544b4d7d160e284ea6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  photoSound: {fileID: 8300000, guid: e8d9cad652ef59b44b1f627832883c2e, type: 3}
+  PhotoSound: {fileID: 0}
   photoVolume: 1
   photoDelay: 0.1
 --- !u!82 &1019764594
@@ -777,6 +778,22 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1034228777 stripped
+GameObject:
+  m_PrefabParentObject: {fileID: 146120, guid: c4e389e44d96da64ea974ab237ce1a9a, type: 2}
+  m_PrefabInternal: {fileID: 1850823339}
+--- !u!65 &1034228783
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1034228777}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 20, y: 20, z: 20}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &1209508451
 GameObject:
   m_ObjectHideFlags: 0
@@ -927,8 +944,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 72706a0cdfeb6a4459928ecd4b1448d4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxDocumentsCount: 5
-  quad: {fileID: 1008787749}
+  MaxDocumentsCount: 20
+  Quad: {fileID: 1008787749}
 --- !u!4 &1384780662
 Transform:
   m_ObjectHideFlags: 0
@@ -1151,6 +1168,10 @@ Prefab:
     - target: {fileID: 22428854, guid: c4e389e44d96da64ea974ab237ce1a9a, type: 2}
       propertyPath: m_AnchoredPosition.y
       value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 146120, guid: c4e389e44d96da64ea974ab237ce1a9a, type: 2}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: c4e389e44d96da64ea974ab237ce1a9a, type: 2}

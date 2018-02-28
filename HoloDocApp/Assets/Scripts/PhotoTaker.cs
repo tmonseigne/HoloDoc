@@ -1,33 +1,33 @@
 ﻿using System.Collections;
+
 using UnityEngine;
 
+using HoloToolkit.Unity;
+
 [RequireComponent(typeof(AudioSource))]
-public class PhotoTaker : MonoBehaviour {
+public class PhotoTaker : Singleton<PhotoTaker> {
 
-	public static PhotoTaker Instance;
+	[Tooltip("This is a clip that will be played each time the application will take a photo. This is supposed to be filled with a camera shutter sound sample.")]
+	public AudioClip PhotoSound;
 
-	public AudioClip photoSound;
-	[Range(0, 1)] public float photoVolume = 1.0f;
-	[Range(0, 5)] public float photoDelay = 0.1f;
+	[Range(0, 1)]
+	public float photoVolume = 1.0f;
 
-	private AudioSource _audioSource;
-	private CameraFrame _currentPhoto;
+	[Range(0, 5)]
+	public float photoDelay = 0.1f;
+
+	private AudioSource audioSource;
+	private CameraFrame currentPhoto;
 
 	// Callback is invoked when a photo has been taken
 	public delegate void OnPhotoTakenCallback(CameraFrame resultFrame);
 
 	// Use this for initialization
 	void Start() {
-		if (Instance) {
-			DestroyImmediate(this);
+		audioSource = this.GetComponent<AudioSource>();
+		if (PhotoSound == null) {
+			PhotoSound = Resources.Load<AudioClip>("Sounds/Camera_Shutter");
 		}
-
-		_audioSource = this.GetComponent<AudioSource>();
-		if (photoSound == null) {
-			photoSound = Resources.Load<AudioClip>("Sounds/Camera_Shutter");
-		}
-
-		Instance = this;
 	}
 
 	public void Photo(OnPhotoTakenCallback callback) {
@@ -36,11 +36,11 @@ public class PhotoTaker : MonoBehaviour {
 
 	IEnumerator TakePhoto(OnPhotoTakenCallback callback) {
 		yield return new WaitForSeconds(photoDelay);
-		_audioSource.PlayOneShot(photoSound, photoVolume);
-		_currentPhoto = CameraStream.Instance.Frame;
+		audioSource.PlayOneShot(PhotoSound, photoVolume);
+		currentPhoto = CameraStream.Instance.Frame;
 
 		if (callback != null) {
-			callback.Invoke(_currentPhoto);
+			callback.Invoke(currentPhoto);
 		}
 	}
 }

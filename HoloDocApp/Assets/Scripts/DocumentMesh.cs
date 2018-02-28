@@ -3,8 +3,8 @@
 [RequireComponent(typeof(MeshRenderer)), RequireComponent(typeof(MeshFilter))]
 public class DocumentMesh : MonoBehaviour {
 
-	public Material material;
-	public Vector3 centroid { get; set; }
+	public Material	Material;
+	public Vector3	Centroid { get; set; }
 
 	public void CreateDocumentMesh(Vector3[] corners) {
 		Mesh mesh = new Mesh {
@@ -15,18 +15,18 @@ public class DocumentMesh : MonoBehaviour {
 			}
 		};
 
-		this.GetComponent<MeshRenderer>().material = material;
+		this.GetComponent<MeshRenderer>().material = Material;
 		this.GetComponent<MeshFilter>().mesh = mesh;
 		this.GetComponent<MeshCollider>().sharedMesh = mesh;
 
-		centroid = Vector3.zero;
+		Centroid = Vector3.zero;
 		foreach (Vector3 v in corners) {
-			centroid += v;
+			Centroid += v;
 		}
 
-		centroid /= corners.Length;
+		Centroid /= corners.Length;
 
-		Vector4 centroid4f = new Vector4(centroid.x, centroid.y, centroid.z, 1.0f);
+		Vector4 centroid4f = new Vector4(Centroid.x, Centroid.y, Centroid.z, 1.0f);
 		this.GetComponent<Renderer>().material.SetVector("_Centroid", centroid4f);
 	}
 }

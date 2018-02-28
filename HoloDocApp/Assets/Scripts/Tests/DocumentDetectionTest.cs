@@ -1,24 +1,25 @@
 ﻿using UnityEngine;
 
+using System.Runtime.InteropServices;
+
 public class DocumentDetectionTest : MonoBehaviour {
 
-	[Range(0, 20)] public uint maxDocumentsCount = 5;
-	public GameObject quad;
+	[Range(0, 20)]
+	public uint	MaxDocumentsCount = 5;
 
-	private int[] _outDocumentsCorners;
-	private Texture2D _renderTexture;
-	private Resolution _resolution;
+	public GameObject Quad;
 
-	private byte[] result;
+	private int[]		outDocumentsCorners;
+	private Texture2D	renderTexture;
+	private Resolution	resolution;
+	private byte[]		result;
 
 	// Use this for initialization
 	private void Start() {
-		_resolution = CameraStream.Instance.Frame.Resolution;
-		_renderTexture = new Texture2D(_resolution.width, _resolution.height, TextureFormat.RGB24, false);
-
-		_outDocumentsCorners = new int[maxDocumentsCount * 8];
-
-		result = _renderTexture.GetRawTextureData();
+		resolution = CameraStream.Instance.Frame.Resolution;
+		renderTexture = new Texture2D(resolution.width, resolution.height, TextureFormat.RGB24, false);
+		outDocumentsCorners = new int[MaxDocumentsCount * 8];
+		result = renderTexture.GetRawTextureData();
 	}
 
 	// Update is called once per frame
@@ -26,11 +27,21 @@ public class DocumentDetectionTest : MonoBehaviour {
 		var image = CameraStream.Instance.Frame.Data;
 		uint outDocumentsCount = 0;
 
-		OpenCVInterop.SimpleDocumentDetection(ref image[0], (uint)_resolution.width, (uint)_resolution.height, ref result[0],
-			maxDocumentsCount, ref outDocumentsCount, ref _outDocumentsCorners[0]);
+		unsafe
+		{
+			OpenCVInterop.SimpleDocumentDetection(ref image[0], (uint)resolution.width, (uint)resolution.height, ref result[0],
+			MaxDocumentsCount, ref outDocumentsCount, ref outDocumentsCorners[0]);
+		}
 
-		_renderTexture.LoadRawTextureData(result);
-		_renderTexture.Apply(true);
-		//quad.GetComponent<Renderer>().material.mainTexture = renderTexture;
+		renderTexture.LoadRawTextureData(result);
+		renderTexture.Apply(true);
+		Quad.GetComponent<Renderer>().material.mainTexture = renderTexture;
 	}
+}
+
+internal static class OpenCVInterop
+{
+	[DllImport("DocDetector")]
+	internal static extern unsafe int SimpleDocumentDetection(ref Color32 image, uint width, uint height, ref byte result,
+		uint maxDocumentsCount, ref uint outDocumentsCount, ref int outDocumentsCorners);
 }

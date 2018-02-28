@@ -1,66 +1,59 @@
 ﻿using UnityEngine;
 
-public class CameraStream : MonoBehaviour {
+using HoloToolkit.Unity;
 
-	public static CameraStream Instance; // Singleton
+public class CameraStream : Singleton<CameraStream>  {
 
 	[Range(15, 60)]
 	public int Framerate = 25;
 
 	[Tooltip("You can provide a substitution frame if you do not have a camera or for testing purpose.")]
-	public Texture2D substituableFrame;
+	public Texture2D SubstituableFrame;
 
 	[Tooltip("If you have a camera and you still want to use a special substitution frame you can force the substitution.")]
-	public bool substitute = false;
+	public bool Substitute = false;
 
-	private WebCamTexture _webCamTexture;
-	private CameraFrame _frame;
+	private WebCamTexture webCamTexture;
+	private CameraFrame	  frame;
 
 	// Getter CameraFrame
 	public CameraFrame Frame {
-		get { return this._frame; }
+		get { return this.frame; }
 	}
 
 	void Start() {
-		// Ensure singleton
-		if (Instance) {
-			DestroyImmediate(this);
-		}
-
-		if (substituableFrame && (substitute || WebCamTexture.devices.Length == 0)) {
+		if (SubstituableFrame && (Substitute || WebCamTexture.devices.Length == 0)) {
 			Resolution resolution = new Resolution {
-				width = substituableFrame.width,
-				height = substituableFrame.height
+				width = SubstituableFrame.width,
+				height = SubstituableFrame.height
 			};
 
-			_frame = new CameraFrame(resolution, substituableFrame.GetPixels32());
+			frame = new CameraFrame(resolution, SubstituableFrame.GetPixels32());
 		}
 		else if (WebCamTexture.devices.Length > 0) {
-			_webCamTexture = new WebCamTexture
+			webCamTexture = new WebCamTexture
 			{
 				// This may help reduce lag in the application
 				requestedFPS = Framerate
 			};
 
-			_webCamTexture.Play();
+			webCamTexture.Play();
 
 			Resolution resolution = new Resolution {
-				width = _webCamTexture.width,
-				height = _webCamTexture.height
+				width = webCamTexture.width,
+				height = webCamTexture.height
 			};
 
-			_frame = new CameraFrame(resolution, new Color32[resolution.width * resolution.height]);
+			frame = new CameraFrame(resolution, new Color32[resolution.width * resolution.height]);
 		}
 		else {
 			throw new System.Exception("No camera/substitution frame found.");
 		}
-
-		Instance = this;
 	}
 
 	void Update() {
-		if (_webCamTexture) {
-			_webCamTexture.GetPixels32(this._frame.Data);
+		if (webCamTexture) {
+			webCamTexture.GetPixels32(this.frame.Data);
 		}
 	}
 }

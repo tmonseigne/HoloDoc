@@ -1,22 +1,14 @@
 ﻿using System;
 using System.Collections;
+
 using UnityEngine;
 using UnityEngine.Networking;
 
-public class RequestLauncher : MonoBehaviour {
+using HoloToolkit.Unity;
 
-	public static RequestLauncher Instance;
+public class RequestLauncher : Singleton<RequestLauncher> {
 
 	public delegate void OnDetectRequestCallback(Vector2Int[] points, int nbDocuments);
-
-	// Use this for initialization
-	void Awake() {
-		if (Instance) {
-			DestroyImmediate(this);
-		}
-
-		RequestLauncher.Instance = this;
-	}
 
 	public void CreateNewDocument(Texture2D texture) {
 		StartCoroutine(NewDocumentRequest(texture));

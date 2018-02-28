@@ -1,61 +1,49 @@
 ﻿using UnityEngine;
+
 using HoloToolkit.Unity.InputModule;
 
-public class DocumentManager : MonoBehaviour, IFocusable, IInputClickHandler, IInputHandler {
+public class DocumentManager : MonoBehaviour, IInputClickHandler, IInputHandler {
 
-	public GameObject documentInformationsPrefab;
+	public GameObject	DocumentInformationsPrefab;
+	public Color		Color;
 
-	public Color color;
-	public Color focusColor;
-	public Color clickedColor;
-
-	private Material _material;
-	private Texture2D _photoTex;
-	private CameraFrame _photo;
-	private DocumentMesh _mesh;
-
-	private DocumentProperties _properties;
-	private GameObject _informations;
+	private Material			material;
+	private Texture2D			photoTex;
+	private CameraFrame			photo;
+	private DocumentMesh		mesh;
+	private DocumentProperties	properties;
+	private GameObject			informations;
 
 	// Use this for initialization
 	void Start() {
-		_material = this.GetComponent<Renderer>().material;
-		_properties = this.GetComponent<DocumentProperties>();
-		_mesh = this.GetComponent<DocumentMesh>();
+		material = this.GetComponent<Renderer>().material;
+		properties = this.GetComponent<DocumentProperties>();
+		mesh = this.GetComponent<DocumentMesh>();
 
-		_informations = Instantiate(documentInformationsPrefab,
-			new Vector3(_mesh.centroid.x, _mesh.centroid.y, _mesh.centroid.z - 0.2f), this.transform.rotation);
-		_informations.SetActive(false);
+		informations = Instantiate(DocumentInformationsPrefab, 
+								   new Vector3(mesh.Centroid.x, mesh.Centroid.y, mesh.Centroid.z - 0.2f), 
+								   this.transform.rotation);
+		informations.SetActive(false);
 
-		this.SetColor(color);
+		this.SetColor(Color);
 	}
 
 	public void SetColor(Color color) {
-		_material.SetColor("_OutlineColor", color);
-	}
-
-	public void OnFocusEnter() {
-		//this.SetColor(focusColor);
-	}
-
-	public void OnFocusExit() {
-		//this.SetColor(color);
+		material.SetColor("_OutlineColor", color);
 	}
 
 	public void OnInputClicked(InputClickedEventData eventData) {
 		// If the document is already photographied, toogle the informations
-		if (_properties.photographied) {
-			_informations.SetActive(!_informations.activeInHierarchy);
-			if (_informations.activeInHierarchy) {
-				_informations.GetComponent<InformationManager>().UpdateInformations(this._properties);
+		if (properties.Photographied) {
+			informations.SetActive(!informations.activeInHierarchy);
+			if (informations.activeInHierarchy) {
+				informations.GetComponent<InformationManager>().UpdateInformations(this.properties);
 			}
 		}
 		else {
-			_properties.photographied = true;
+			properties.Photographied = true;
 			//PhotoTaker.Instance.Photo(OnPhotoTaken);
 		}
-
-		//this.SetColor(clickedColor);
 	}
 
 	public void OnInputDown(InputEventData eventData) {
@@ -67,11 +55,12 @@ public class DocumentManager : MonoBehaviour, IFocusable, IInputClickHandler, II
 	}
 
 	private void OnPhotoTaken(CameraFrame result) {
-		_photo = result;
-		// Debug lines (Only used to draw result on a quad)
-		_photoTex.SetPixels32(_photo.Data);
-		_photoTex.Apply(true);
+		photo = result;
 
-		RequestLauncher.Instance.DetectDocuments(_photoTex, null);
+		// Debug lines (Only used to draw result on a quad)
+		photoTex.SetPixels32(photo.Data);
+		photoTex.Apply(true);
+
+		RequestLauncher.Instance.DetectDocuments(photoTex, null);
 	}
 }

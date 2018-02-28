@@ -2,8 +2,12 @@
 
 public class InstanciateTest : MonoBehaviour {
 
-	[Range(1, 20)] public int nbLines = 2;
-	[Range(1, 20)] public int nbColumn = 2;
+	[Range(1, 20)]
+	public int nbLines = 2;
+
+	[Range(1, 20)]
+	public int nbColumn = 2;
+
 	public GameObject prefab;
 
 	// Use this for initialization

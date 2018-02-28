@@ -1,17 +1,20 @@
 ﻿using System;
+
 using UnityEngine;
+
 using HoloToolkit.Unity.InputModule;
 using HoloToolkit.UI.Keyboard;
+
 using TMPro;
 
 public class InformationEventManager : MonoBehaviour, IInputClickHandler {
 
-	private InformationManager _infoManager;
-	private GameObject _infoMax;
-	private TextMeshPro _currentField = null;
+	private InformationManager	informationManager;
+	private GameObject			additionalInformations;
+	private TextMeshPro			selectedField = null;
 
 	void Awake() {
-		_infoManager = this.transform.root.GetComponent<InformationManager>();
+		informationManager = this.transform.root.GetComponent<InformationManager>();
 		Keyboard.Instance.OnTextSubmitted += OnKeyboardSubmitted;
 		Keyboard.Instance.OnClosed += OnKeyboardClosed;
 	}
@@ -33,7 +36,7 @@ public class InformationEventManager : MonoBehaviour, IInputClickHandler {
 
 	private void OnKeyboardTextUpdated(string content) {
 		if (!string.IsNullOrEmpty(content)) {
-			_currentField.text = content;
+			selectedField.text = content;
 		}
 	}
 
@@ -44,7 +47,7 @@ public class InformationEventManager : MonoBehaviour, IInputClickHandler {
 		else {
 			string editField = eventData.selectedObject.name;
 			bool edit = true;
-			bool date = false;
+			Keyboard.LayoutType keyboardLayout = Keyboard.LayoutType.Alpha;
 			switch (editField) {
 				case "ShowButton":
 					edit = false;
@@ -55,46 +58,43 @@ public class InformationEventManager : MonoBehaviour, IInputClickHandler {
 					Close();
 					break;
 				case "Label":
-					_currentField = _infoManager.label;
+					selectedField = informationManager.Label;
 					break;
 				case "Author":
-					_currentField = _infoManager.author;
+					selectedField = informationManager.Author;
 					break;
 				case "Date":
-					date = true;
-					_currentField = _infoManager.date;
+					keyboardLayout = Keyboard.LayoutType.Symbol;
+					selectedField = informationManager.Date;
 					break;
 				case "Description":
-					_currentField = _infoManager.description;
+					selectedField = informationManager.Description;
 					break;
 			}
 
 			if (edit) {
 				// We need to subscribe to this event after we set the variable currentField otherwise it is not working (???)
 				Keyboard.Instance.OnTextUpdated += OnKeyboardTextUpdated;
-				if (date)
-					Keyboard.Instance.PresentKeyboard(_currentField.text, Keyboard.LayoutType.Symbol);
-				else
-					Keyboard.Instance.PresentKeyboard(_currentField.text);
+				Keyboard.Instance.PresentKeyboard(selectedField.text, keyboardLayout);
 			}
 		}
 	}
 
 	public void Close() {
-		if (_infoMax == null) {
-			_infoMax = this.transform.Find("../InfoMax").gameObject;
+		if (additionalInformations == null) {
+			additionalInformations = this.transform.Find("../InfoMax").gameObject;
 		}
 
-		_infoMax.SetActive(false);
+		additionalInformations.SetActive(false);
 		this.transform.root.gameObject.SetActive(false);
 	}
 
 	public void ToogleShow() {
-		if (_infoMax == null) {
-			_infoMax = this.transform.Find("../InfoMax").gameObject;
+		if (additionalInformations == null) {
+			additionalInformations = this.transform.Find("../InfoMax").gameObject;
 		}
 
-		_infoMax.SetActive(!_infoMax.activeInHierarchy);
+		additionalInformations.SetActive(!additionalInformations.activeInHierarchy);
 		//this.GetComponent<ButtonIconProfileTexture>().GetIcon("ChevronUp", this.GetComponent<MeshRenderer>(), this.GetComponent<MeshFilter>(), true);
 	}
 }

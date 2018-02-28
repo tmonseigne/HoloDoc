@@ -1,41 +1,42 @@
 ﻿using UnityEngine;
+
 using TMPro;
 
 public class InformationManager : MonoBehaviour {
 
-	public TextMeshPro label { get; set; }
-	public TextMeshPro author { get; set; }
-	public TextMeshPro description { get; set; }
-	public TextMeshPro date { get; set; }
+	public TextMeshPro Label		{ get; set; }
+	public TextMeshPro Author		{ get; set; }
+	public TextMeshPro Description	{ get; set; }
+	public TextMeshPro Date			{ get; set; }
 
-	private GameObject _infoMax;
+	private GameObject additionalInformations;
 
 	void Awake() {
-		label = transform.Find("Label").gameObject.GetComponent<TextMeshPro>();
-		author = transform.Find("InfoMax/Author").gameObject.GetComponent<TextMeshPro>();
-		description = transform.Find("InfoMax/Description").gameObject.GetComponent<TextMeshPro>();
-		date = transform.Find("InfoMax/Date").gameObject.GetComponent<TextMeshPro>();
+		Label = transform.Find("Label").gameObject.GetComponent<TextMeshPro>();
+		Author = transform.Find("InfoMax/Author").gameObject.GetComponent<TextMeshPro>();
+		Description = transform.Find("InfoMax/Description").gameObject.GetComponent<TextMeshPro>();
+		Date = transform.Find("InfoMax/Date").gameObject.GetComponent<TextMeshPro>();
 
 		// Hide full informations in the first place
-		_infoMax = transform.Find("InfoMax").gameObject;
-		_infoMax.SetActive(false);
+		additionalInformations = transform.Find("InfoMax").gameObject;
+		additionalInformations.SetActive(false);
 	}
 
 	public void UpdateInformations(DocumentProperties props) {
-		if (label != null) {
-			label.text = props.label;
+		if (Label != null) {
+			Label.text = props.Label;
 		}
 
-		if (description != null) {
-			description.text = props.description;
+		if (Description != null) {
+			Description.text = props.Description;
 		}
 
-		if (author != null) {
-			author.text = props.author;
+		if (Author != null) {
+			Author.text = props.Author;
 		}
 
-		if (date != null) {
-			date.text = props.date;
+		if (Date != null) {
+			Date.text = props.Date;
 		}
 	}
 }

@@ -1,11 +1,13 @@
 ﻿using System;
+
 using UnityEngine;
+
 using HoloToolkit.UI.Keyboard;
 using HoloToolkit.Unity.InputModule;
 
-public class IpButton : MonoBehaviour, IFocusable, IInputClickHandler {
+public class IpButton : MonoBehaviour, IInputClickHandler {
 
-	public static string ipAdress = "";
+	public static string IpAdress = "";
 
 	void Awake() {
 		Keyboard.Instance.OnTextUpdated += Keyboard_OnTextUpdated;
@@ -18,7 +20,7 @@ public class IpButton : MonoBehaviour, IFocusable, IInputClickHandler {
 	/// <param name="newText"></param>
 	private void Keyboard_OnTextUpdated(string newText) {
 		if (!string.IsNullOrEmpty(newText)) {
-			ipAdress = newText;
+			IpAdress = newText;
 		}
 	}
 
@@ -37,15 +39,10 @@ public class IpButton : MonoBehaviour, IFocusable, IInputClickHandler {
 		Keyboard.Instance.Close();
 	}
 
-	public void OnFocusEnter() {}
-
-	public void OnFocusExit() {}
-
-
 	public void OnInputClicked(InputClickedEventData data) {
 		Debug.Log("Clicked");
 		// Single-line textbox
 		Keyboard.Instance.Close();
-		Keyboard.Instance.PresentKeyboard(ipAdress);
+		Keyboard.Instance.PresentKeyboard(IpAdress);
 	}
 }
