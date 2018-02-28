@@ -1,4 +1,10 @@
-﻿#include "pch.h"
+﻿#ifdef _DLL_BUILD
+#include "stdafx.h"
+#endif
+#ifdef _DLL_UWP_BUILD
+#include "pch.h"
+#endif
+
 #include "DocDetector.hpp"
 
 #include <opencv2/imgproc.hpp>

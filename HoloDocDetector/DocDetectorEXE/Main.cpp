@@ -14,8 +14,7 @@ using namespace cv;
 //*****************
 //***** CONST *****
 //*****************
-const string PATH = "../res/";
-const string NAME = "A";
+const string PATH = "../images/";
 const vector<string> NAMES = {"A", "B", "C", "D", "E", "F", "G", "H", "I"};
 const string EXT = ".jpg";
 
@@ -654,7 +653,7 @@ int main(int argc, char *argv[])
 	cout.precision(6);
 	cout << fixed;
 	for (int i = 0; i < NAMES.size(); ++i) {
-		//TestsEdge(i);
+		TestsEdge(i);
 		TestsContour(i);
 	}
 	cout << endl << "That's all Folks !" << endl;
