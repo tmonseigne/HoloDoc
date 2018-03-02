@@ -105,13 +105,26 @@ bool SortArea(const vector<Point> &a, const vector<Point> &b)
 	return contourArea(a) > contourArea(b);
 }
 
+bool inQuad(const vector<Point> &quad, const Point &point)
+{
+	Point V = quad[3] - quad[0];
+	int cross[2] = {0, 0};
+	for (int i = 0; i < 3; ++i) {
+		const int sign = V.x * point.y - V.y * point.x >= 0 ? 1 : 0;
+		cross[sign]++;
+		V = quad[i + 1] - quad[i];
+	}
+	return cross[0] == 0 || cross[1] == 0;
+}
+
+
 //***************************
 //***** CLEAN FUNCTIONS *****
 //***************************
 //Basic fast clean only number of point and length
 //Possibility to change arclength by boundingrect maybe some contour can be suppress in some case but its a little slower
 void CleanBasic(const vector<vector<Point>> &in, vector<vector<Point>> &out,
-                const double min_length = 600, const double max_length = 3600)
+				const double min_length = 600, const double max_length = 3600)
 {
 	out.clear();
 	for (const vector<Point> &cont : in) {
@@ -123,7 +136,7 @@ void CleanBasic(const vector<vector<Point>> &in, vector<vector<Point>> &out,
 }
 
 void Hulls(const vector<vector<Point>> &in, vector<vector<Point>> &out,
-           const double min_length = 600, const double max_length = 3600)
+		   const double min_length = 600, const double max_length = 3600)
 {
 	out.clear();
 	for (const vector<Point> &cont : in) {
@@ -137,7 +150,7 @@ void Hulls(const vector<vector<Point>> &in, vector<vector<Point>> &out,
 }
 
 void Approxs(const vector<vector<Point>> &in, vector<vector<Point>> &out,
-             const double min_length = 600, const double max_length = 3600)
+			 const double min_length = 600, const double max_length = 3600)
 {
 	out.clear();
 	for (const vector<Point> &cont : in) {
@@ -152,7 +165,7 @@ void Approxs(const vector<vector<Point>> &in, vector<vector<Point>> &out,
 }
 
 void Rects(const vector<vector<Point>> &in, vector<vector<Point>> &out,
-           const double min_length = 600, const double max_length = 3600)
+		   const double min_length = 600, const double max_length = 3600)
 {
 	out.clear();
 	for (const vector<Point> &cont : in) {
@@ -171,7 +184,7 @@ void Rects(const vector<vector<Point>> &in, vector<vector<Point>> &out,
 }
 
 void Extract4Corners(const vector<vector<Point>> &in, vector<vector<Point>> &out,
-                     const double min_length = 600, const double max_length = 3600)
+					 const double min_length = 600, const double max_length = 3600)
 {
 	out.clear();
 	for (const vector<Point> &cont : in) {
@@ -217,17 +230,16 @@ void Extract4Corners(const vector<vector<Point>> &in, vector<vector<Point>> &out
 				double Areas_max[2] = {0.0, 0.0};
 				const Point AB = cont[Ids[3]] - cont[Ids[2]];
 				for (int i = 0; i < Nb_points; ++i) {
-					//if (Corners_id.find(i) == Corners_id.end()) { //Useless d!=0 it's enough
 					const Point AC = cont[i] - cont[Ids[2]],
-					            BC = cont[i] - cont[Ids[3]];
+								BC = cont[i] - cont[Ids[3]];
 					const int d = AB.x * AC.y - AB.y * AC.x;
 					//if (d = 0) C is on Diagonal
 					if (d != 0) {
 						const int side = d > 0 ? 0 : 1;
 						const double Dist_AB = Dist(AB),
-						             Dist_AC = Dist(AC),
-						             Dist_BC = Dist(BC),
-						             peri_2 = (Dist_AB + Dist_AC + Dist_BC) / 2;
+									 Dist_AC = Dist(AC),
+									 Dist_BC = Dist(BC),
+									 peri_2 = (Dist_AB + Dist_AC + Dist_BC) / 2;
 						// False area based on Heron's formula without square root (maybe avoid on distance too...)
 						const double area = peri_2 * (peri_2 - Dist_AC) * (peri_2 - Dist_BC) * (peri_2 - Dist_AB);
 						if (area > Areas_max[side]) {
@@ -235,7 +247,6 @@ void Extract4Corners(const vector<vector<Point>> &in, vector<vector<Point>> &out
 							Ids[side] = i;
 						}
 					}
-					//}
 				}
 				Corners_id.insert(Ids[0]);
 				Corners_id.insert(Ids[1]);
@@ -268,8 +279,8 @@ void Extract4Corners(const vector<vector<Point>> &in, vector<vector<Point>> &out
 //	- No contours inside an other
 //	- No contours with a shape too far from a rectangle
 void FinalClean(const vector<vector<Point>> &in, vector<vector<Point>> &out,
-                const double min_length = 600, const double max_length = 3600,
-                const double min_center_dist = 110, const double side_ratio = 0.5)
+				const double min_length = 600, const double max_length = 3600,
+				const double min_center_dist = 110, const double side_ratio = 0.5)
 {
 	out = in;
 	if (!out.empty()) {
@@ -284,6 +295,7 @@ void FinalClean(const vector<vector<Point>> &in, vector<vector<Point>> &out,
 				const Point Center1 = GetCenter(out[i]);
 				for (int j = i + 1; j < out.size(); ++j) {
 					const Point Center2 = GetCenter(out[j]);
+					//	if (inQuad(out[i], Center2)) //doesn't work
 					const int Center_dist = SquaredDist(Center1, Center2);
 					// Same Center or Center distance smallest than including circle radius (it works because contour is sort by area)
 					if (Center_dist < min_center_dist || Center_dist < SquaredDist(Center1, out[i][0])) {
@@ -304,7 +316,7 @@ void FinalClean(const vector<vector<Point>> &in, vector<vector<Point>> &out,
 			Sides[2] = SquaredDist(out[i][1], out[i][2]);
 			Sides[3] = SquaredDist(out[i][3], out[i][0]);
 			const double Ratio_1 = 1.0 * Sides[0] / Sides[1],
-			             Ratio_2 = 1.0 * Sides[2] / Sides[3];
+						 Ratio_2 = 1.0 * Sides[2] / Sides[3];
 			if (Ratio_min > Ratio_1 || Ratio_1 > Ratio_max || Ratio_min > Ratio_2 || Ratio_2 > Ratio_max) {
 				out.erase(Begin + i);
 				i--;
@@ -322,8 +334,8 @@ void TestsEdge(const int i = 0)
 	cout << "===== Test Edge Image " << NAMES[i] << " Begin =====" << endl;
 
 	Mat Im_gray_scale, Im_blur, Im_bilateral, Im_bg_tresh,
-	    Im_adapt_mean, Im_adapt_gauss, Im_adapt_mean_bg_tresh,
-	    Im_canny_gray, Im_canny_blur, Im_canny_bilateral, Im_canny_bg_tresh;
+		Im_adapt_mean, Im_adapt_gauss, Im_adapt_mean_bg_tresh,
+		Im_canny_gray, Im_canny_blur, Im_canny_bilateral, Im_canny_bg_tresh;
 
 	auto T1 = high_resolution_clock::now();
 	const Mat Src = imread(PATH + NAMES[i] + EXT, CV_LOAD_IMAGE_COLOR);
@@ -449,7 +461,7 @@ void TestsContour(const int i = 0)
 	//Maximum length for a rectangle detected is 70% of image (perimeter = 0.7 * 2(H+L))
 	const double Length_max = 1.4 * (Init_Ims[0].cols + Init_Ims[0].rows);
 	//Minimum distance between 2 contour center is 5% of Diagonal image (Diag = 0.1 * sqrt(H*H + L*L))
-	const double Center_dist_min = 0.05 * sqrt(Init_Ims[0].cols * Init_Ims[0].cols + Init_Ims[0].rows * Init_Ims[0].rows);
+	const double Center_dist_min = 0.05 * SquaredDist(Point(Init_Ims[0].cols, Init_Ims[0].rows));
 	cout << "Length min = " << Length_min << "\tLength max = " << Length_max << "\tDistance Center min = " <<
 			Center_dist_min << endl;
 
@@ -653,7 +665,7 @@ int main(int argc, char *argv[])
 	cout.precision(6);
 	cout << fixed;
 	for (int i = 0; i < NAMES.size(); ++i) {
-		TestsEdge(i);
+		//TestsEdge(i);
 		TestsContour(i);
 	}
 	cout << endl << "That's all Folks !" << endl;
