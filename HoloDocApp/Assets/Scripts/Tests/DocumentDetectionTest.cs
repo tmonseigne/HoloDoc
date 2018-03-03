@@ -1,7 +1,5 @@
 ﻿using UnityEngine;
 
-using System.Runtime.InteropServices;
-
 public class DocumentDetectionTest : MonoBehaviour {
 
 	[Range(0, 20)]
@@ -30,18 +28,11 @@ public class DocumentDetectionTest : MonoBehaviour {
 		unsafe
 		{
 			OpenCVInterop.SimpleDocumentDetection(ref image[0], (uint)resolution.width, (uint)resolution.height, ref result[0],
-			MaxDocumentsCount, ref outDocumentsCount, ref outDocumentsCorners[0]);
+				MaxDocumentsCount, ref outDocumentsCount, ref outDocumentsCorners[0]);
 		}
 
 		renderTexture.LoadRawTextureData(result);
 		renderTexture.Apply(true);
 		Quad.GetComponent<Renderer>().material.mainTexture = renderTexture;
 	}
-}
-
-internal static class OpenCVInterop
-{
-	[DllImport("DocDetector")]
-	internal static extern unsafe int SimpleDocumentDetection(ref Color32 image, uint width, uint height, ref byte result,
-		uint maxDocumentsCount, ref uint outDocumentsCount, ref int outDocumentsCorners);
 }

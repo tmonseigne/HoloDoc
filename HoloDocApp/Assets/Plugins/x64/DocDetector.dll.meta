@@ -1,6 +1,6 @@
 fileFormatVersion: 2
-guid: 23677f5fb6b97664592d478837bcb75d
-timeCreated: 1519420845
+guid: 6bde094c0deba2342841f6ddfa8555cd
+timeCreated: 1520067287
 licenseType: Free
 PluginImporter:
   externalObjects: {}
@@ -77,7 +77,7 @@ PluginImporter:
     second:
       enabled: 1
       settings:
-        CPU: x86_64
+        CPU: AnyCPU
   - first:
       Standalone: OSXUniversal
     second:
@@ -101,7 +101,7 @@ PluginImporter:
     second:
       enabled: 0
       settings:
-        CPU: X64
+        CPU: X86
         DontProcess: False
         PlaceholderPath: 
         SDK: AnySDK
