@@ -56,3 +56,5 @@ node_modules/
 # ============== #
 *~
 *_[Tt]ests/
+*.[Tt][Mm][Pp]
+
