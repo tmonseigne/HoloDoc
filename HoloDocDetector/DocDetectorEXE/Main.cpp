@@ -2,10 +2,11 @@
 #include <conio.h>	// _getch
 #include <cstdlib>
 #include <iostream>
-#include <opencv2/core.hpp>
+#include "DocDetector.hpp"
+
+#include <set>
 #include <opencv2/highgui.hpp>
 #include <opencv2/imgproc.hpp>
-#include <set>
 
 using namespace std;
 using namespace std::chrono;
@@ -44,7 +45,7 @@ void DrawCont(const Mat &src, Mat &dst, const vector<vector<Point>> &contours, c
 	dst = src.clone();
 	for (int i = 0; i < contours.size(); i++) {
 		const Scalar color = COLORS[i % (COLORS.size() - 4) + 3];
-		const int thickness = fill ? -1 : 2;
+		const int thickness = fill ? -1 : 5;
 		drawContours(dst, contours, i, color, thickness);
 		if (fill) {
 			addWeighted(src, 0.05, dst, 0.95, 0, dst);
@@ -656,6 +657,34 @@ void TestsContour(const int i = 0)
 	cout << "====================================" << endl << endl;
 }
 
+void TestsDLLFunction(const int i = 0)
+{
+	cout << "======================================" << endl;
+	cout << "===== Test DLL Image " << NAMES[i] << " =====" << endl;
+
+	const Mat Src = imread(PATH + NAMES[i] + EXT, CV_LOAD_IMAGE_COLOR);
+	if (Src.cols == 0 || Src.rows == 0) { return; }
+	vector<vector<Point>> Contours;
+	const Scalar Background = COLORS[0];
+
+	const auto T1 = high_resolution_clock::now();
+	const int ErrCode = DocsDetection(Src, Contours, Background);
+	duration<double, std::milli> Fp_ms = high_resolution_clock::now() - T1;
+
+	cout << "Time :\t" << Fp_ms.count() << " ms" << endl
+		<< "errCode : \t" << ErrCode<<endl
+		<< "Nb Contours : \t" << Contours.size()<<endl;
+	printContour(Contours);
+
+
+	Mat Im_Cont;
+	DrawCont(Src, Im_Cont, Contours, false);
+	const string Path = PATH + "Final_Tests/";
+	imwrite(Path + NAMES[i] + EXT, Im_Cont);
+	cout << "======================================" << endl << endl;
+
+}
+
 int main(int argc, char *argv[])
 {
 	//***** Init *****
@@ -666,7 +695,8 @@ int main(int argc, char *argv[])
 	cout << fixed;
 	for (int i = 0; i < NAMES.size(); ++i) {
 		//TestsEdge(i);
-		TestsContour(i);
+		//TestsContour(i);
+		TestsDLLFunction(i);
 	}
 	cout << endl << "That's all Folks !" << endl;
 	_getch();
