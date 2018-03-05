@@ -27,7 +27,7 @@ public class DocumentDetectionTest : MonoBehaviour {
 
 		unsafe
 		{
-			OpenCVInterop.SimpleDocumentDetection(ref image[0], (uint)resolution.width, (uint)resolution.height, ref result[0],
+			OpenCVInterop.SimpleDocsDetection(ref image[0], (uint)resolution.width, (uint)resolution.height, ref result[0],
 				MaxDocumentsCount, ref outDocumentsCount, ref outDocumentsCorners[0]);
 		}
 

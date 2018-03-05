@@ -34,11 +34,11 @@ public class DocumentDetection : MonoBehaviour {
 
 		unsafe
 		{
-			OpenCVInterop.SimpleDocumentDetection(ref frame.Data[0], (uint)frame.Resolution.width, (uint)frame.Resolution.height, 
+			OpenCVInterop.SimpleDocsDetection(ref frame.Data[0], (uint)frame.Resolution.width, (uint)frame.Resolution.height, 
 				ref result[0], nbDocumentsMax, ref outDocumentsCount, ref outDocumentsCorners[0]);
 			/*
 			Color32 background = new Color32(0,0,0,1);
-			OpenCVInterop.DocumentDetection(ref frame.Data[0], (uint) frame.Resolution.width, (uint) frame.Resolution.height, 
+			OpenCVInterop.DocsDetection(ref frame.Data[0], (uint) frame.Resolution.width, (uint) frame.Resolution.height, 
 				background, ref outDocumentsCount, ref outDocumentsCorners[0]);
 			*/
 		}
