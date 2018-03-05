@@ -14,19 +14,47 @@ public class DocumentManager : MonoBehaviour, IInputClickHandler, IInputHandler 
 	private DocumentProperties	properties;
 	private GameObject			informations;
 
+    // Visual effect
+    // Fade
+    public bool             useFadeEffect = false;
+    private ColorFadeEffect visualFadeEffect;
+
+    // Hide
+    public bool     useMaskEffect = false;
+    public Material PostPhotoMaterial;
+    public Material PrePhotoMaterial;
+
 	// Use this for initialization
 	void Start() {
-		material = this.GetComponent<Renderer>().material;
-		properties = this.GetComponent<DocumentProperties>();
-		mesh = this.GetComponent<DocumentMesh>();
+        properties = this.GetComponent<DocumentProperties>();
+        mesh = this.GetComponent<DocumentMesh>();
 
-		informations = Instantiate(DocumentInformationsPrefab, 
+        if (useMaskEffect) {
+            this.GetComponent<Renderer>().material = PrePhotoMaterial;
+        }
+        else {
+            Vector4 centroid4f = new Vector4(mesh.Centroid.x, mesh.Centroid.y, mesh.Centroid.z, 1.0f);
+            this.GetComponent<Renderer>().material = PostPhotoMaterial;
+            this.GetComponent<Renderer>().material.SetVector("_Centroid", centroid4f);
+        }
+
+        material = this.GetComponent<Renderer>().material;
+
+        informations = Instantiate(DocumentInformationsPrefab, 
 								   new Vector3(mesh.Centroid.x, mesh.Centroid.y, mesh.Centroid.z - 0.2f), 
 								   this.transform.rotation);
 		informations.SetActive(false);
-
 		this.SetColor(Color);
-	}
+
+        // Visual effect
+        visualFadeEffect = this.GetComponent<ColorFadeEffect>();
+        if (visualFadeEffect == null) {
+            useFadeEffect = false;
+        }
+        else {
+            visualFadeEffect.SetSourceColor(Color);
+        }
+    }
 
 	public void SetColor(Color color) {
 		material.SetColor("_OutlineColor", color);
@@ -41,17 +69,33 @@ public class DocumentManager : MonoBehaviour, IInputClickHandler, IInputHandler 
 			}
 		}
 		else {
-			properties.Photographied = true;
-			//PhotoTaker.Instance.Photo(OnPhotoTaken);
-		}
+            properties.Photographied = true;
+
+            if (useFadeEffect) { 
+                this.SetColor(Color);
+            }
+
+            if (useMaskEffect) {
+                Vector4 centroid4f = new Vector4(mesh.Centroid.x, mesh.Centroid.y, mesh.Centroid.z, 1.0f);
+                this.GetComponent<Renderer>().material = PostPhotoMaterial;
+                this.GetComponent<Renderer>().material.SetVector("_Centroid", centroid4f);
+                material = this.GetComponent<Renderer>().material;
+                this.SetColor(Color);
+                //PhotoTaker.Instance.Photo(OnPhotoTaken);
+            }
+        }
 	}
 
 	public void OnInputDown(InputEventData eventData) {
-		LinkManager.Instance.OnLinkStarted(this.gameObject);
+        if (properties.Photographied) {
+            LinkManager.Instance.OnLinkStarted(this.gameObject);
+        }
 	}
 
 	public void OnInputUp(InputEventData eventData) {
-		LinkManager.Instance.OnLinkEnded(this.gameObject);
+        if (properties.Photographied) {
+            LinkManager.Instance.OnLinkEnded(this.gameObject);
+        }
 	}
 
 	private void OnPhotoTaken(CameraFrame result) {
@@ -63,4 +107,13 @@ public class DocumentManager : MonoBehaviour, IInputClickHandler, IInputHandler 
 
 		RequestLauncher.Instance.DetectDocuments(photoTex, null);
 	}
+    
+    void Update() {
+        if (!properties.Photographied) {
+            if (useFadeEffect)
+            {
+                this.SetColor(visualFadeEffect.Blink(Time.deltaTime));
+            }
+        }
+    }
 }

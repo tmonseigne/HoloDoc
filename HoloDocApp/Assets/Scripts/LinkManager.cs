@@ -40,7 +40,6 @@ public class LinkManager : Singleton<LinkManager> {
 						Debug.Log("Tail and head are already part of different links → Instant merge of both links.");
 						// The tail has a link too => fusion of the two lists into one
 						int oldTailLinkId = tail.LinkId;
-						Debug.Log(tail.LinkId);
 						// 1: We need to switch the tail link id to be the new id
 						for (int i = 0; i < Links[oldTailLinkId].Count; i++) {
 							// 1.1: Switch ids
