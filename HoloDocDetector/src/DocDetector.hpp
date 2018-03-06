@@ -2,12 +2,15 @@
 
 #include <opencv2/core.hpp>
 
+#define DLL_EXPORT extern "C" int __declspec(dllexport) __stdcall
+
 const enum ERROR_CODE
 {
 	NO_ERRORS = 0,
 	EMPTY_MAT,
 	TYPE_MAT,
 	NO_DOCS,
+	INVALID_DOC,
 };
 
 //********************************
@@ -31,17 +34,19 @@ struct Color32
 /// <param name="width">Image width.</param>
 /// <param name="height">Image height.</param>
 /// <return>Error code </return>
-extern "C" int __declspec(dllexport) __stdcall SimpleDocsDetection(Color32 *image, uint width, uint height,
-																   byte *result, uint maxDocsCount, uint *outDocsCount, int *outDocsPoints);
+DLL_EXPORT SimpleDocsDetection(Color32 *image, uint width, uint height,
+							   byte *result, uint maxDocsCount, uint *outDocsCount, int *outDocsPoints);
 
 /// <summary>
 /// Documents detector.
 /// </summary>
 /// <param name="in">Unity image.</param>
 /// <param name="out">Documents definition for Unity.</param>
-extern "C" int __declspec(dllexport) __stdcall DocsDetection(Color32 *image, uint width, uint height,
-															 Color32 background, uint *outDocsCount, int *outDocsPoints);
+DLL_EXPORT DocsDetection(Color32 *image, uint width, uint height,
+						 Color32 background, uint *outDocsCount, int *outDocsPoints);
 
+DLL_EXPORT DocExtraction(Color32 *image, uint width, uint height,
+						 Color32 background, int *outDocPoints);
 //*****************************
 //********** Methods **********
 //*****************************
@@ -50,8 +55,14 @@ extern "C" int __declspec(dllexport) __stdcall DocsDetection(Color32 *image, uin
 /// <param name="contours">The contours.</param>
 /// <param name="background">The background.</param>
 /// <returns></returns>
-int DocsDetection(const cv::Mat &src, std::vector<std::vector<cv::Point>> &contours, const cv::Scalar &background);
+int DocsDetection(const cv::Mat &src, const cv::Scalar &background, std::vector<std::vector<cv::Point>> &contours);
 
+int DocExtraction(const cv::Mat &src, const cv::Scalar &background, std::vector<cv::Point> &contour, cv::Mat &dst);
+
+int FeaturesExtraction(const cv::Mat &src/*, features*/);
+
+int CompareDocs(const cv::Mat &im1, const cv::Mat &im2, double &similarity);
+int CompareFeatures(/*features1, features2,*/double &similarity);
 //******************************
 //********** Computes **********
 //******************************

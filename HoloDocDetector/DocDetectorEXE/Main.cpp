@@ -657,18 +657,23 @@ void TestsContour(const int i = 0)
 	cout << "====================================" << endl << endl;
 }
 
-void TestsDLLFunction(const int i = 0)
+int TestsDLLFunction(const int i = 0)
 {
 	cout << "======================================" << endl;
 	cout << "===== Test DLL Image " << NAMES[i] << " =====" << endl;
 
+	Mat Im_Cont, Im_Doc;
+	
 	const Mat Src = imread(PATH + NAMES[i] + EXT, CV_LOAD_IMAGE_COLOR);
-	if (Src.cols == 0 || Src.rows == 0) { return; }
+	if (Src.cols == 0 || Src.rows == 0) { return EMPTY_MAT; }
 	vector<vector<Point>> Contours;
+	vector<Point> Contour;
 	const Scalar Background = COLORS[0];
 
-	const auto T1 = high_resolution_clock::now();
-	const int ErrCode = DocsDetection(Src, Contours, Background);
+	//Document Detection
+	cout << endl << "Detection... " << endl;
+	auto T1 = high_resolution_clock::now();
+	int ErrCode = DocsDetection(Src, Background, Contours);
 	duration<double, std::milli> Fp_ms = high_resolution_clock::now() - T1;
 
 	cout << "Time :\t" << Fp_ms.count() << " ms" << endl
@@ -676,13 +681,34 @@ void TestsDLLFunction(const int i = 0)
 		<< "Nb Contours : \t" << Contours.size()<<endl;
 	printContour(Contours);
 
+	if (ErrCode != NO_ERRORS) return ErrCode;
+	cout << "Done" << endl;
 
-	Mat Im_Cont;
+	//Document Extraction
+	cout << endl << "Extraction... " << endl;
+	T1 = high_resolution_clock::now();
+	ErrCode = DocExtraction(Src, Background, Contour, Im_Doc);
+	Fp_ms = high_resolution_clock::now() - T1;
+
+	cout << "Time :\t" << Fp_ms.count() << " ms" << endl
+		<< "errCode : \t" << ErrCode << endl
+		<< "Contour : \t[" << Contour[0] << ", " << Contour[1] << ", " << Contour[2] << ", " << Contour[3] << "]" << endl;
+
+	if (ErrCode != NO_ERRORS) return ErrCode;
+	cout << "Done" << endl;
+
+	//Document Comparaison
+	//...............
+
+	//Draw and Write
 	DrawCont(Src, Im_Cont, Contours, false);
+
 	const string Path = PATH + "Final_Tests/";
-	imwrite(Path + NAMES[i] + EXT, Im_Cont);
+	imwrite(Path + NAMES[i] + "_Cont" + EXT, Im_Cont);
+	imwrite(Path + NAMES[i] + "_Doc" + EXT, Im_Doc);
 	cout << "======================================" << endl << endl;
 
+	return NO_ERRORS;
 }
 
 int main(int argc, char *argv[])
