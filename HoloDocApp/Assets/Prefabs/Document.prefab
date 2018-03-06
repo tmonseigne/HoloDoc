@@ -25,6 +25,7 @@ GameObject:
   - component: {fileID: 114457559166143818}
   - component: {fileID: 114646523179559174}
   - component: {fileID: 114203992497919284}
+  - component: {fileID: 114981059721179244}
   m_Layer: 0
   m_Name: Document
   m_TagString: Document
@@ -59,7 +60,7 @@ MeshRenderer:
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
   m_Materials:
-  - {fileID: 2100000, guid: 602a43243c95d6f4890d80b80eefceb9, type: 2}
+  - {fileID: 0}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -122,7 +123,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c58b163020764a7488db66353e302595, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Material: {fileID: 2100000, guid: 602a43243c95d6f4890d80b80eefceb9, type: 2}
 --- !u!114 &114646523179559174
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -137,3 +137,19 @@ MonoBehaviour:
   DocumentInformationsPrefab: {fileID: 1386520727339780, guid: 2afad8046052062438c5163e5dfe0d9e,
     type: 2}
   Color: {r: 1, g: 1, b: 1, a: 0}
+  useFadeEffect: 1
+  useMaskEffect: 1
+  PostPhotoMaterial: {fileID: 2100000, guid: 602a43243c95d6f4890d80b80eefceb9, type: 2}
+  PrePhotoMaterial: {fileID: 2100000, guid: 5f37faab997aeb94ca4f526e1181dfad, type: 2}
+--- !u!114 &114981059721179244
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1550893981541542}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ba1103f8acc2c9544bb08551db621e6f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  fadeSpeed: 5

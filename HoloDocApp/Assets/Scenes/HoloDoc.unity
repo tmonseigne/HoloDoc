@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.37311992, g: 0.38074034, b: 0.35872713, a: 1}
+  m_IndirectSpecularColor: {r: 0.3731193, g: 0.38073996, b: 0.35872698, a: 1}
 --- !u!157 &3
 LightmapSettings:
   m_ObjectHideFlags: 0
@@ -140,8 +140,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 727116195af358646a6a989e09ef0abc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  nbLines: 3
-  nbColumn: 3
+  nbLines: 2
+  nbColumn: 2
   prefab: {fileID: 1550893981541542, guid: 997287bc1be5dda43850b185e8413cfe, type: 2}
 --- !u!4 &124333192
 Transform:
@@ -197,7 +197,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Framerate: 25
-  SubstituableFrame: {fileID: 2800000, guid: 5712ebd413da1424e9487f8d686fdd31, type: 3}
+  SubstituableFrame: {fileID: 0}
   Substitute: 0
 --- !u!1 &297958677
 GameObject:
@@ -889,8 +889,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 72706a0cdfeb6a4459928ecd4b1448d4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  MaxDocumentsCount: 20
-  Quad: {fileID: 1008787749}
+  MaxDocumentsCount: 5
+  Quad: {fileID: 1550893981541542, guid: 997287bc1be5dda43850b185e8413cfe, type: 2}
 --- !u!4 &1384780662
 Transform:
   m_ObjectHideFlags: 0
