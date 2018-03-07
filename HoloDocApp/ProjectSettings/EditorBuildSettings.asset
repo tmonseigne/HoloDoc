@@ -11,6 +11,9 @@ EditorBuildSettings:
   - enabled: 0
     path: Assets/Scenes/IpChooser.unity
     guid: 7ec77c62465a6b84da82f595bbe01c27
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/HoloDoc.unity
     guid: 153a55fc1166feb4e8d173e580ecbaab
+  - enabled: 1
+    path: Assets/Scenes/WelcomeScene.unity
+    guid: 7d72269db4fb46741a89485e60c97940
