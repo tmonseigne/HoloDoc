@@ -12,13 +12,11 @@ public class EventManager : MonoBehaviour, IInputClickHandler
         int blockWidth = (int) (photo.width * percentage);
         int blockHeight = (int) (photo.height * percentage);
 
-        if (blockWidth > photo.height || blockWidth > blockHeight)
-        {
+        if (blockWidth > photo.height || blockWidth > blockHeight) {
             blockWidth = blockHeight;
         }
 
-        if (blockHeight > photo.width || blockHeight > blockWidth) ;
-        {
+        if (blockHeight > photo.width || blockHeight > blockWidth) {
             blockHeight = blockWidth;
         }
 
