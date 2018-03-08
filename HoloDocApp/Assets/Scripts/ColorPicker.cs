@@ -8,7 +8,7 @@ using HoloToolkit.Unity;
 
 public class ColorPicker : Singleton<ColorPicker> {
 
-    [Range(0.1f, 1.0f), 
+    [Range(0.01f, 1.0f), 
      Tooltip("This property will force the color picking to be done in a specific area of the image. " +
         "By modifying this property you can control how much percentage of the image will be considered " +
         "when returning average color.")]
