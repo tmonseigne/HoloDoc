@@ -128,7 +128,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &124333191
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -171,7 +171,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &190901136
 Transform:
   m_ObjectHideFlags: 0
@@ -197,7 +197,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Framerate: 25
-  SubstituableFrame: {fileID: 0}
+  SubstituableFrame: {fileID: 2800000, guid: 5712ebd413da1424e9487f8d686fdd31, type: 3}
   Substitute: 0
 --- !u!1 &297958677
 GameObject:
@@ -846,7 +846,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &1375731006
 Transform:
   m_ObjectHideFlags: 0
@@ -877,7 +877,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &1384780661
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -889,8 +889,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 72706a0cdfeb6a4459928ecd4b1448d4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  MaxDocumentsCount: 5
-  Quad: {fileID: 1550893981541542, guid: 997287bc1be5dda43850b185e8413cfe, type: 2}
+  MaxDocumentsCount: 20
+  Quad: {fileID: 1008787749}
 --- !u!4 &1384780662
 Transform:
   m_ObjectHideFlags: 0

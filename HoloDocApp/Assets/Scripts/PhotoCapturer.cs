@@ -11,7 +11,7 @@ public class PhotoCapturer : Singleton<PhotoCapturer> {
     private Resolution cameraResolution;
     private Texture2D photo;
 
-    public delegate void OnPhotoTakenCallback(Texture2D photo, Matrix4x4 proj, Matrix4x4 world, bool projB, bool worldB);
+    public delegate void OnPhotoTakenCallback(Texture2D photo, Matrix4x4 proj, Matrix4x4 world, bool projB, bool worldB, Resolution res);
 
 	// Use this for initialization
 	void Start () {
@@ -51,7 +51,7 @@ public class PhotoCapturer : Singleton<PhotoCapturer> {
 
                     if (callback != null)
                     {
-                        callback.Invoke(photo, proj, world, receivedWorld, receivedProj);
+                        callback.Invoke(photo, proj, world, receivedWorld, receivedProj, cameraResolution);
                     }
 
                     photoCaptureObject.StopPhotoModeAsync(OnStoppedPhotoMode);

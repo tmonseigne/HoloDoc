@@ -8,6 +8,9 @@ EditorBuildSettings:
   - enabled: 0
     path: 
     guid: 00000000000000000000000000000000
+  - enabled: 1
+    path: Assets/Scenes/WelcomeScene.unity
+    guid: 7d72269db4fb46741a89485e60c97940
   - enabled: 0
     path: Assets/Scenes/IpChooser.unity
     guid: 7ec77c62465a6b84da82f595bbe01c27
@@ -15,5 +18,5 @@ EditorBuildSettings:
     path: Assets/Scenes/HoloDoc.unity
     guid: 153a55fc1166feb4e8d173e580ecbaab
   - enabled: 1
-    path: Assets/Scenes/WelcomeScene.unity
-    guid: 7d72269db4fb46741a89485e60c97940
+    path: Assets/Scenes/Tests/SpatialMappingTest.unity
+    guid: ef44e4cdd6ac9e841887de1651efb26f

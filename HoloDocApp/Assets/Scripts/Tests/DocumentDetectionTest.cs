@@ -13,7 +13,7 @@ public class DocumentDetectionTest : MonoBehaviour {
 	private byte[]		result;
 
 	// Use this for initialization
-	private void Start() {
+	void Start() {
 		resolution = CameraStream.Instance.Frame.Resolution;
 		renderTexture = new Texture2D(resolution.width, resolution.height, TextureFormat.RGB24, false);
 		outDocumentsCorners = new int[MaxDocumentsCount * 8];
@@ -21,7 +21,7 @@ public class DocumentDetectionTest : MonoBehaviour {
 	}
 
 	// Update is called once per frame
-	private void Update() {
+	void Update() {
 		var image = CameraStream.Instance.Frame.Data;
 		uint outDocumentsCount = 0;
 
