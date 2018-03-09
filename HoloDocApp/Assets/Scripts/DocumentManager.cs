@@ -8,16 +8,14 @@ public class DocumentManager : MonoBehaviour, IInputClickHandler, IInputHandler 
 	public Color		Color;
 
 	private Material			material;
-	private Texture2D			photoTex;
-	private CameraFrame			photo;
 	private DocumentMesh		mesh;
-	private DocumentProperties	properties;
+	public DocumentProperties Properties { get; set; }
 	private GameObject			informations;
 
     // Visual effect
     // Fade
-    public bool             useFadeEffect = false;
-    private ColorFadeEffect visualFadeEffect;
+    public bool             useBlinkEffect = false;
+    private ColorFadeEffect visualBlinkEffect;
 
     // Hide
     public bool     useMaskEffect = false;
@@ -26,7 +24,7 @@ public class DocumentManager : MonoBehaviour, IInputClickHandler, IInputHandler 
 
 	// Use this for initialization
 	void Start() {
-        properties = this.GetComponent<DocumentProperties>();
+		Properties = new DocumentProperties();
         mesh = this.GetComponent<DocumentMesh>();
 
         if (useMaskEffect) {
@@ -37,7 +35,6 @@ public class DocumentManager : MonoBehaviour, IInputClickHandler, IInputHandler 
             this.GetComponent<Renderer>().material = PostPhotoMaterial;
             this.GetComponent<Renderer>().material.SetVector("_Centroid", centroid4f);
         }
-
         material = this.GetComponent<Renderer>().material;
 
         informations = Instantiate(DocumentInformationsPrefab, 
@@ -47,12 +44,12 @@ public class DocumentManager : MonoBehaviour, IInputClickHandler, IInputHandler 
 		this.SetColor(Color);
 
         // Visual effect
-        visualFadeEffect = this.GetComponent<ColorFadeEffect>();
-        if (visualFadeEffect == null) {
-            useFadeEffect = false;
+        visualBlinkEffect = this.GetComponent<ColorFadeEffect>();
+        if (visualBlinkEffect == null) {
+            useBlinkEffect = false;
         }
         else {
-            visualFadeEffect.SetSourceColor(Color);
+            visualBlinkEffect.SetSourceColor(Color);
         }
     }
 
@@ -62,16 +59,14 @@ public class DocumentManager : MonoBehaviour, IInputClickHandler, IInputHandler 
 
 	public void OnInputClicked(InputClickedEventData eventData) {
 		// If the document is already photographied, toogle the informations
-		if (properties.Photographied) {
+		if (Properties.Photographied) {
 			informations.SetActive(!informations.activeInHierarchy);
 			if (informations.activeInHierarchy) {
-				informations.GetComponent<InformationManager>().UpdateInformations(this.properties);
+				informations.GetComponent<InformationManager>().UpdateInformations(this.Properties);
 			}
 		}
 		else {
-            properties.Photographied = true;
-
-            if (useFadeEffect) { 
+            if (useBlinkEffect) { 
                 this.SetColor(Color);
             }
 
@@ -81,38 +76,38 @@ public class DocumentManager : MonoBehaviour, IInputClickHandler, IInputHandler 
                 this.GetComponent<Renderer>().material.SetVector("_Centroid", centroid4f);
                 material = this.GetComponent<Renderer>().material;
                 this.SetColor(Color);
-                //PhotoTaker.Instance.Photo(OnPhotoTaken);
-            }
-        }
+			}
+			//PhotoTaker.Instance.Photo(OnPhotoTaken);
+			Properties.Photographied = true;
+		}
 	}
 
 	public void OnInputDown(InputEventData eventData) {
-        if (properties.Photographied) {
+        if (Properties.Photographied) {
             LinkManager.Instance.OnLinkStarted(this.gameObject);
         }
 	}
 
 	public void OnInputUp(InputEventData eventData) {
-        if (properties.Photographied) {
+        if (Properties.Photographied) {
             LinkManager.Instance.OnLinkEnded(this.gameObject);
         }
 	}
 
-	private void OnPhotoTaken(CameraFrame result) {
-		photo = result;
+	private void OnMatchOrCreateResult(DocumentProperties properties) {
+		this.Properties.SetProperties(properties.Label, properties.Author, properties.Description, properties.Date);
+	}
 
-		// Debug lines (Only used to draw result on a quad)
-		photoTex.SetPixels32(photo.Data);
-		photoTex.Apply(true);
-
-		RequestLauncher.Instance.DetectDocuments(photoTex, null);
+	private void OnPhotoTaken(CameraFrame photo) {
+		this.Properties.Photo = photo;
+		RequestLauncher.Instance.MatchOrCreateDocument(this.Properties, OnMatchOrCreateResult);
 	}
     
     void Update() {
-        if (!properties.Photographied) {
-            if (useFadeEffect)
+        if (!Properties.Photographied) {
+            if (useBlinkEffect)
             {
-                this.SetColor(visualFadeEffect.Blink(Time.deltaTime));
+                this.SetColor(visualBlinkEffect.Blink(Time.deltaTime));
             }
         }
     }

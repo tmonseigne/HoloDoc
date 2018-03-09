@@ -24,7 +24,6 @@ GameObject:
   - component: {fileID: 33503569076134394}
   - component: {fileID: 114457559166143818}
   - component: {fileID: 114646523179559174}
-  - component: {fileID: 114203992497919284}
   - component: {fileID: 114981059721179244}
   m_Layer: 0
   m_Name: Document
@@ -101,17 +100,6 @@ MeshCollider:
   m_CookingOptions: 14
   m_SkinWidth: 0.01
   m_Mesh: {fileID: 0}
---- !u!114 &114203992497919284
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1550893981541542}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 29ea55ddbd0af3044b36be51c3623918, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &114457559166143818
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -137,7 +125,7 @@ MonoBehaviour:
   DocumentInformationsPrefab: {fileID: 1386520727339780, guid: 2afad8046052062438c5163e5dfe0d9e,
     type: 2}
   Color: {r: 1, g: 1, b: 1, a: 0}
-  useFadeEffect: 1
+  useBlinkEffect: 0
   useMaskEffect: 1
   PostPhotoMaterial: {fileID: 2100000, guid: 602a43243c95d6f4890d80b80eefceb9, type: 2}
   PrePhotoMaterial: {fileID: 2100000, guid: 5f37faab997aeb94ca4f526e1181dfad, type: 2}

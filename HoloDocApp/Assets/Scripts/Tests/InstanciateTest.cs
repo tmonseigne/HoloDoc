@@ -27,7 +27,6 @@ public class InstanciateTest : MonoBehaviour {
 					new Vector3(0.3f + offsetI, 0.3f + offsetJ, 5)
 				};
 				document.GetComponent<DocumentMesh>().CreateDocumentMesh(corners);
-				//DocumentProperties DocProperties = document.GetComponent<DocumentProperties>();
 			}
 		}
 	}

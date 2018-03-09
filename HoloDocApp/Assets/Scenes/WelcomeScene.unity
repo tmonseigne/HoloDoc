@@ -140,6 +140,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fe269bbdad1aecc418edd4979e029df6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  HasFoundCamera: 0
 --- !u!4 &148014274
 Transform:
   m_ObjectHideFlags: 0
@@ -560,7 +561,7 @@ GameObject:
   - component: {fileID: 932114671}
   - component: {fileID: 932114672}
   m_Layer: 0
-  m_Name: EventZone
+  m_Name: InputReceiver
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -647,6 +648,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   message: {fileID: 457136892}
   colorPreview: {fileID: 164780605}
+  backgroundColor: {r: 0, g: 0, b: 1, a: 1}
 --- !u!114 &932114672
 MonoBehaviour:
   m_ObjectHideFlags: 0
