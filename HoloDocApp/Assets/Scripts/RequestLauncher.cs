@@ -9,15 +9,17 @@ using HoloToolkit.Unity;
 public class RequestLauncher : Singleton<RequestLauncher> {
 
 	public delegate void OnDetectRequestCallback(Vector2Int[] points, int nbDocuments);
+	public delegate void OnMatchOrCreateDocumentCallback(DocumentProperties properties);
 
-	public void CreateNewDocument(Texture2D texture) {
-		StartCoroutine(NewDocumentRequest(texture));
+	public void CreateNewDocument(CameraFrame frame) {
+		StartCoroutine(NewDocumentRequest(frame));
 	}
 
-	private IEnumerator NewDocumentRequest(Texture2D ploup) {
-		//byte[] payload = ploup.ToArray();
-		//byte[] payload = tex.GetRawTextureData();
-		byte[] payload = ploup.EncodeToPNG();
+	private IEnumerator NewDocumentRequest(CameraFrame frame) {
+		Texture2D texture = new Texture2D(frame.Resolution.width, frame.Resolution.height);
+		texture.SetPixels32(frame.Data);
+		texture.Apply(true);
+		byte[] payload = texture.EncodeToPNG();
 		Debug.Log("Display payload : " + BitConverter.ToString(payload));
 
 		string url = "http://localhost:8080/document/new";
@@ -41,6 +43,20 @@ public class RequestLauncher : Singleton<RequestLauncher> {
 			// Or retrieve results as binary data
 			byte[] results = www.downloadHandler.data;
 		}
+
+		// Avoid memory leak
+		Destroy(texture);
+	}
+
+	public void MatchOrCreateDocument(DocumentProperties properties, OnMatchOrCreateDocumentCallback callback) {
+		StartCoroutine(MatchOrCreateDocumentRequest(properties, callback));
+	}
+
+	// TODO: This function must send the current image stored in properties.Photo and match/create it.
+	// During match or create, the image should be cropped and wrapped on the server.
+	// Corners (for cropping) are available in properties.Corners
+	IEnumerator MatchOrCreateDocumentRequest(DocumentProperties properties, OnMatchOrCreateDocumentCallback callback) {
+		yield return null;
 	}
 
 	public void DetectDocuments(Texture2D texture, OnDetectRequestCallback callback) {
@@ -84,7 +100,4 @@ public class RequestLauncher : Singleton<RequestLauncher> {
 			}
 		};
 	}
-
-	// Update is called once per frame
-	void Update() {}
 }

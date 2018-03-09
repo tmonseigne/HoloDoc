@@ -22,6 +22,7 @@ public class PhotoCapturer : Singleton<PhotoCapturer> {
         {
             cameraResolution = PhotoCapture.SupportedResolutions.OrderByDescending((res) => res.width * res.height).First();
             photo = new Texture2D(cameraResolution.width, cameraResolution.height);
+			HasFoundCamera = true;
         }
         catch
         {

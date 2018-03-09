@@ -21,10 +21,11 @@ public class LinkManager : Singleton<LinkManager> {
 		// If this is an actual document
 		if (document.CompareTag("Document")) {
 			linkHead = document;
-			//Debug.LogFormat("Document {0} wants to be linked !", linkHead.GetComponent<DocumentProperties>().GetId());
 		}
 	}
 
+	// TODO : Recieve a request to create link.
+	// TODO : Send a request to the server with linked document ids.
 	public void OnLinkEnded(GameObject document) {
 		if (document.CompareTag("Document") && linkHead && (document != linkHead)) {
 			linkTail = document;

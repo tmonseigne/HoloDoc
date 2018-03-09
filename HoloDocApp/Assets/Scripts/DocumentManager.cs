@@ -8,8 +8,6 @@ public class DocumentManager : MonoBehaviour, IInputClickHandler, IInputHandler 
 	public Color		Color;
 
 	private Material			material;
-	private Texture2D			photoTex;
-	private CameraFrame			photo;
 	private DocumentMesh		mesh;
 	private DocumentProperties	properties;
 	private GameObject			informations;
@@ -26,7 +24,7 @@ public class DocumentManager : MonoBehaviour, IInputClickHandler, IInputHandler 
 
 	// Use this for initialization
 	void Start() {
-        properties = this.GetComponent<DocumentProperties>();
+		properties = new DocumentProperties();
         mesh = this.GetComponent<DocumentMesh>();
 
         if (useMaskEffect) {
@@ -37,7 +35,6 @@ public class DocumentManager : MonoBehaviour, IInputClickHandler, IInputHandler 
             this.GetComponent<Renderer>().material = PostPhotoMaterial;
             this.GetComponent<Renderer>().material.SetVector("_Centroid", centroid4f);
         }
-
         material = this.GetComponent<Renderer>().material;
 
         informations = Instantiate(DocumentInformationsPrefab, 
@@ -69,8 +66,6 @@ public class DocumentManager : MonoBehaviour, IInputClickHandler, IInputHandler 
 			}
 		}
 		else {
-            properties.Photographied = true;
-
             if (useBlinkEffect) { 
                 this.SetColor(Color);
             }
@@ -81,9 +76,10 @@ public class DocumentManager : MonoBehaviour, IInputClickHandler, IInputHandler 
                 this.GetComponent<Renderer>().material.SetVector("_Centroid", centroid4f);
                 material = this.GetComponent<Renderer>().material;
                 this.SetColor(Color);
-                //PhotoTaker.Instance.Photo(OnPhotoTaken);
-            }
-        }
+			}
+			PhotoTaker.Instance.Photo(OnPhotoTaken);
+			properties.Photographied = true;
+		}
 	}
 
 	public void OnInputDown(InputEventData eventData) {
@@ -98,14 +94,13 @@ public class DocumentManager : MonoBehaviour, IInputClickHandler, IInputHandler 
         }
 	}
 
-	private void OnPhotoTaken(CameraFrame result) {
-		photo = result;
+	private void OnMatchOrCreateResult(DocumentProperties properties) {
+		this.properties.SetProperties(properties.Label, properties.Author, properties.Description, properties.Date);
+	}
 
-		// Debug lines (Only used to draw result on a quad)
-		photoTex.SetPixels32(photo.Data);
-		photoTex.Apply(true);
-
-		RequestLauncher.Instance.DetectDocuments(photoTex, null);
+	private void OnPhotoTaken(CameraFrame photo) {
+		this.properties.Photo = photo;
+		RequestLauncher.Instance.MatchOrCreateDocument(this.properties, OnMatchOrCreateResult);
 	}
     
     void Update() {
