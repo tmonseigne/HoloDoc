@@ -9,7 +9,7 @@ public class DocumentManager : MonoBehaviour, IInputClickHandler, IInputHandler 
 
 	private Material			material;
 	private DocumentMesh		mesh;
-	private DocumentProperties	properties;
+	public DocumentProperties Properties { get; set; }
 	private GameObject			informations;
 
     // Visual effect
@@ -24,7 +24,7 @@ public class DocumentManager : MonoBehaviour, IInputClickHandler, IInputHandler 
 
 	// Use this for initialization
 	void Start() {
-		properties = new DocumentProperties();
+		Properties = new DocumentProperties();
         mesh = this.GetComponent<DocumentMesh>();
 
         if (useMaskEffect) {
@@ -59,10 +59,10 @@ public class DocumentManager : MonoBehaviour, IInputClickHandler, IInputHandler 
 
 	public void OnInputClicked(InputClickedEventData eventData) {
 		// If the document is already photographied, toogle the informations
-		if (properties.Photographied) {
+		if (Properties.Photographied) {
 			informations.SetActive(!informations.activeInHierarchy);
 			if (informations.activeInHierarchy) {
-				informations.GetComponent<InformationManager>().UpdateInformations(this.properties);
+				informations.GetComponent<InformationManager>().UpdateInformations(this.Properties);
 			}
 		}
 		else {
@@ -77,34 +77,34 @@ public class DocumentManager : MonoBehaviour, IInputClickHandler, IInputHandler 
                 material = this.GetComponent<Renderer>().material;
                 this.SetColor(Color);
 			}
-			PhotoTaker.Instance.Photo(OnPhotoTaken);
-			properties.Photographied = true;
+			//PhotoTaker.Instance.Photo(OnPhotoTaken);
+			Properties.Photographied = true;
 		}
 	}
 
 	public void OnInputDown(InputEventData eventData) {
-        if (properties.Photographied) {
+        if (Properties.Photographied) {
             LinkManager.Instance.OnLinkStarted(this.gameObject);
         }
 	}
 
 	public void OnInputUp(InputEventData eventData) {
-        if (properties.Photographied) {
+        if (Properties.Photographied) {
             LinkManager.Instance.OnLinkEnded(this.gameObject);
         }
 	}
 
 	private void OnMatchOrCreateResult(DocumentProperties properties) {
-		this.properties.SetProperties(properties.Label, properties.Author, properties.Description, properties.Date);
+		this.Properties.SetProperties(properties.Label, properties.Author, properties.Description, properties.Date);
 	}
 
 	private void OnPhotoTaken(CameraFrame photo) {
-		this.properties.Photo = photo;
-		RequestLauncher.Instance.MatchOrCreateDocument(this.properties, OnMatchOrCreateResult);
+		this.Properties.Photo = photo;
+		RequestLauncher.Instance.MatchOrCreateDocument(this.Properties, OnMatchOrCreateResult);
 	}
     
     void Update() {
-        if (!properties.Photographied) {
+        if (!Properties.Photographied) {
             if (useBlinkEffect)
             {
                 this.SetColor(visualBlinkEffect.Blink(Time.deltaTime));

@@ -13,13 +13,24 @@ public class DocumentProperties {
 	public CameraFrame	Photo			{ get; set; }
 
 	public DocumentProperties() { 
-		this.Id = this.GetHashCode();
+		this.Id = -1;
 		this.LinkId = -1;
 		this.Label = "undefined label";
 		this.Author = "undefined author";
 		this.Description = "undefined description";
 		this.Date = "00/00/0000";
 		this.Photographied = false;
+	}
+
+	public DocumentProperties(DocumentProperties props) {
+		this.Id = props.Id;
+		this.LinkId = props.LinkId;
+		this.Label = props.Label;
+		this.Author = props.Author;
+		this.Description = props.Description;
+		this.Date = props.Date;
+		this.Photographied = props.Photographied;
+		this.Photo = props.Photo;
 	}
 
 	public void SetProperties(string label, string author, string description, string date) {

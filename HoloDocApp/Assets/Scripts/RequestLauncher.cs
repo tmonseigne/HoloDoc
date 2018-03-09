@@ -56,7 +56,17 @@ public class RequestLauncher : Singleton<RequestLauncher> {
 	// During match or create, the image should be cropped and wrapped on the server.
 	// Corners (for cropping) are available in properties.Corners
 	IEnumerator MatchOrCreateDocumentRequest(DocumentProperties properties, OnMatchOrCreateDocumentCallback callback) {
-		yield return null;
+		throw new NotImplementedException();
+	}
+
+	// TODO
+	public void CreateLink(int[] ids) {
+		StartCoroutine(CreateLinkRequest(ids));
+	}
+
+	// TODO
+	IEnumerator CreateLinkRequest(int[] ids) {
+		throw new NotImplementedException();
 	}
 
 	public void DetectDocuments(Texture2D texture, OnDetectRequestCallback callback) {
