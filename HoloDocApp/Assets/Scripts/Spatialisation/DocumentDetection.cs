@@ -34,13 +34,15 @@ public class DocumentDetection : MonoBehaviour {
 
 		unsafe
 		{
+            /*
 			OpenCVInterop.SimpleDocsDetection(ref frame.Data[0], (uint)frame.Resolution.width, (uint)frame.Resolution.height, 
 				ref result[0], nbDocumentsMax, ref outDocumentsCount, ref outDocumentsCorners[0]);
-			/*
-			Color32 background = new Color32(0,0,0,1);
+            */
+
+            Color32 background = PersistentData.WorkspaceBackgroundColor;
 			OpenCVInterop.DocsDetection(ref frame.Data[0], (uint) frame.Resolution.width, (uint) frame.Resolution.height, 
 				background, ref outDocumentsCount, ref outDocumentsCorners[0]);
-			*/
+			
 		}
 
 		// /!\ TODO: Need to check that the size of the HoloLens camera is the same as the size of the camera on Unity

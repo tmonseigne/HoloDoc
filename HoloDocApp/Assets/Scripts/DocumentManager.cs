@@ -16,8 +16,8 @@ public class DocumentManager : MonoBehaviour, IInputClickHandler, IInputHandler 
 
     // Visual effect
     // Fade
-    public bool             useFadeEffect = false;
-    private ColorFadeEffect visualFadeEffect;
+    public bool             useBlinkEffect = false;
+    private ColorFadeEffect visualBlinkEffect;
 
     // Hide
     public bool     useMaskEffect = false;
@@ -47,12 +47,12 @@ public class DocumentManager : MonoBehaviour, IInputClickHandler, IInputHandler 
 		this.SetColor(Color);
 
         // Visual effect
-        visualFadeEffect = this.GetComponent<ColorFadeEffect>();
-        if (visualFadeEffect == null) {
-            useFadeEffect = false;
+        visualBlinkEffect = this.GetComponent<ColorFadeEffect>();
+        if (visualBlinkEffect == null) {
+            useBlinkEffect = false;
         }
         else {
-            visualFadeEffect.SetSourceColor(Color);
+            visualBlinkEffect.SetSourceColor(Color);
         }
     }
 
@@ -71,7 +71,7 @@ public class DocumentManager : MonoBehaviour, IInputClickHandler, IInputHandler 
 		else {
             properties.Photographied = true;
 
-            if (useFadeEffect) { 
+            if (useBlinkEffect) { 
                 this.SetColor(Color);
             }
 
@@ -110,9 +110,9 @@ public class DocumentManager : MonoBehaviour, IInputClickHandler, IInputHandler 
     
     void Update() {
         if (!properties.Photographied) {
-            if (useFadeEffect)
+            if (useBlinkEffect)
             {
-                this.SetColor(visualFadeEffect.Blink(Time.deltaTime));
+                this.SetColor(visualBlinkEffect.Blink(Time.deltaTime));
             }
         }
     }

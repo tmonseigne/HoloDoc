@@ -7,16 +7,26 @@ using HoloToolkit.Unity;
 
 public class PhotoCapturer : Singleton<PhotoCapturer> {
 
-    private PhotoCapture photoCaptureObject;
-    private Resolution cameraResolution;
-    private Texture2D photo;
+    private PhotoCapture    photoCaptureObject;
+    private Resolution      cameraResolution;
+    private Texture2D       photo;
+
+    [HideInInspector]
+    public bool HasFoundCamera;
 
     public delegate void OnPhotoTakenCallback(Texture2D photo, Matrix4x4 proj, Matrix4x4 world, bool projB, bool worldB, Resolution res);
 
 	// Use this for initialization
 	void Start () {
-        cameraResolution = PhotoCapture.SupportedResolutions.OrderByDescending((res) => res.width * res.height).First();
-        photo = new Texture2D(cameraResolution.width, cameraResolution.height);
+        try
+        {
+            cameraResolution = PhotoCapture.SupportedResolutions.OrderByDescending((res) => res.width * res.height).First();
+            photo = new Texture2D(cameraResolution.width, cameraResolution.height);
+        }
+        catch
+        {
+            HasFoundCamera = false;
+        }
     }
 
     void OnStoppedPhotoMode(PhotoCapture.PhotoCaptureResult result)
