@@ -58,3 +58,9 @@ node_modules/
 *_[Tt]ests/
 *.[Tt][Mm][Pp]
 
+# ============== #
+#  Unit Testing  #
+# ============== #
+**/coverage/
+**/mochawesome-report/
+**/.nyc_output/
