@@ -62,7 +62,14 @@ public class EventManager : MonoBehaviour, IInputClickHandler {
             PhotoCapturer.Instance.TakePhoto(OnPhotoTaken);
         }
         else {
-            PersistentData.WorkspaceBackgroundColor = backgroundColor;
+			CustomCameraParameters.ProjectionMatrix = Camera.main.projectionMatrix;
+			CustomCameraParameters.WorldMatrix = Camera.main.worldToCameraMatrix;
+			CustomCameraParameters.Resolution = new Resolution {
+				width = Camera.main.pixelWidth,
+				height = Camera.main.pixelHeight
+			};
+
+			PersistentData.WorkspaceBackgroundColor = backgroundColor;
             StartCoroutine(DoFade(backgroundColor));
         }
     }

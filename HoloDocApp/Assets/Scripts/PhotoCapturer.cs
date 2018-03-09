@@ -18,14 +18,17 @@ public class PhotoCapturer : Singleton<PhotoCapturer> {
 
 	// Use this for initialization
 	void Start () {
-        try
-        {
-            cameraResolution = PhotoCapture.SupportedResolutions.OrderByDescending((res) => res.width * res.height).First();
-            photo = new Texture2D(cameraResolution.width, cameraResolution.height);
+		if (WebCamTexture.devices.Length != 0) {
+            //cameraResolution = PhotoCapture.SupportedResolutions.OrderByDescending((res) => res.width * res.height).First();
+			cameraResolution = new Resolution {
+				width = 1280,
+				height = 720
+			};
+
+			photo = new Texture2D(cameraResolution.width, cameraResolution.height);
 			HasFoundCamera = true;
-        }
-        catch
-        {
+        } 
+		else {
             HasFoundCamera = false;
         }
     }
@@ -42,15 +45,16 @@ public class PhotoCapturer : Singleton<PhotoCapturer> {
         // Create a PhotoCapture object
         PhotoCapture.CreateAsync(false, delegate (PhotoCapture captureObject) {
             photoCaptureObject = captureObject;
-            CameraParameters cameraParameters = new CameraParameters();
-            cameraParameters.hologramOpacity = 0.0f;
-            cameraParameters.cameraResolutionWidth = cameraResolution.width;
-            cameraParameters.cameraResolutionHeight = cameraResolution.height;
-            cameraParameters.pixelFormat = CapturePixelFormat.BGRA32;
+			CameraParameters cameraParameters = new CameraParameters {
+				hologramOpacity = 0.0f,
+				cameraResolutionWidth = cameraResolution.width,
+				cameraResolutionHeight = cameraResolution.height,
+				pixelFormat = CapturePixelFormat.BGRA32
+			};
 
 
-            // Activate the camera
-            photoCaptureObject.StartPhotoModeAsync(cameraParameters, delegate (PhotoCapture.PhotoCaptureResult result) {
+			// Activate the camera
+			photoCaptureObject.StartPhotoModeAsync(cameraParameters, delegate (PhotoCapture.PhotoCaptureResult result) {
                 // Take a picture
                 photoCaptureObject.TakePhotoAsync((res, pcf) =>
                 {
