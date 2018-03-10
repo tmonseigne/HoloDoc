@@ -87,10 +87,16 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\src\DocDetector.cpp" />
+    <ClCompile Include="Contours.cpp" />
+    <ClCompile Include="Im_Features.cpp" />
     <ClCompile Include="Main.cpp" />
+    <ClCompile Include="Misc.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\src\DocDetector.hpp" />
+    <ClInclude Include="Contours.hpp" />
+    <ClInclude Include="Im_Features.hpp" />
+    <ClInclude Include="Misc.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
