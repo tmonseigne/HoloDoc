@@ -59,7 +59,6 @@ public class RequestLauncher : Singleton<RequestLauncher> {
 		throw new NotImplementedException();
 	}
 
-	// TODO
 	public void CreateLink(int[] ids) {
 		StartCoroutine(CreateLinkRequest(ids));
 	}

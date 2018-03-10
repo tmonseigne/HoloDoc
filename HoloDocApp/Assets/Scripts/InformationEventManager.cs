@@ -37,6 +37,9 @@ public class InformationEventManager : MonoBehaviour, IInputClickHandler {
 	private void OnKeyboardTextUpdated(string content) {
 		if (!string.IsNullOrEmpty(content)) {
 			selectedField.text = content;
+			// This line should go in the OnKeyboardSubmitted but atm there is a bug
+			// causing the event to be thrown too many times and the label ends up resetting for no reasons.
+			informationManager.InformationsChanged();
 		}
 	}
 
