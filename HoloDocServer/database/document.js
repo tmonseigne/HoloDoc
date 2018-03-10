@@ -2,9 +2,9 @@ var mongoose = require('mongoose');
 
 var documentSchema = mongoose.Schema({
   name: String,
-  label: mongoose.Schema.Types.ObjectId,
+  label: String,
   desc: String,
-  author: mongoose.Schema.Types.ObjectId,
+  author: String,
   date: Date,
   path: String,
   features: [Number],

@@ -29,7 +29,6 @@
   "dependencies": {
     "body-parser": "^1.18.2",
     "buffer-reverse": "^1.0.1",
-    "dxt": "^1.0.1",
     "express": "^4.16.2",
     "mongoose": "^5.0.9",
     "opencv4nodejs": "^3.0.3"
