@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 
 using HoloToolkit.Unity.InputModule;
+using System;
 
 public class DocumentManager : MonoBehaviour, IInputClickHandler, IInputHandler {
 
@@ -9,7 +10,7 @@ public class DocumentManager : MonoBehaviour, IInputClickHandler, IInputHandler 
 
 	private Material			material;
 	private DocumentMesh		mesh;
-	public DocumentProperties Properties { get; set; }
+	public DocumentProperties	Properties { get; set; }
 	private GameObject			informations;
 
     // Visual effect
@@ -40,6 +41,9 @@ public class DocumentManager : MonoBehaviour, IInputClickHandler, IInputHandler 
         informations = Instantiate(DocumentInformationsPrefab, 
 								   new Vector3(mesh.Centroid.x, mesh.Centroid.y, mesh.Centroid.z - 0.2f), 
 								   this.transform.rotation);
+		
+		informations.GetComponent<InformationManager>().SetProperties(this.Properties);
+		informations.GetComponent<InformationManager>().OnInformationModified += DocumentInformationsModifiedHandler;
 		informations.SetActive(false);
 		this.SetColor(Color);
 
@@ -53,6 +57,15 @@ public class DocumentManager : MonoBehaviour, IInputClickHandler, IInputHandler 
         }
     }
 
+	private void DocumentInformationsModifiedHandler(string author, string date, string description, string label) {
+		Debug.Log("Information modified detected");
+		this.Properties.Author = author;
+		this.Properties.Date = date;
+		this.Properties.Description = description;
+		this.Properties.Label = label;
+		Debug.Log("New properties : " + this.Properties.ToString());
+	}
+
 	public void SetColor(Color color) {
 		material.SetColor("_OutlineColor", color);
 	}
@@ -61,8 +74,8 @@ public class DocumentManager : MonoBehaviour, IInputClickHandler, IInputHandler 
 		// If the document is already photographied, toogle the informations
 		if (Properties.Photographied) {
 			informations.SetActive(!informations.activeInHierarchy);
-			if (informations.activeInHierarchy) {
-				informations.GetComponent<InformationManager>().UpdateInformations(this.Properties);
+			if (informations.activeInHierarchy) { 
+				informations.GetComponent<InformationManager>().UpdateDisplay();
 			}
 		}
 		else {

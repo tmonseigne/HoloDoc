@@ -4,39 +4,45 @@ using TMPro;
 
 public class InformationManager : MonoBehaviour {
 
-	public TextMeshPro Label		{ get; set; }
-	public TextMeshPro Author		{ get; set; }
-	public TextMeshPro Description	{ get; set; }
-	public TextMeshPro Date			{ get; set; }
+	public TextMeshPro Author;
+	public TextMeshPro Date;
+	public TextMeshPro Description;
+	public TextMeshPro Label;
 
+	private DocumentProperties currentProperties;
 	private GameObject additionalInformations;
 
-	void Awake() {
-		Label = transform.Find("Label").gameObject.GetComponent<TextMeshPro>();
-		Author = transform.Find("InfoMax/Author").gameObject.GetComponent<TextMeshPro>();
-		Description = transform.Find("InfoMax/Description").gameObject.GetComponent<TextMeshPro>();
-		Date = transform.Find("InfoMax/Date").gameObject.GetComponent<TextMeshPro>();
+	public delegate void OnInformationsModifiedCallback(string author, string date, string description, string label);
+	public event OnInformationsModifiedCallback OnInformationModified;
 
-		// Hide full informations in the first place
+	void Awake() {
 		additionalInformations = transform.Find("InfoMax").gameObject;
 		additionalInformations.SetActive(false);
 	}
 
-	public void UpdateInformations(DocumentProperties props) {
+	public void SetProperties(DocumentProperties properties) {
+		this.currentProperties = properties;
+	}
+
+	public void UpdateDisplay() {
 		if (Label != null) {
-			Label.text = props.Label;
+			Label.text = this.currentProperties.Label;
 		}
 
 		if (Description != null) {
-			Description.text = props.Description;
+			Description.text = this.currentProperties.Description;
 		}
 
 		if (Author != null) {
-			Author.text = props.Author;
+			Author.text = this.currentProperties.Author;
 		}
 
 		if (Date != null) {
-			Date.text = props.Date;
+			Date.text = this.currentProperties.Date;
 		}
+	}
+
+	public void InformationsChanged() {
+		OnInformationModified(Author.text, Date.text, Description.text, Label.text);
 	}
 }

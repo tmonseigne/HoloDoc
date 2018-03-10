@@ -85,7 +85,7 @@ public class EventManager : MonoBehaviour, IInputClickHandler {
         colorPreview.SetActive(false);
         yield return new WaitForSeconds(1.5f);
 
-        message.text = "This is the color we found. If you wish to redo the operation please double tap, otherwise just air tap to start working.";
+        message.text = "This is the color we found. If you wish to redo the operation please air tap again, otherwise just double tap to start working.";
         fadeEffect.Fade(message, 1.0f, 2.5f);
 
         colorRenderer.material.color = backgroundColor;

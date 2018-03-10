@@ -122,7 +122,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f7d964519f52eec418ca6166d6c52e41, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  DocumentInformationsPrefab: {fileID: 1386520727339780, guid: 2afad8046052062438c5163e5dfe0d9e,
+  DocumentInformationsPrefab: {fileID: 1286897235668394, guid: f10495dc53e68d448a2375e50b22f366,
     type: 2}
   Color: {r: 1, g: 1, b: 1, a: 0}
   useBlinkEffect: 0
