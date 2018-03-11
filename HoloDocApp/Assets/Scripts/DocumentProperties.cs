@@ -1,16 +1,18 @@
-﻿using UnityEngine;
+﻿using System;
 
 public class DocumentProperties {
-
-	public int			Id				{ get; set; }
-	public int			LinkId			{ get; set; }
-	public string		Label			{ get; set; }
-	public string		Author			{ get; set; }
-	public string		Description		{ get; set; }
-	public string		Date			{ get; set; }
-	public bool			Photographied	{ get; set; }
-	public int[]		Corners			{ get; set; }
-	public CameraFrame	Photo			{ get; set; }
+	public int Id;
+	public int LinkId;
+	public string Label;
+	public string Author;
+	public string Description;
+	public string Date;
+	[NonSerialized]
+	public bool Photographied;
+	[NonSerialized]
+	public int[] Corners;
+	[NonSerialized]
+	public CameraFrame Photo;
 
 	public DocumentProperties() { 
 		this.Id = -1;
