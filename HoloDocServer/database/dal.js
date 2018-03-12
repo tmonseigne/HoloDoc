@@ -4,6 +4,8 @@
  * Please only use these methods and not modify the database by yourself.
  **/
 
+var mongoose = require('mongoose');
+
 var models = require("./models.js");
 var events = require('events');
 
@@ -25,7 +27,7 @@ errorEventEmiter.raiseError = function (err){
 function saveModel (model, successCallback, errorCallback){
   try {
     model.save ( function (err) {
-      
+
       if (err) {
 	errorEventEmiter.raiseError(err);
 	return;
@@ -35,8 +37,8 @@ function saveModel (model, successCallback, errorCallback){
       {
 	successCallback(model);
       }
-      
-      console.log(model.constructor + " created !");
+
+      //console.log(model.constructor + " created !");
     });
   } catch (exception) {
     errorEventEmiter.raiseError(exception);
@@ -44,14 +46,14 @@ function saveModel (model, successCallback, errorCallback){
     {
       errorCallback(exception);
     }
-  }	
+  }
 };
 
 /**
  * Document access functions.
  * We only authorize creation, update and access operations.
  **/
-function createDocument (name, label, desc, author, date, path, features, captured, successCallback, errorCallback) {
+function createDocument (name, label, desc, author, date, path, features, successCallback, errorCallback) {
   var document = new models.Document({
     name: name,
     label: label,
@@ -69,17 +71,21 @@ function documentCount () {
   return models.db.connection.Document.count();
 }
 
-function updateDocument (id, modifications) {
-  models.Document.findByIdAndUpdate(id, modifications, function (err, document) {
+function updateDocument (id, modifications, callback) {
+  models.Document.findByIdAndUpdate(mongoose.Types.ObjectId(id), modifications).exec(function (err, document) {
     if (err) {
       errorEventEmiter.raiseError(err);
       return;
+    }
+
+    if (callback) {
+      callback(document);
     }
   });
 }
 
 function getDocuments (query, callback) {
-  models.Document.find(query, callback);
+  models.Document.find(query).exec(callback);
 }
 
 function matchFeatures (features, callback) {
@@ -91,7 +97,7 @@ function matchFeatures (features, callback) {
 /**
  * Link access functions.
  * We only authorize creation, deletion and access operations.
- * We also propose a function to check if two doccuments are 
+ * We also propose a function to check if two doccuments are
  * in a same conex component.
  **/
 function createLink(firstDocumentId, secondDocumentId, successCallback, errorCallback) {
@@ -123,39 +129,39 @@ function getNeighboors (links, from) {
  * return true if a path exists, false else.
  **/
 function areConnected (firstDocumentId, secondDocumentId, callback) {
-  models.Link.find({}, function (err, links) {
-    var marked = {};
-    var queue = new Queue();
-    
-    queue.enqueue(firstDocumentId);
+  models.Link.find({}).exec(function (err, links) {
+      var marked = {};
+      var queue = new Queue();
 
-    marked[firstDocumentId] = true;
+      queue.enqueue(firstDocumentId);
 
-    while (!queue.isEmpty) {
-      let current = queue.dequeue();
+      marked[firstDocumentId] = true;
 
-      if (current == secondDocumentId && callback) {
-	callback(true);
-	return;
+      while (!queue.isEmpty) {
+        let current = queue.dequeue();
+
+        if (current == secondDocumentId && callback) {
+  	       callback(true);
+  	        return;
+        }
+
+        let neighbors = getNeighboors(links, current);
+
+        neighbors.forEach(function (neighborLink) {
+  	let to = neighborLink.to;
+
+  	if (!marked[to]) {
+  	  queue.enqueue(to);
+  	  marked[to] = true;
+  	}
+        });
+
       }
 
-      let neighbors = getNeighboors(links, current);
-
-      neighbors.forEach(function (neighborLink) {
-	let to = neighborLink.to;
-
-	if (!marked[to]) {
-	  queue.enqueue(to);
-	  marked[to] = true;
-	}
-      });
-      
-    }
-
-    if (callback) {
-      callback(false);
-    }
-  });
+      if (callback) {
+        callback(false);
+      }
+    });
 }
 
 function deleteLink (linkId) {
@@ -167,6 +173,19 @@ function deleteLink (linkId) {
   });
 }
 
+function dropEverything (callback) {
+  let count = 0;
+
+  let fnc = function(err) {
+    if (++count == 2 && callback) {
+      callback();
+    }
+  };
+
+  models.Link.remove({},fnc);
+  models.Document.remove({},fnc);
+}
+
 /**
  * Exporting everything.
  **/
@@ -175,3 +194,6 @@ exports.updateDocument = updateDocument;
 exports.getDocuments = getDocuments;
 exports.areConnected = areConnected;
 exports.createLink = createLink;
+exports.deleteLink = deleteLink;
+
+exports.dropEverything = dropEverything;
