@@ -7,7 +7,7 @@ var dal = require ('../database/dal.js');
 
 describe('Testing database access layer - ', function() {
   this.timeout(5000);
-  let d1, d2, d3, l1, l2;
+  let d1, d2, d3, d4, l1, l2;
 
   beforeEach(function(done) {
     dal.createDocument('one', 'article', '', 'arnaud', Date.Now, 'one.png', [],
@@ -19,17 +19,23 @@ describe('Testing database access layer - ', function() {
             dal.createDocument('three', 'article', '', 'arnaud', Date.Now, 'three.png', [],
               function(doc3) {
                 d3 = doc3;
-                dal.createLink(doc1._id, doc2._id,
-                  function (link1){
-                    l1 = link1;
-                    dal.createLink(doc2._id, doc3._id,
-                      function (link2){
-                        l2 = link2;
-                        done();
-                      }, function (err){}
-                    );
-                  }, function (err){}
-                );
+                dal.createDocument('four', 'album', '', 'arnaud', Date.Now, 'four.png', [],
+                  function(doc4) {
+                    d4 = doc4;
+                  dal.createLink(doc1._id, doc2._id,
+                    function (link1){
+                      l1 = link1;
+                      dal.createLink(doc2._id, doc3._id,
+                        function (link2){
+                          l2 = link2;
+                          done();
+                        }, function (err){}
+                      );
+
+                    }, function (err){}
+                  );
+                }, function (err){}
+              );
               }, function (err){}
             );
           }, function (err){}
@@ -43,6 +49,7 @@ describe('Testing database access layer - ', function() {
       d1 = undefined;
       d2 = undefined;
       d3 = undefined;
+      d4 = undefined;
       l1 = undefined;
       l2 = undefined;
       done();
@@ -54,6 +61,7 @@ describe('Testing database access layer - ', function() {
       assert (d1 != undefined);
       assert (d2 != undefined);
       assert (d3 != undefined);
+      assert (d4 != undefined);
       assert (l1 != undefined);
       assert (l2 != undefined);
       done();
@@ -70,7 +78,7 @@ describe('Testing database access layer - ', function() {
     });
 
     it('Get Document function - search something that does not exist', function (done) {
-      dal.getDocuments({name: 'four'}, function (err, docs) {
+      dal.getDocuments({name: 'five'}, function (err, docs) {
         assert (docs.length == 0);
         done();
       });
@@ -90,15 +98,23 @@ describe('Testing database access layer - ', function() {
 
     it('Get Document function - get all', function (done) {
       dal.getDocuments({}, function (err, docs) {
-        assert (docs.length == 3);
+        assert (docs.length == 4);
         let doc1 = docs[0];
         let doc2 = docs[1];
         let doc3 = docs[2];
-        assert(doc1.name == d1.name);
-        assert(doc2.name == d2.name);
-        assert(doc3.name == d3.name);
+        let doc4 = docs[3];
+        assert(String(doc1._id) == String(d1._id));
+        assert(String(doc2._id) == String(d2._id));
+        assert(String(doc4._id) == String(d4._id));
         done();
       });
+    });
+
+    it('Get Document Count function', function (done) {
+      dal.getDocumentCount().then(function(count) {
+        assert(count == 4);
+        done();
+      })
     });
   });
 
@@ -115,6 +131,43 @@ describe('Testing database access layer - ', function() {
             done();
           });
         });
+      });
+    });
+  });
+
+  describe('Testing the areConnected function', function () {
+    it('Between two direct neighboors', function (done) {
+      dal.areConnected(String(d1._id), String(d2._id), function (connected) {
+        assert(connected);
+        done();
+      });
+    });
+
+    it('Between indirect neighboors', function (done) {
+      dal.areConnected(String(d1._id), String(d3._id), function (connected) {
+        assert(connected);
+        done();
+      });
+    });
+
+    it('Between two non connected document', function (done) {
+      dal.areConnected(String(d1._id), String(d4._id), function (connected) {
+        assert(!connected);
+        done();
+      });
+    });
+  });
+
+  describe('Testing the link suppression', function () {
+    it('Existing link', function (done) {
+      dal.deleteLink(d1._id, d2._id, function () {
+        done();
+      }, function () {});
+    });
+
+    it('Non Existing link', function (done) {
+      dal.deleteLink(d1._id, d3._id, function () {}, function () {
+        done();
       });
     });
   });

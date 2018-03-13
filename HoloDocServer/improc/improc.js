@@ -1,4 +1,7 @@
 const cv = require('opencv4nodejs');
+const mathjs = require('mathjs');
+
+var hogDescriptor = new cv.HOGDescriptor(new cv.Size(16, 16), new cv.Size(16,16), new cv.Size(16,16), new cv.Size(8, 8), 9);
 
 exports.detectDocuments = function (image, lower, upper) {
   const thresholdResult = image.inRange(lower, upper);
@@ -25,19 +28,73 @@ exports.detectDocuments = function (image, lower, upper) {
   }
 
   return result;
-}
+};
 
 exports.write = function (mat, filename) {
   cv.imwrite(filename, mat);
-}
+};
 
 exports.streamToMat = function (stream) {
   return cv.imdecode(stream);
-}
+};
 
 exports.matToStream = function (mat) {
 
+};
+
+const getHistAxis = (channel, bins) => ([
+  {
+    channel,
+    bins,
+    ranges: [0, 256]
+  }
+]);
+
+function getNormalizedHistogram(image, channel, bins) {
+  let nbPixels = image.cols * image.rows;
+  return cv.calcHist(image, getHistAxis(channel, bins)).div(nbPixels).transpose().getDataAsArray()[0];
 }
+
+exports.distance = function (features1, features2, coefs = [1,1,1,1,1,1]) {
+  let dist = 0;
+  let cummulativeCoef = 0;
+
+  for (let i = 0; i < features1.length; ++i) {
+    let lineDifSquaredSum = 0;
+    for (let j = 0; j < features1[i].length; ++j) {
+      let val = features1[i][j] - features2[i][j];
+      lineDifSquaredSum += val * val;
+    }
+
+    dist += coefs[i] * Math.sqrt(lineDifSquaredSum);
+    cummulativeCoef += coefs[i];
+  }
+
+  return dist / cummulativeCoef;
+};
+
+exports.extractFeatures = function (image, bins) {
+  let nbPixels = image.cols * image.rows;
+  
+  let hsv = image.cvtColor(cv.COLOR_BGR2HSV);
+
+  let histogramR = getNormalizedHistogram(image, 0, bins);
+  let histogramG = getNormalizedHistogram(image, 1, bins);
+  let histogramB = getNormalizedHistogram(image, 2, bins);
+  
+  let histogramH = getNormalizedHistogram(hsv, 0, bins);
+  let histogramS = getNormalizedHistogram(hsv, 1, bins);
+  let histogramV = getNormalizedHistogram(hsv, 2, bins);
+
+  let result = [];
+  result.push(histogramH, histogramS, histogramV, histogramR, histogramG, histogramB);
+  
+  return result;
+};
+
+function extractHOG (image) {
+  return hogDescriptor.compute(image);
+};
 
 var rotatedRectToPoints = function (rect) {
   let points = [];
