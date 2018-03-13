@@ -2,7 +2,8 @@
 
 using UnityEngine;
 
-public class DocumentAnimator : MonoBehaviour {
+public class DocAnimator : MonoBehaviour
+{
 	[Range(1.0f, 10.0f)]
 	public float ZoomSpeed = 4.0f;
 
@@ -16,14 +17,10 @@ public class DocumentAnimator : MonoBehaviour {
 	private bool zoomIn = false;
 	private bool zoomOut = false;
 
-	private Vector3		zoomSize;
-	private Vector3		initialScale;
-	private Vector3		initialPosition;
-	private Quaternion	initialRotation;
-
-	// Use this for initialization
-	void Awake() {
-	}
+	private Vector3 zoomSize;
+	private Vector3 initialScale;
+	private Vector3 initialPosition;
+	private Quaternion initialRotation;
 
 	void Start() {
 		initialScale = this.transform.localScale;
@@ -39,7 +36,8 @@ public class DocumentAnimator : MonoBehaviour {
 		}
 		else if (zoomOut) {
 			this.transform.localScale = Vector3.Lerp(this.transform.localScale, initialScale, ZoomSpeed * Time.deltaTime);
-			if (Vector3.Distance(this.transform.localScale, initialScale) < 0.005) {
+			if (Vector3.Distance(this.transform.localScale, initialScale) < 0.005)
+			{
 				this.transform.localScale = initialScale;
 				zoomOut = false;
 			}
@@ -65,11 +63,10 @@ public class DocumentAnimator : MonoBehaviour {
 		Quaternion rotation;
 		if (!isOpen) {
 			destination = Camera.main.transform.position + Camera.main.transform.forward * 1;
-			Vector3 offset = new Vector3(this.transform.localScale.x/2 + 0.1f, 0, 0);
+			Vector3 offset = new Vector3(this.transform.localScale.x / 2 + 0.05f, 0, 0);
 			Vector3 directionToTarget = Camera.main.transform.position - transform.position;
 			rotation = Quaternion.LookRotation(-directionToTarget);
 			StartCoroutine(OpenTransformation(destination - offset, rotation, TransformationSpeed));
-			this.GetComponent<DocumentManage>().SetInformationPosition(destination, 0.1f);
 		} else {
 			StartCoroutine(CloseTransformation(this.transform.position, this.transform.rotation, TransformationSpeed));
 		}

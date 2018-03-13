@@ -53,7 +53,7 @@ public class WelcomeActions : MonoBehaviour
 			Destroy(GameObject.Find("InputManager"));
 			Destroy(GameObject.Find("PhotoCapturer"));
 			Destroy(GameObject.Find("ColorPicker"));
-			SceneManager.LoadScene("NewHolodoc");
+			SceneManager.LoadScene("Holodoc");
 		}
 	}
 

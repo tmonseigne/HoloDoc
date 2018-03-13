@@ -1,6 +1,8 @@
 fileFormatVersion: 2
-guid: 6197ec11876cabf4d98fbb3ca13857e2
-timeCreated: 1520853504
+guid: 153a55fc1166feb4e8d173e580ecbaab
+labels:
+- Scene
+timeCreated: 1517859295
 licenseType: Free
 DefaultImporter:
   externalObjects: {}
