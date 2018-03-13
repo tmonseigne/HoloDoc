@@ -11,6 +11,8 @@ public class DocumentDetection : MonoBehaviour
 	private GameObject[] documents;
 	private GameObject[] spheres;
 
+	private float timeElapsed = 0;
+
 	// Getter DocumentsCorners
 	public int[] DocumentsCorners
 	{
@@ -30,7 +32,7 @@ public class DocumentDetection : MonoBehaviour
 			documents[i] = Instantiate(prefab) as GameObject;
 		}
 
-		uint nbSphere = nbDocumentsMax * 4 * 2;
+		uint nbSphere = nbDocumentsMax * 4;
 		spheres = new GameObject[nbSphere];
 		for (int i = 0; i < nbSphere; i++)
 		{
@@ -46,9 +48,16 @@ public class DocumentDetection : MonoBehaviour
 	// Update is called once per frame
 	void Update()
 	{
+		timeElapsed += Time.fixedDeltaTime;
+		if (timeElapsed < 0.1) { // Decreased Latency
+			return;
+		}
+		else {
+			timeElapsed = 0;
+		}
+		
 		CameraFrame frame = CameraStreamHoloLens.Instance.Frame;
 		uint outDocumentsCount = 0;
-		
 		
 		unsafe
 		{
@@ -59,7 +68,7 @@ public class DocumentDetection : MonoBehaviour
 			OpenCVInterop.DocsDetection(ref frame.Data[0], (uint) frame.Resolution.width, (uint) frame.Resolution.height,
 				background, ref outDocumentsCount, ref outDocumentsCorners[0]);
 		}
-
+		
 		int nbCorners = 4;
 		Vector3[] corners = new Vector3[nbCorners];
 		Vector3? corner = new Vector3?();
@@ -68,7 +77,7 @@ public class DocumentDetection : MonoBehaviour
 			for (int j = 0; j < nbCorners; j++) {
 				int offset = (i * nbCorners + j) * 2;
 				corner = ConvertPixelTo3DPos(new Vector2(outDocumentsCorners[offset], CustomCameraParameters.Resolution.height - outDocumentsCorners[offset + 1]));
-				corner2 = ConvertPixelTo3DPos2(new Vector2(outDocumentsCorners[offset], CustomCameraParameters.Resolution.height - outDocumentsCorners[offset + 1]));
+
 				if (corner == null) {
 					break;
 				}
@@ -76,18 +85,13 @@ public class DocumentDetection : MonoBehaviour
 				corners[j] = (Vector3)corner;
 
 				spheres[i * nbCorners + j].transform.position = (Vector3)corner;
-				spheres[i * nbCorners + j].GetComponent<Renderer>().material.color = Color.blue;
-
-				spheres[nbDocumentsMax * 4 + i * nbCorners + j].transform.position = (Vector3)corner2;
-				spheres[nbDocumentsMax * 4 + i * nbCorners + j].GetComponent<Renderer>().material.color = Color.red;
-
+				spheres[i * nbCorners + j].GetComponent<Renderer>().material.color = Color.red;
 			}
 
 			if (corner != null) {
 				documents[i].GetComponent<DocumentMesh>().CreateDocumentMesh(corners);
 			}
 		}
-
 
 		/* === IN PROGRESS, DO NOT DELETE IT! ===
 		// Method 1

@@ -68,6 +68,26 @@ public class RequestLauncher : Singleton<RequestLauncher> {
 		throw new NotImplementedException();
 	}
 
+	public void UpdateDocumentInformations(DocumentProperties properties) {
+		StartCoroutine(UpdateDocumentInformationsRequest(properties));
+	}
+
+	IEnumerator UpdateDocumentInformationsRequest(DocumentProperties properties) {
+		string url = "http://localhost:8080/document/update";
+		string data = JsonUtility.ToJson(properties);
+		Debug.Log(data);
+		using (UnityWebRequest www = UnityWebRequest.Post(url, data)) {
+			yield return www.SendWebRequest();
+
+			if (www.isNetworkError || www.isHttpError) {
+				Debug.Log(www.error);
+			}
+			else {
+				Debug.Log("Properties upload complete!");
+			}
+		}
+	}
+
 	public void DetectDocuments(Texture2D texture, OnDetectRequestCallback callback) {
 		DetectDocumentRequest(texture, callback);
 	}

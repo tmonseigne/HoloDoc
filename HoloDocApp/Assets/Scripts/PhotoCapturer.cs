@@ -14,7 +14,7 @@ public class PhotoCapturer : Singleton<PhotoCapturer> {
     [HideInInspector]
     public bool HasFoundCamera;
 
-    public delegate void OnPhotoTakenCallback(Texture2D photo, Matrix4x4 proj, Matrix4x4 world, bool projB, bool worldB, Resolution res);
+    public delegate void OnPhotoTakenCallback(Texture2D photo, Resolution res);
 
 	// Use this for initialization
 	void Start () {
@@ -59,14 +59,10 @@ public class PhotoCapturer : Singleton<PhotoCapturer> {
                 photoCaptureObject.TakePhotoAsync((res, pcf) =>
                 {
                     pcf.UploadImageDataToTexture(photo);
-                    Matrix4x4 world;
-                    Matrix4x4 proj;
-                    bool receivedWorld = pcf.TryGetCameraToWorldMatrix(out world);
-                    bool receivedProj = pcf.TryGetProjectionMatrix(out proj);
 
                     if (callback != null)
                     {
-                        callback.Invoke(photo, proj, world, receivedWorld, receivedProj, cameraResolution);
+                        callback.Invoke(photo, cameraResolution);
                     }
 
                     photoCaptureObject.StopPhotoModeAsync(OnStoppedPhotoMode);

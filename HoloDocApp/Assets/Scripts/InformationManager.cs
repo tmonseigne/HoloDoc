@@ -22,6 +22,7 @@ public class InformationManager : MonoBehaviour {
 
 	public void SetProperties(DocumentProperties properties) {
 		this.currentProperties = properties;
+		UpdateDisplay();
 	}
 
 	public void UpdateDisplay() {

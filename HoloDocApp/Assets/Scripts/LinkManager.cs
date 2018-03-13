@@ -173,4 +173,16 @@ public class LinkManager : Singleton<LinkManager> {
 
 		return colors;
 	}
+
+	Color getColor(uint color) {
+		if (color == 0) {
+			return Color.HSVToRGB(0, 1, 1);
+		}
+
+		int currentBinary = (int) Mathf.Floor(Mathf.Log(color, 2) + 1f);
+		float offset = 360f / (1 << currentBinary); 
+		float degreeColor = offset + 2 * offset * (color - (1 << (currentBinary - 1)));
+
+		return Color.HSVToRGB(degreeColor/360f, 1, 1);
+	}
 }

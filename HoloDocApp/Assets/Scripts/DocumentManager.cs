@@ -63,7 +63,7 @@ public class DocumentManager : MonoBehaviour, IInputClickHandler, IInputHandler 
 		this.Properties.Date = date;
 		this.Properties.Description = description;
 		this.Properties.Label = label;
-		Debug.Log("New properties : " + this.Properties.ToString());
+		RequestLauncher.Instance.UpdateDocumentInformations(this.Properties);
 	}
 
 	public void SetColor(Color color) {
