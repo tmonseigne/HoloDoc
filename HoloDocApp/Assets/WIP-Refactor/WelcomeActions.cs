@@ -8,21 +8,25 @@ using TMPro;
 public class WelcomeActions : MonoBehaviour
 {
 	public GlobalInputReciever GlobalInput;
-	public GameObject colorPreview;
-	public TextMeshPro message;
+	public GameObject UIContainer;
+
+	private GameObject colorFoundUI;
+	private TextMeshPro textMeshPro;
+
+	private CustomFade fadeEffect;
 
 	private bool backgroundColorPicked = false;
 	private bool processing = false;
-
-	private CustomFade fadeEffect;
-	private Renderer colorRenderer;
+	
 
 	void Start() {
 		GlobalInput.OnSingleTap += SingleTap;
 		GlobalInput.OnDoubleTap += DoubleTap;
 
 		fadeEffect = this.GetComponent<CustomFade>();
-		colorRenderer = colorPreview.GetComponent<Renderer>();
+
+		textMeshPro = UIContainer.transform.GetChild(0).gameObject.GetComponent<TextMeshPro>();
+		colorFoundUI = UIContainer.transform.GetChild(1).gameObject;
 	}
 
 	void SingleTap(float delay) {
@@ -46,7 +50,10 @@ public class WelcomeActions : MonoBehaviour
 
 	void DoubleTap() {
 		if (backgroundColorPicked && !processing) {
-			SceneManager.LoadScene("HoloDoc");
+			Destroy(GameObject.Find("InputManager"));
+			Destroy(GameObject.Find("PhotoCapturer"));
+			Destroy(GameObject.Find("ColorPicker"));
+			SceneManager.LoadScene("NewHolodoc");
 		}
 	}
 
@@ -56,15 +63,14 @@ public class WelcomeActions : MonoBehaviour
 	}
 
 	IEnumerator FadeEffect(Color backgroundColor) {
-		fadeEffect.Fade(message, 0.0f, 2.5f);
-		colorPreview.SetActive(false);
+		fadeEffect.Fade(textMeshPro, 0.0f, 2.5f);
 		yield return new WaitForSeconds(1.5f);
 
-		message.text = "This is the color we found. If you wish to redo the operation please air tap again, otherwise just double tap to start working.";
-		fadeEffect.Fade(message, 1.0f, 2.5f);
+		textMeshPro.text = "If you wish to redo the operation please air tap again, otherwise just double tap to start working.";
+		fadeEffect.Fade(textMeshPro, 1.0f, 2.5f);
 
-		colorRenderer.material.color = backgroundColor;
-		colorPreview.SetActive(true);
+		colorFoundUI.transform.GetChild(1).GetComponent<Renderer>().material.color = backgroundColor;
+		colorFoundUI.SetActive(true);
 
 		processing = false;
 		backgroundColorPicked = true;
