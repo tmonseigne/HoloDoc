@@ -1,16 +1,18 @@
 #include <chrono>
 #include <conio.h>	// _getch
 #include <cstdlib>
+#include <string>
 #include <iostream>
+#include <fstream>
 #include "DocDetector.hpp"
 #include "Misc.hpp"
 #include "Contours.hpp"
-#include "Reco.hpp"
+#include "Im_Features.hpp"
+
 
 #include <set>
 #include <opencv2/highgui.hpp>
 #include <opencv2/imgproc.hpp>
-#include "Im_Features.hpp"
 
 using namespace std;
 using namespace std::chrono;
@@ -410,23 +412,64 @@ int TestsDLLFunction(const int i = 0)
 
 void TestsReco()
 {
+	const int num_im = 10;
 	const string Path = PATH + "Reco_Tests/";
-	for(int i = 1; i < 31; ++i) {
+	Im_Features F[num_im];
+
+	for(int i = 0; i < num_im; ++i) {
 		cout << "==============================" << endl;
-		cout << "===== Test Reco Image " << to_string(i) << " =====" << endl;
-		const Mat Src = imread(Path + to_string(i) + EXT, CV_LOAD_IMAGE_COLOR);
-		
-		Im_Features F;
-		F.setImage(Src);
-		F.ExtractFeatures();
-		cout << F;
-		imwrite(Path + to_string(i) + "_Gray" + EXT, F._Gray);
-		imwrite(Path + to_string(i) + "_HSV" + EXT, F._HSV);
-		imwrite(Path + to_string(i) + "_Quantized" + EXT, F._Quantized);
-		//imshow("Q", F._Quantized);
-		//waitKey(0);
+		cout << "===== Test Reco Image " << to_string(i+1) << " =====" << endl;
+		const string tmp_name = Path + to_string(i + 1);
+		cout << tmp_name << endl;
+		const Mat Src = imread(tmp_name + EXT, CV_LOAD_IMAGE_COLOR);
+		F[i].ExtractFeatures(Src);
+		cout << F[i];
+		F[i].ToCSV(tmp_name + ".csv");
 		cout << "==============================" << endl << endl;
 	}
+
+	cout << "===========================================" << endl;
+	cout << "===== C'est l'heure du Dududududuel ! =====" << endl;
+	double Dists[num_im][num_im];
+	for (int i = 0; i < num_im; ++i) {
+		for (int j = 0; j < num_im; ++j) {
+			Dists[i][j] = F[i].Distance(F[j]);
+		}
+	}
+	
+	for(int i = 0; i < num_im; ++i) {
+		for (int j = i+1; j < num_im; ++j) {
+			cout << i+1 << " VS " << j+1 << " Dist = " << Dists[i][j] << endl;
+		}
+		cout << endl;
+	}
+	cout << "===========================================" << endl << endl;
+
+	cout << "==========================" << endl;
+	cout << "===== Enregistrement =====" << endl;
+	ofstream myfile;
+	myfile.open(Path + "Distances.csv");
+	//First Row
+	myfile << "i\\j";
+	for (int i = 0; i < num_im; ++i) {
+		myfile << ";" << i + 1;
+	}
+	myfile << "\n";
+	//Rows
+	for (int i = 0; i < num_im; ++i) {
+		myfile << i+1;
+		for (int j = 0; j <= i;++j) {
+			myfile << ";" << Dists[i][j];
+		}
+		for (int j = i+1; j < num_im; ++j) {
+			myfile << "; ";
+		}
+		myfile << "\n";
+	}
+
+	myfile.close();
+	cout << "==========================" << endl << endl;
+	
 }
 
 int main(int argc, char *argv[])
@@ -437,13 +480,12 @@ int main(int argc, char *argv[])
 
 	cout.precision(5);
 	cout << fixed;
-	/*
+	
 	for (int i = 0; i < NAMES.size(); ++i) {
 		//TestsEdge(i);
 		//TestsContour(i);
-		TestsDLLFunction(i);
+		//TestsDLLFunction(i);
 	}
-	*/
 	
 	TestsReco();
 	cout << endl << "That's all Folks !" << endl;

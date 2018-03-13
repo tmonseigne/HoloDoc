@@ -5,24 +5,23 @@
 class Im_Features
 {
 public:
-	cv::Mat _Src, _Gray, _HSV, _Quantized;
+	const int _HistoChans = 6;
+	int _HistoBins,
+		_HOGBins;
+	std::vector<double> _Histograms;
+	std::vector<double> _HOG;
 
-	const int _HistoBins = 10;
-	std::vector<double> _Histogram;
-	std::vector<double> _Stats;
-
-	Im_Features();
+	explicit Im_Features(int histo_bins = 10, int hog_bins = 10);
 	virtual ~Im_Features();
 
-	void setImage(const cv::Mat &image);
-	void ExtractFeatures();
 	void ExtractFeatures(const cv::Mat &image);
+	double Distance(const Im_Features &features, std::vector<double> coefs = {0,2,1,2,1,1,1});
 
+	void ToCSV(const std::string &filename);
 	friend std::ostream &operator <<(std::ostream &os, const Im_Features &obj);
 
 private:
-	void mixChannels(const cv::Mat &in, cv::Mat &out, std::vector<double> alpha) const;
-	void colorQuantization(const int k = 5);
-	void findDominantColor();
+	void extractHistograms(const cv::Mat &image);
+	void extractHOG(const cv::Mat &image);
 };
 
