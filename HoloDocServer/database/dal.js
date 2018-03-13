@@ -51,7 +51,7 @@ function saveModel (model, successCallback, errorCallback){
  * Document access functions.
  * We only authorize creation, update and access operations.
  **/
-function createDocument (name, label, desc, author, date, path, features, captured, successCallback, errorCallback) {
+function createDocument (name, label, desc, author, date, path, features, successCallback, errorCallback) {
   var document = new models.Document({
     name: name,
     label: label,
