@@ -68,7 +68,7 @@ function createDocument (name, label, desc, author, date, path, features, succes
 }
 
 function documentCount () {
-  return models.db.connection.Document.count();
+  return models.db.connection.collections.documents.count();
 }
 
 function updateDocument (id, modifications, callback) {
@@ -117,7 +117,7 @@ function createLink(firstDocumentId, secondDocumentId, successCallback, errorCal
 function getNeighboors (links, from) {
   let result = [];
 
-  links.filter(function (link) {
+  result = links.filter(function (link) {
     return link.from == from;
   });
 
@@ -129,31 +129,33 @@ function getNeighboors (links, from) {
  * return true if a path exists, false else.
  **/
 function areConnected (firstDocumentId, secondDocumentId, callback) {
+  let first = String(firstDocumentId);
+  let second = String(secondDocumentId);
+
   models.Link.find({}).exec(function (err, links) {
       var marked = {};
       var queue = new Queue();
 
-      queue.enqueue(firstDocumentId);
+      queue.enqueue(first);
 
-      marked[firstDocumentId] = true;
+      marked[first] = true;
 
-      while (!queue.isEmpty) {
+      while (!queue.isEmpty()) {
         let current = queue.dequeue();
 
-        if (current == secondDocumentId && callback) {
-  	       callback(true);
-  	        return;
+        if (current == second && callback) {
+           callback(true);
+           return;
         }
 
         let neighbors = getNeighboors(links, current);
 
         neighbors.forEach(function (neighborLink) {
-  	let to = neighborLink.to;
-
-  	if (!marked[to]) {
-  	  queue.enqueue(to);
-  	  marked[to] = true;
-  	}
+        	let to = String(neighborLink.to);
+        	if (!marked[to]) {
+        	  queue.enqueue(to);
+        	  marked[to] = true;
+        	}
         });
 
       }
@@ -164,12 +166,24 @@ function areConnected (firstDocumentId, secondDocumentId, callback) {
     });
 }
 
-function deleteLink (linkId) {
-  models.Link.findByIdAndRemove(linkId, function(err, link){
-    if (err) {
-      errorEventEmiter.raiseError(err);
-      return;
-    }
+function deleteLink (from, to, successCallback, errorCallback) {
+  let idForward, idBackward;
+
+  models.Link.find({from:from, to:to}).exec(function (fferr, flinks) {
+    idForward = flinks.length == 1 ? flinks[0]._id : undefined;
+    models.Link.find({from:to, to:from}).exec(function (fberr, blinks) {
+        idBackward = blinks.length == 1 ? blinks[0]._id : undefined;
+
+        if (idForward && idBackward) {
+          models.Link.findByIdAndRemove(idForward, function (ferr, flink) {
+            models.Link.findByIdAndRemove(idBackward, function (berr, blink) {
+              successCallback();
+            });
+          });
+        } else {
+          errorCallback();
+        }
+    });
   });
 }
 
@@ -195,5 +209,5 @@ exports.getDocuments = getDocuments;
 exports.areConnected = areConnected;
 exports.createLink = createLink;
 exports.deleteLink = deleteLink;
-
+exports.getDocumentCount = documentCount;
 exports.dropEverything = dropEverything;
