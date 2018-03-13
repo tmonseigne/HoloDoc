@@ -3,14 +3,13 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class HoloDocAction : MonoBehaviour {
-
-	public GameObject documentPanel;
-	public Texture2D defaultTexture;
-	public GameObject GlobalInputReciever;
-
-	private bool photoMode = true;
+	
+	public GameObject	GlobalInputReciever;
+	public Texture2D	DefaultTexture;
 
 	private GlobalInputReciever GlobalInput;
+	private bool photoMode = true;
+
 	void Start() {
 		GlobalInput = GlobalInputReciever.GetComponent<GlobalInputReciever>();
 		GlobalInput.OnSingleTap += SingleTap;
@@ -32,10 +31,10 @@ public class HoloDocAction : MonoBehaviour {
 				PhotoCapturer.Instance.TakePhoto(OnPhotoTaken);
 			} else {
 				Resolution defaultTextureResolution = new Resolution {
-					width = defaultTexture.width,
-					height = defaultTexture.height
+					width = DefaultTexture.width,
+					height = DefaultTexture.height
 				};
-				OnPhotoTaken(defaultTexture, defaultTextureResolution);
+				OnPhotoTaken(DefaultTexture, defaultTextureResolution);
 			}
 		}
 	}

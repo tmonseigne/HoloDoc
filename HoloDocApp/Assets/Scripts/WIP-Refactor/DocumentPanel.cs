@@ -8,7 +8,6 @@ public class DocumentPanel : Singleton<DocumentPanel> {
 	/* TODO :
 	 *  - Fix bug onFocus (focus still enabled after we clicked on the document)
 	 *  - Fix error "System.NotImplementedException()" on function "OnInputDown" and "OnInputUp"
-	 *  - Fix error preview : when you take a new picture, all preview become the new picture.
 	 *  - Fix rotation (when it's >180 degrees?)
 	 * */
 

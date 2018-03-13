@@ -5,7 +5,7 @@ using TMPro;
 public class InfoManager : MonoBehaviour
 {
 	private TextMeshPro Label, Author, Date, Description;
-	private DocumentProperties currentProperties;
+	private DocProperties currentProperties;
 
 	public delegate void OnInformationsModifiedCallback(string author, string date, string description, string label);
 	public event OnInformationsModifiedCallback OnInformationModified;
@@ -22,7 +22,7 @@ public class InfoManager : MonoBehaviour
 		this.transform.Find("Date").gameObject.transform.localPosition = new Vector3(8f, -5, 0);
 		this.transform.Find("Description").gameObject.transform.localPosition = new Vector3(-0.64f, -8.9f, 0);
 	}
-	public void SetProperties(DocumentProperties properties) {
+	public void SetProperties(DocProperties properties) {
 		this.currentProperties = properties;
 		UpdateDisplay();
 	}

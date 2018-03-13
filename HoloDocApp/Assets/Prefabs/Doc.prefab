@@ -81,7 +81,7 @@ GameObject:
   - component: {fileID: 114835185435935102}
   m_Layer: 0
   m_Name: Doc
-  m_TagString: Untagged
+  m_TagString: Document
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -139,6 +139,7 @@ GameObject:
   - component: {fileID: 33930872702676056}
   - component: {fileID: 64638646808161238}
   - component: {fileID: 23091587382744008}
+  - component: {fileID: 114407217484866404}
   m_Layer: 0
   m_Name: DocPreview
   m_TagString: Untagged
@@ -630,6 +631,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 48e11bd754027b641aa680cf9624b166, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &114407217484866404
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1958249218645510}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fbf3575480402db40813e763382412fb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  color: {r: 1, g: 0, b: 0, a: 0}
+  eraseRenderer: 0
+  originalLayer: 0
+  originalMaterials: []
 --- !u!114 &114417600701392892
 MonoBehaviour:
   m_ObjectHideFlags: 1

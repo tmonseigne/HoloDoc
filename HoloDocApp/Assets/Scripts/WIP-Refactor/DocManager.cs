@@ -3,10 +3,12 @@ using System.Collections;
 using HoloToolkit.Unity.InputModule;
 
 public class DocManager : MonoBehaviour, IInputHandler, IInputClickHandler, IFocusable {
-	private GameObject docPreview, docInformations;
 
+	[HideInInspector]
+	public DocProperties Properties;
+
+	private GameObject docPreview, docInformations;
 	private Material material;
-	private DocumentProperties properties;
 	private DocAnimator animator;
 
 
@@ -15,11 +17,10 @@ public class DocManager : MonoBehaviour, IInputHandler, IInputClickHandler, IFoc
 		docInformations = transform.Find("DocInformations").gameObject;
 		docInformations.SetActive(false);
 
-		properties = new DocumentProperties();
-		docInformations.GetComponent<InfoManager>().SetProperties(this.properties);
+		this.Properties = new DocProperties();
+		docInformations.GetComponent<InfoManager>().SetProperties(this.Properties);
 		docInformations.GetComponent<InfoManager>().OnInformationModified += DocumentInformationsModifiedHandler;
 
-		properties = new DocumentProperties();
 		animator = this.transform.GetComponent<DocAnimator>();
 	}
 
@@ -50,27 +51,39 @@ public class DocManager : MonoBehaviour, IInputHandler, IInputClickHandler, IFoc
 		this.docPreview.transform.localScale = new Vector3(finalWidth, finalHeight, 1);
 		this.docPreview.transform.GetComponent<Renderer>().material.mainTexture = photo;
 
-		//this.properties.Photo = photo;
+		Resolution resolution = new Resolution() {
+			width = photo.width,
+			height = photo.height
+		};
+		CameraFrame cameraFrame = new CameraFrame(resolution, photo.GetPixels32());
+		this.Properties.Photo = cameraFrame;
+		this.Properties.Photographied = true;
+	}
+
+	public void SetColor(Color color) {
+		// TODO: Repare the outline shader or tuned the outline effect dependency.
+		//this.docPreview.transform.GetComponent<Renderer>().material.SetColor("_OutlineColor", color);
 	}
 
 	private void DocumentInformationsModifiedHandler(string author, string date, string description, string label) {
-		this.properties.Author = author;
-		this.properties.Date = date;
-		this.properties.Description = description;
-		this.properties.Label = label;
-		RequestLauncher.Instance.UpdateDocumentInformations(this.properties);
+		this.Properties.Author = author;
+		this.Properties.Date = date;
+		this.Properties.Description = description;
+		this.Properties.Label = label;
+		//RequestLauncher.Instance.UpdateDocumentInformations(this.properties);
 	}
 
 	public void OnInputDown(InputEventData eventData) {
-		// Links !
-		throw new System.NotImplementedException();
+		if (Properties.Photographied) {
+			DocLinkManager.Instance.OnLinkStarted(this.gameObject);
+		}
 	}
 
 	public void OnInputUp(InputEventData eventData) {
-		// Links !
-		throw new System.NotImplementedException();
+		if (Properties.Photographied) {
+			DocLinkManager.Instance.OnLinkEnded(this.gameObject);
+		}
 	}
-
 
 	public void OnInputClicked(InputClickedEventData eventData) {
 		DocumentPanel.Instance.SetFocusedDocument(this.transform.gameObject);
@@ -92,4 +105,5 @@ public class DocManager : MonoBehaviour, IInputHandler, IInputClickHandler, IFoc
 	public void Toggle() {
 		docPreview.SetActive(!docPreview.activeInHierarchy);
 	}
+
 }

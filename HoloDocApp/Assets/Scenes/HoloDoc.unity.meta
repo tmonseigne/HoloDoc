@@ -1,5 +1,7 @@
 fileFormatVersion: 2
 guid: 6197ec11876cabf4d98fbb3ca13857e2
+labels:
+- Scene
 timeCreated: 1520853504
 licenseType: Free
 DefaultImporter:
