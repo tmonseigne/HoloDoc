@@ -24,9 +24,7 @@ public class InfoManager : MonoBehaviour
 	}
 
 	public void UpdateDisplay() {
-		Debug.Log("UpdateDisplay");
 		if (Label != null) {
-			Debug.Log("Label != null");
 			Label.text = this.currentProperties.Label;
 		}
 

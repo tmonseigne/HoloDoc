@@ -29,6 +29,11 @@ public class DocAnimator : MonoBehaviour
 		initialPosition = this.transform.position;
 	}
 
+	public void SetInitialTransformation(Vector3 position, Quaternion rotation) {
+		initialPosition = position;
+		initialRotation = rotation;
+	}
+
 	// Update is called once per frame
 	void Update() {
 		if (zoomIn) {
@@ -59,13 +64,11 @@ public class DocAnimator : MonoBehaviour
 	}
 
 	public void PerformAnimation() {
-		Vector3 destination;
-		Quaternion rotation;
 		if (!isOpen) {
-			destination = Camera.main.transform.position + Camera.main.transform.forward * 1;
-			Vector3 offset = new Vector3(this.transform.localScale.x / 2 + 0.05f, 0, 0);
-			Vector3 directionToTarget = Camera.main.transform.position - transform.position;
-			rotation = Quaternion.LookRotation(-directionToTarget);
+			Vector3 destination = Camera.main.transform.position + Camera.main.transform.forward;
+			Vector3 offset = Camera.main.transform.right * this.transform.localScale.x / 2f;
+			Vector3 directionToTarget = Camera.main.transform.position - this.transform.position;
+			Quaternion rotation = Quaternion.LookRotation(-directionToTarget);
 			StartCoroutine(OpenTransformation(destination - offset, rotation, TransformationSpeed));
 		} else {
 			StartCoroutine(CloseTransformation(this.transform.position, this.transform.rotation, TransformationSpeed));
@@ -74,11 +77,9 @@ public class DocAnimator : MonoBehaviour
 	}
 
 	IEnumerator OpenTransformation(Vector3 targetPosition, Quaternion targetRotation, float speed) {
-		for (float t = 0f; t < 1f; t += speed * Time.deltaTime) {
-			this.transform.position = Vector3.Lerp(initialPosition, targetPosition, t);
-			this.transform.rotation = Quaternion.Lerp(initialRotation, targetRotation, t);
-			// NOTE : The zoom is still effective here.
-			// Maybe we should zoom out it while openning and zoom in while closing.
+		for (float time = 0f; time < 1f; time += speed * Time.deltaTime) {
+			this.transform.position = Vector3.Lerp(initialPosition, targetPosition, time);
+			this.transform.rotation = Quaternion.Lerp(initialRotation, targetRotation, time);
 			yield return null;
 		}
 		this.transform.position = targetPosition;
@@ -86,11 +87,9 @@ public class DocAnimator : MonoBehaviour
 	}
 
 	IEnumerator CloseTransformation(Vector3 currentPosition, Quaternion currentRotation, float speed) {
-		for (float t = 0f; t < 1f; t += speed * Time.deltaTime) {
-			this.transform.position = Vector3.Lerp(currentPosition, initialPosition, t);
-			this.transform.rotation = Quaternion.Lerp(currentRotation, initialRotation, t);
-			// NOTE : The zoom is still effective here.
-			// Maybe we should zoom out it while openning and zoom in while closing.
+		for (float time = 0f; time < 1f; time += speed * Time.deltaTime) {
+			this.transform.position = Vector3.Lerp(currentPosition, initialPosition, time);
+			this.transform.rotation = Quaternion.Lerp(currentRotation, initialRotation, time);
 			yield return null;
 		}
 		this.transform.position = initialPosition;
