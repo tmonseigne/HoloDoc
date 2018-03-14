@@ -25,13 +25,12 @@ public class DocAnimator : MonoBehaviour
 	void Start() {
 		initialScale = this.transform.localScale;
 		zoomSize = initialScale * ZoomFactor;
-		initialRotation = this.transform.rotation;
-		initialPosition = this.transform.position;
+		InitTransform();
 	}
 
-	public void SetInitialTransformation(Vector3 position, Quaternion rotation) {
-		initialPosition = position;
-		initialRotation = rotation;
+	public void InitTransform() {
+		initialRotation = this.transform.rotation;
+		initialPosition = this.transform.position;
 	}
 
 	// Update is called once per frame
