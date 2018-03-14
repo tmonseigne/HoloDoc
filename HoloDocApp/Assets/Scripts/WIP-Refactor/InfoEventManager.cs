@@ -9,11 +9,11 @@ using TMPro;
 
 public class InfoEventManager : MonoBehaviour, IInputClickHandler
 {
-	private InformationManager informationManager;
+	private InfoManager informationManager;
 	private TextMeshPro selectedField = null;
 
 	void Awake() {
-		informationManager = this.transform.root.GetComponent<InformationManager>();
+		informationManager = this.transform.parent.GetComponent<InfoManager>();
 		Keyboard.Instance.OnTextSubmitted += OnKeyboardSubmitted;
 		Keyboard.Instance.OnClosed += OnKeyboardClosed;
 	}
@@ -51,7 +51,7 @@ public class InfoEventManager : MonoBehaviour, IInputClickHandler
 		if (eventData.selectedObject == null) {
 			return;
 		}
-
+	
 		string editField = eventData.selectedObject.name;
 		Keyboard.LayoutType keyboardLayout = Keyboard.LayoutType.Alpha;
 		switch (editField) { 
@@ -69,6 +69,8 @@ public class InfoEventManager : MonoBehaviour, IInputClickHandler
 				selectedField = informationManager.Description;
 				break;
 		}
+
+		Keyboard.Instance.RepositionKeyboard(this.transform);
 
 		// We need to subscribe to this event after we set the variable currentField otherwise it is not working (???)
 		Keyboard.Instance.OnTextUpdated += OnKeyboardTextUpdated;

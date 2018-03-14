@@ -6,6 +6,7 @@ public class DocManager : MonoBehaviour, IInputHandler, IInputClickHandler, IFoc
 
 	[HideInInspector]
 	public DocProperties Properties;
+	public GameObject OutlineQuad;
 
 	private GameObject docPreview, docInformations;
 	private Material material;
@@ -18,13 +19,14 @@ public class DocManager : MonoBehaviour, IInputHandler, IInputClickHandler, IFoc
 		docInformations.SetActive(false);
 
 		this.Properties = new DocProperties();
-		docInformations.GetComponent<InfoManager>().SetProperties(this.Properties);
-		docInformations.GetComponent<InfoManager>().OnInformationModified += DocumentInformationsModifiedHandler;
 
 		animator = this.transform.GetComponent<DocAnimator>();
 	}
 
 	void Start() {
+		docInformations.GetComponent<InfoManager>().SetProperties(this.Properties);
+		docInformations.GetComponent<InfoManager>().OnInformationModified += DocumentInformationsModifiedHandler;
+
 		StartCoroutine(WaitForInstantiate());
 	}
 
@@ -55,14 +57,14 @@ public class DocManager : MonoBehaviour, IInputHandler, IInputClickHandler, IFoc
 			width = photo.width,
 			height = photo.height
 		};
+
 		CameraFrame cameraFrame = new CameraFrame(resolution, photo.GetPixels32());
 		this.Properties.Photo = cameraFrame;
-		this.Properties.Photographied = true;
 	}
 
 	public void SetColor(Color color) {
-		// TODO: Repare the outline shader or tuned the outline effect dependency.
-		//this.docPreview.transform.GetComponent<Renderer>().material.SetColor("_OutlineColor", color);
+		this.OutlineQuad.SetActive(true);
+		this.OutlineQuad.GetComponent<Renderer>().material.color = color;
 	}
 
 	private void DocumentInformationsModifiedHandler(string author, string date, string description, string label) {
@@ -74,15 +76,11 @@ public class DocManager : MonoBehaviour, IInputHandler, IInputClickHandler, IFoc
 	}
 
 	public void OnInputDown(InputEventData eventData) {
-		if (Properties.Photographied) {
-			DocLinkManager.Instance.OnLinkStarted(this.gameObject);
-		}
+		DocLinkManager.Instance.OnLinkStarted(this.gameObject);
 	}
 
 	public void OnInputUp(InputEventData eventData) {
-		if (Properties.Photographied) {
-			DocLinkManager.Instance.OnLinkEnded(this.gameObject);
-		}
+		DocLinkManager.Instance.OnLinkEnded(this.gameObject);
 	}
 
 	public void OnInputClicked(InputClickedEventData eventData) {

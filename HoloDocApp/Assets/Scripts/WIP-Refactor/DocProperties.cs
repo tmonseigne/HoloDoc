@@ -8,10 +8,7 @@ public class DocProperties
 	public string Author;
 	public string Description;
 	public string Date;
-	[NonSerialized]
-	public bool Photographied;
-	[NonSerialized]
-	public int[] Corners;
+
 	[NonSerialized]
 	public CameraFrame Photo;
 
@@ -23,7 +20,6 @@ public class DocProperties
 		this.Author = "undefined author";
 		this.Description = "undefined description";
 		this.Date = "00/00/0000";
-		this.Photographied = false;
 	}
 
 	public DocProperties(DocProperties props)
@@ -34,7 +30,6 @@ public class DocProperties
 		this.Author = props.Author;
 		this.Description = props.Description;
 		this.Date = props.Date;
-		this.Photographied = props.Photographied;
 		this.Photo = props.Photo;
 	}
 
@@ -51,6 +46,6 @@ public class DocProperties
 	override public string ToString()
 	{
 		return "Unique ID: " + Id + "\nauthor: " + Author + "\nlabel: " + Label + "\ndescription: " +
-			   Description + "\ndate: " + Date + "\nphoto available: " + Photographied;
+			   Description + "\ndate: " + Date;
 	}
 }

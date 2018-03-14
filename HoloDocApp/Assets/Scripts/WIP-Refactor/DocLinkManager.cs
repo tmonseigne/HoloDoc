@@ -62,6 +62,7 @@ public class DocLinkManager : Singleton<DocLinkManager>
 					if (head.LinkId == tail.LinkId)
 					{
 						Debug.Log("Tail and head are already linked and plus they are in the same link → Over !");
+						// TODO: Destroy links here.
 					}
 					else
 					{
