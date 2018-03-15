@@ -44,8 +44,10 @@ public class HoloDocAction : MonoBehaviour {
 		// We need to deactivate the single tap event so that if we miss the documents, we won't take a photo while in 
 		// document view mode.
 		Debug.Log("Double tap");
-		DocumentPanel.Instance.Toggle();
-		this.photoMode = !DocumentPanel.Instance.IsActive();
+		if (DocumentPanel.Instance.DocumentsCount() > 0) {
+			DocumentPanel.Instance.Toggle();
+			this.photoMode = !DocumentPanel.Instance.IsActive();
+		}
 	}
 
 	public void OnPhotoTaken(Texture2D photo, Resolution res) {

@@ -51,6 +51,11 @@ public class DocumentPanel : Singleton<DocumentPanel> {
 		return isActive;
 	}
 
+	public int DocumentsCount() {
+		return documents.Count;
+	}
+
+
 	public void Toggle()
 	{
 		isActive = !isActive;
@@ -65,7 +70,7 @@ public class DocumentPanel : Singleton<DocumentPanel> {
 
 			// Center the panel
 			position -= Camera.main.transform.right * (offsetX * (MaxDocumentsPerLine - 1) / 2f)
-					+ Camera.main.transform.up * (offsetY * Mathf.Floor(documents.Count / MaxDocumentsPerLine) / 2f);
+					  + Camera.main.transform.up	* (offsetY * Mathf.Floor(documents.Count / MaxDocumentsPerLine) / 2f);
 
 			this.transform.position = position;
 			this.transform.rotation = rotation;

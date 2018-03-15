@@ -13,14 +13,12 @@ public class DocLinkManager : Singleton<DocLinkManager>
 		public Color LinkColor { get; set; }
 
 		// override AddRange function
-		public void AddRange(Link l)
-		{
+		public void AddRange(Link l) {
 			this.Objects.AddRange(l.Objects);
 		}
 
 		// override Add function
-		public void Add(GameObject go)
-		{
+		public void Add(GameObject go) {
 			this.Objects.Add(go);
 		}
 
@@ -34,12 +32,9 @@ public class DocLinkManager : Singleton<DocLinkManager>
 
 	private GameObject linkHead;
 	private GameObject linkTail;
-	private Color[] linkColors;
 
-	void Start()
-	{
+	void Start() {
 		Links = new List<Link>();
-		linkColors = CreateColorList(10);
 	}
 
 	public void OnLinkStarted(GameObject document) {
@@ -160,60 +155,43 @@ public class DocLinkManager : Singleton<DocLinkManager>
 
 		// TO REMOVE: Only debug to check links current state
 		Debug.LogFormat("{0} link(s) has been created.", GetLinksCount());
-		for (int i = 0; i < Links.Count; i++)
-		{
-			if (Links[i] != null)
+		for (int i = 0; i < Links.Count; i++) {
+			if (Links[i] != null) {
 				Debug.LogFormat("Link[{0}]: {1} elems in it", i, Links[i].Objects.Count);
+			}
 		}
 	}
 
-	void AddToList(Link l, int linkId)
-	{
-		if (linkId != Links.Count)
-		{
+	void AddToList(Link l, int linkId) {
+		if (linkId != Links.Count) {
 			Links[linkId] = l;
 		}
-		else
-		{
+		else {
 			Links.Add(l);
 		}
 	}
 
-	public int GetLinksCount()
-	{
+	public int GetLinksCount() {
 		int count = 0;
-		for (int i = 0; i < Links.Count; i++)
-		{
-			if (Links[i] != null)
-			{
+		for (int i = 0; i < Links.Count; i++) {
+			if (Links[i] != null) {
 				count++;
 			}
 		}
 		return count;
 	}
 
-	Color[] CreateColorList(int nbColors)
-	{
-		Color[] colors = new Color[nbColors];
-
-		for (int i = 0; i < nbColors; i++)
-		{
-			colors[i] = Color.HSVToRGB(i / (float)nbColors, 1, 1);
-		}
-
-		return colors;
-	}
-
 	Color GenerateUniqueColor(uint color)
 	{
-		if (color == 0)
-		{
-			return Color.HSVToRGB(0, 1, 1);
+		float degreeColor = 0;
+		if (color < 6) {
+			 degreeColor = 60 * color;
 		}
-
-		int currentBinary = (int)Mathf.Floor(Mathf.Log(color, 2) + 1f);
-		float offset = 360f / (1 << currentBinary);
-		float degreeColor = offset + 2 * offset * (color - (1 << (currentBinary - 1)));
+		else {
+			float offset = 360f / 6f;
+			int currentBinary = (int)Mathf.Log(Mathf.Floor(color / 6f), 2);
+			degreeColor = offset / (1 << (currentBinary + 1)) + offset / (1 << currentBinary) * (color % (6 * (1 << currentBinary)));
+		}
 
 		return Color.HSVToRGB(degreeColor / 360f, 1, 1);
 	}
@@ -230,7 +208,6 @@ public class DocLinkManager : Singleton<DocLinkManager>
 		manager.OnLinkBreak();
 
 		if (link.Objects.Count == 1) {
-			Debug.Log("Alone");
 			DocManager manager2 = link.Objects[0].GetComponent<DocManager>();
 			link.Remove(link.Objects[0]);
 			manager2.Properties.LinkId = -1;
