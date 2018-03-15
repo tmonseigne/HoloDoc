@@ -64,12 +64,13 @@ public class DocAnimator : MonoBehaviour
 
 	public void PerformAnimation() {
 		if (!isOpen) {
+			this.transform.rotation = Camera.main.transform.rotation;
 			Vector3 destination = Camera.main.transform.position + Camera.main.transform.forward;
-			Vector3 offset = Camera.main.transform.right * this.transform.localScale.x / 2f;
-			Vector3 directionToTarget = Camera.main.transform.position - this.transform.position;
-			Quaternion rotation = Quaternion.LookRotation(-directionToTarget);
-			StartCoroutine(OpenTransformation(destination - offset, rotation, TransformationSpeed));
-		} else {
+			Vector3 directionToTarget = Camera.main.transform.position - destination;
+			Quaternion rotation = Quaternion.LookRotation(-directionToTarget, this.transform.up);
+			StartCoroutine(OpenTransformation(destination, rotation, TransformationSpeed));
+		}
+		else {
 			StartCoroutine(CloseTransformation(this.transform.position, this.transform.rotation, TransformationSpeed));
 		}
 		isOpen = !isOpen;

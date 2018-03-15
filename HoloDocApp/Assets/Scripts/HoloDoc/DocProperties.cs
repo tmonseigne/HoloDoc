@@ -16,10 +16,10 @@ public class DocProperties
 	{
 		this.Id = -1;
 		this.LinkId = -1;
-		this.Label = "undefined label";
-		this.Author = "undefined author";
-		this.Description = "undefined description";
-		this.Date = "00/00/0000";
+		this.Label = "Default label";
+		this.Author = PersistentData.DefaultAuthor;
+		this.Description = "Default description";
+		this.Date = DateTime.Now.ToString("MM/dd/yyyy");
 	}
 
 	public DocProperties(DocProperties props)

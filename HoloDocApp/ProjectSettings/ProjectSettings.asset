@@ -587,7 +587,7 @@ PlayerSettings:
   metroCertificatePassword: 
   metroCertificateSubject: DefaultCompany
   metroCertificateIssuer: DefaultCompany
-  metroCertificateNotAfter: 00168c83a0bdd401
+  metroCertificateNotAfter: 8055380f4adbd401
   metroApplicationDescription: HoloDoc
   wsaImages: {}
   metroTileShortName: HoloDoc

@@ -24,7 +24,7 @@ public class HoloDocAction : MonoBehaviour {
 
 	IEnumerator WaitForDoubleTap(float delay) {
 		yield return new WaitForSeconds(delay);
-		if (GlobalInput.SingleTapped && photoMode && !DocumentPanel.Instance.IsActive()) {
+		if (GlobalInput.SingleTapped && photoMode) {
 			Debug.Log("Single tap");
 			// This should take a photo, send it to the server which will check if its valid crop and unwrap it and send it back. Then call the instanciator with this new photo a create a document and add it to the document panel.
 			if (PhotoCapturer.Instance.HasFoundCamera) {
@@ -45,7 +45,7 @@ public class HoloDocAction : MonoBehaviour {
 		// document view mode.
 		Debug.Log("Double tap");
 		DocumentPanel.Instance.Toggle();
-		this.photoMode = true;
+		this.photoMode = !DocumentPanel.Instance.IsActive();
 	}
 
 	public void OnPhotoTaken(Texture2D photo, Resolution res) {

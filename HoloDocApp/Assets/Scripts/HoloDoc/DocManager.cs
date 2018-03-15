@@ -8,15 +8,17 @@ public class DocManager : MonoBehaviour, IInputHandler, IInputClickHandler, IFoc
 	public DocProperties Properties;
 	public GameObject OutlineQuad;
 
-	private GameObject docPreview, docInformations;
+	private GameObject docPreview, docInformations, docButtons;
 	private Material material;
 	private DocAnimator animator;
 
 
 	void Awake() {
-		docPreview = transform.Find("DocPreview").gameObject;
-		docInformations = transform.Find("DocInformations").gameObject;
+		docPreview = transform.Find("Preview").gameObject;
+		docInformations = transform.Find("Informations").gameObject;
 		docInformations.SetActive(false);
+		docButtons = transform.Find("Buttons").gameObject;
+		docButtons.SetActive(false);
 
 		this.Properties = new DocProperties();
 
@@ -42,12 +44,12 @@ public class DocManager : MonoBehaviour, IInputHandler, IInputClickHandler, IFoc
 	public void SetPhoto(Texture2D photo) {
 		float finalHeight, finalWidth;
 		if (photo.height > photo.width)	{
-			finalHeight = 1;
-			finalWidth = (float)photo.width / (float)photo.height;
+			finalHeight = 1.35f;
+			finalWidth = ((float)photo.width / (float)photo.height) * 1.35f;
 		}
 		else {
-			finalHeight = (float)photo.height / (float)photo.width;
-			finalWidth = 1;
+			finalHeight = ((float)photo.height / (float)photo.width) * 1.35f;
+			finalWidth = 1.35f;
 		}
 
 		this.docPreview.transform.localScale = new Vector3(finalWidth, finalHeight, 1);
@@ -97,11 +99,33 @@ public class DocManager : MonoBehaviour, IInputHandler, IInputClickHandler, IFoc
 
 	public void ToggleFocus() {
 		docInformations.SetActive(!docInformations.activeInHierarchy);
+		docButtons.SetActive(!docButtons.activeInHierarchy);
 		animator.PerformAnimation();
 	}
 
 	public void Toggle() {
 		docPreview.SetActive(!docPreview.activeInHierarchy);
+	}
+
+	public void RetakePhoto() {
+		DocumentPanel.Instance.Toggle();
+		/*/
+		PhotoCapturer.Instance.TakePhoto(OnPhotoRetaken);
+		/*/
+		Texture2D tex = Resources.Load<Texture2D>("Images/MultiDoc - black background");
+		this.SetPhoto(tex);
+		StartCoroutine(Wait());
+		/**/
+	}
+
+	IEnumerator Wait() {
+		yield return new WaitForSeconds(1.5f);
+		DocumentPanel.Instance.Toggle();
+	}
+
+	public void OnPhotoRetaken(Texture2D photo, Resolution res) {
+		this.SetPhoto(photo);
+		DocumentPanel.Instance.Toggle();
 	}
 
 }
