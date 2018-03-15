@@ -121,11 +121,19 @@ public class DocManager : MonoBehaviour, IInputHandler, IInputClickHandler, IFoc
 	IEnumerator Wait() {
 		yield return new WaitForSeconds(1.5f);
 		DocumentPanel.Instance.Toggle();
+		DocumentPanel.Instance.SetFocusedDocument(this.transform.gameObject);
 	}
 
 	public void OnPhotoRetaken(Texture2D photo, Resolution res) {
+		//Texture2D newCroppedPhoto = RequestLauncher.Instance.UpdatePhoto(photo);
 		this.SetPhoto(photo);
 		DocumentPanel.Instance.Toggle();
+	}
+
+	public void OnLinkBreak() {
+		this.OutlineQuad.SetActive(false);
+		// NOTE: Maybe put a default color.
+		//RequestLauncher.Instance.BreakLink(this.Properties.Id);
 	}
 
 }

@@ -7,7 +7,6 @@ using HoloToolkit.Unity;
 
 public class DocLinkManager : Singleton<DocLinkManager>
 {
-
 	public class Link
 	{
 		public List<GameObject> Objects { get; set; }
@@ -23,6 +22,11 @@ public class DocLinkManager : Singleton<DocLinkManager>
 		public void Add(GameObject go)
 		{
 			this.Objects.Add(go);
+		}
+
+		// override Remove function
+		public void Remove(GameObject go) {
+			this.Objects.Remove(go);
 		}
 	}
 
@@ -62,7 +66,6 @@ public class DocLinkManager : Singleton<DocLinkManager>
 					if (head.LinkId == tail.LinkId)
 					{
 						Debug.Log("Tail and head are already linked and plus they are in the same link → Over !");
-						// TODO: Destroy links here.
 					}
 					else
 					{
@@ -138,12 +141,11 @@ public class DocLinkManager : Singleton<DocLinkManager>
 						linkHead,
 						linkTail
 						},
-						LinkColor = linkColors[linkId],
+						LinkColor = GenerateUniqueColor((uint) linkId),
 					};
 
 					// 3: Push the new link in the big list
 					AddToList(link, linkId);
-					//Links.Add(link);
 
 					// 4: Give it a color
 					linkHead.GetComponent<DocManager>().SetColor(Links[linkId].LinkColor);
@@ -202,7 +204,7 @@ public class DocLinkManager : Singleton<DocLinkManager>
 		return colors;
 	}
 
-	Color getColor(uint color)
+	Color GenerateUniqueColor(uint color)
 	{
 		if (color == 0)
 		{
@@ -214,5 +216,26 @@ public class DocLinkManager : Singleton<DocLinkManager>
 		float degreeColor = offset + 2 * offset * (color - (1 << (currentBinary - 1)));
 
 		return Color.HSVToRGB(degreeColor / 360f, 1, 1);
+	}
+
+	public void BreakLink(GameObject document) {
+		DocManager manager = document.GetComponent<DocManager>();
+		int linkId = manager.Properties.LinkId;
+		if (linkId == -1) {
+			return;
+		}
+		Link link = Links[linkId];
+		link.Remove(document);
+		manager.Properties.LinkId = -1;
+		manager.OnLinkBreak();
+
+		if (link.Objects.Count == 1) {
+			Debug.Log("Alone");
+			DocManager manager2 = link.Objects[0].GetComponent<DocManager>();
+			link.Remove(link.Objects[0]);
+			manager2.Properties.LinkId = -1;
+			manager2.OnLinkBreak();
+			Links[linkId] = null;
+		}
 	}
 }

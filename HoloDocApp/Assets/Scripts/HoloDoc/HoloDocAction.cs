@@ -51,7 +51,7 @@ public class HoloDocAction : MonoBehaviour {
 	public void OnPhotoTaken(Texture2D photo, Resolution res) {
 		this.photoMode = false;
 
-		//RequestLauncher.Instance.MatchOrCreateDocument();
+		//Texture2D croppedPhoto = RequestLauncher.Instance.MatchOrCreateDocument();
 		Texture2D croppedPhoto = new Texture2D(photo.width, photo.height);
 		croppedPhoto.SetPixels32(photo.GetPixels32());
 		croppedPhoto.Apply();
