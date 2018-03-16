@@ -35,15 +35,16 @@ public class DocumentPanel : Singleton<DocumentPanel> {
 	}
 
 	public void SetFocusedDocument(GameObject newfocusedDocument) {
-		if (this.focusedDocument != null) {
-			this.focusedDocument.GetComponent<DocManager>().ToggleFocus();
+		GameObject previousFocusedDocument = this.focusedDocument;
+
+		this.focusedDocument = (this.focusedDocument != newfocusedDocument) ? newfocusedDocument : null;
+
+		if (previousFocusedDocument != null) {
+			previousFocusedDocument.GetComponent<DocManager>().ToggleFocus();
 		}
 
-		if (this.focusedDocument != newfocusedDocument) {
-			this.focusedDocument = newfocusedDocument;
+		if (this.focusedDocument != null) {
 			this.focusedDocument.GetComponent<DocManager>().ToggleFocus();
-		} else {
-			this.focusedDocument = null;
 		}
 	}
 
@@ -92,6 +93,6 @@ public class DocumentPanel : Singleton<DocumentPanel> {
 	}
 
 	public bool IsFocused(GameObject document) {
-		return this.focusedDocument == document;
+		return (this.focusedDocument == document);
 	}
 }

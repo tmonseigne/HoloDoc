@@ -16,7 +16,6 @@ public class RequestLauncher : Singleton<RequestLauncher> {
         }
     }
 
-
     #region Answers classes
 
     [System.Serializable]
@@ -58,25 +57,26 @@ public class RequestLauncher : Singleton<RequestLauncher> {
 
     #endregion
 
-
     #region Document requests
 
-    public void MatchOrCreateDocument (CameraFrame frame, OnRequestResponse<RequestAnswerDocument> callback)
+    public void MatchOrCreateDocument(CameraFrame frame, OnRequestResponse<RequestAnswerDocument> callback)
     {
-        MatchOrCreateRequestData data = new MatchOrCreateRequestData();
-        data.image = frame;
-        StartCoroutine(launchRocket<RequestAnswerDocument>(data, "/document/matchorcreate", callback));
+		MatchOrCreateRequestData data = new MatchOrCreateRequestData {
+			image = frame
+		};
+		StartCoroutine(launchRocket<RequestAnswerDocument>(data, "/document/matchorcreate", callback));
     }
 
     public void UpdateDocument(DocumentProperties properties, OnRequestResponse<UpdateRequestData> callback)
     {
-        UpdateRequestData data = new UpdateRequestData();
-        data.label = properties.Label;
-        data.desc = properties.Description;
-        data.author = properties.Author;
-        data.date = properties.Date;
+		UpdateRequestData data = new UpdateRequestData {
+			label = properties.Label,
+			desc = properties.Description,
+			author = properties.Author,
+			date = properties.Date
+		};
 
-        StartCoroutine(launchRocket<UpdateRequestData>(data, "/document/update", callback));
+		StartCoroutine(launchRocket<UpdateRequestData>(data, "/document/update", callback));
     }
 
     public class MatchOrCreateRequestData : RequestData

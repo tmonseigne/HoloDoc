@@ -13,7 +13,6 @@ public class DocAnimator : MonoBehaviour
 	[Range(1.0f, 10.0f)]
 	public float TransformationSpeed = 2.0f;
 
-	public bool IsOpen = false;
 	private bool zoomIn = false;
 	private bool zoomOut = false;
 
@@ -54,21 +53,21 @@ public class DocAnimator : MonoBehaviour
 	}
 
 	public void ZoomIn() {
-		if (!IsOpen) {
+		if (!DocumentPanel.Instance.IsFocused(this.gameObject)) {
 			zoomIn = true;
 			zoomOut = false;
 		}
 	}
 
 	public void ZoomOut() {
-		if (!IsOpen) {
-			zoomOut = true;
+		if (!DocumentPanel.Instance.IsFocused(this.gameObject)) {
 			zoomIn = false;
+			zoomOut = true;
 		}
 	}
 
 	public void PerformAnimation() {
-		if (!IsOpen) {
+		if (DocumentPanel.Instance.IsFocused(this.gameObject)) {
 			OpenAnimation();
 		}
 		else {
@@ -82,12 +81,10 @@ public class DocAnimator : MonoBehaviour
 		Vector3 directionToTarget = Camera.main.transform.position - destination;
 		Quaternion rotation = Quaternion.LookRotation(-directionToTarget, this.transform.up);
 		StartCoroutine(OpenTransformation(destination, rotation, TransformationSpeed));
-		IsOpen = true;
 	}
 
 	public void CloseAnimation() {
 		StartCoroutine(CloseTransformation(this.transform.position, this.transform.rotation, TransformationSpeed));
-		IsOpen = false;
 	}
 
 	IEnumerator OpenTransformation(Vector3 targetPosition, Quaternion targetRotation, float speed) {

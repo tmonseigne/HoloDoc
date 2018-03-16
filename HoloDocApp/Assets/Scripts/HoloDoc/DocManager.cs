@@ -21,7 +21,7 @@ public class DocManager : MonoBehaviour, IInputHandler, IInputClickHandler, IFoc
 		docButtons = transform.Find("Buttons").gameObject;
 		docButtons.SetActive(false);
 
-		this.Properties = new DocProperties();
+		Properties = new DocProperties();
 
 		animator = this.transform.GetComponent<DocAnimator>();
 	}
@@ -35,7 +35,7 @@ public class DocManager : MonoBehaviour, IInputHandler, IInputClickHandler, IFoc
 
 	IEnumerator WaitForInstantiate() {
 		yield return new WaitForSeconds(0.1f);
-		DocumentPanel.Instance.SetFocusedDocument(this.transform.gameObject);
+		DocumentPanel.Instance.SetFocusedDocument(this.gameObject);
 	}
 
 	public void SetPosition(Vector3 position) {
@@ -68,6 +68,7 @@ public class DocManager : MonoBehaviour, IInputHandler, IInputClickHandler, IFoc
 	public void SetColor(Color color) {
 		this.OutlineQuad.SetActive(true);
 		this.OutlineQuad.GetComponent<Renderer>().material.color = color;
+		UpdateLinkDisplay();
 	}
 
 	private void DocumentInformationsModifiedHandler(string author, string date, string description, string label) {
@@ -87,9 +88,8 @@ public class DocManager : MonoBehaviour, IInputHandler, IInputClickHandler, IFoc
 	}
 
 	public void OnInputClicked(InputClickedEventData eventData) {
-		DocumentPanel.Instance.SetFocusedDocument(this.transform.gameObject);
+		DocumentPanel.Instance.SetFocusedDocument(this.gameObject);
 	}
-
 
 	public void OnFocusEnter() {
 		animator.ZoomIn();
@@ -174,7 +174,7 @@ public class DocManager : MonoBehaviour, IInputHandler, IInputClickHandler, IFoc
 	}
 
 	public void Open() {
-		if (animator.IsOpen) {
+		if (DocumentPanel.Instance.IsFocused(this.gameObject)) {
 			return;
 		}
 		docInformations.SetActive(true);
@@ -183,7 +183,7 @@ public class DocManager : MonoBehaviour, IInputHandler, IInputClickHandler, IFoc
 	}
 
 	public void Close() {
-		if (!animator.IsOpen) {
+		if (!DocumentPanel.Instance.IsFocused(this.gameObject)) {
 			return;
 		}
 		docInformations.SetActive(false);
