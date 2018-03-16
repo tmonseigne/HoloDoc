@@ -15,6 +15,12 @@ public class SpeechManager : MonoBehaviour, ISpeechHandler {
 			case "take photo":
 				this.GetComponent<DocManager>().RetakePhoto();
 				break;
+			case "start link":
+				this.GetComponent<DocManager>().StartLink();
+				break;
+			case "end link":
+				this.GetComponent<DocManager>().EndLink();
+				break;
 		}
 	}
 

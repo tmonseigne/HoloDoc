@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using HoloToolkit.Unity.InputModule;
+using System.Collections.Generic;
 
 public class DocManager : MonoBehaviour, IInputHandler, IInputClickHandler, IFocusable {
 
@@ -78,16 +79,17 @@ public class DocManager : MonoBehaviour, IInputHandler, IInputClickHandler, IFoc
 	}
 
 	public void OnInputDown(InputEventData eventData) {
-		DocLinkManager.Instance.OnLinkStarted(this.gameObject);
+		StartLink();
 	}
 
 	public void OnInputUp(InputEventData eventData) {
-		DocLinkManager.Instance.OnLinkEnded(this.gameObject);
+		EndLink();
 	}
 
 	public void OnInputClicked(InputClickedEventData eventData) {
 		DocumentPanel.Instance.SetFocusedDocument(this.transform.gameObject);
 	}
+
 
 	public void OnFocusEnter() {
 		animator.ZoomIn();
@@ -100,7 +102,32 @@ public class DocManager : MonoBehaviour, IInputHandler, IInputClickHandler, IFoc
 	public void ToggleFocus() {
 		docInformations.SetActive(!docInformations.activeInHierarchy);
 		docButtons.SetActive(!docButtons.activeInHierarchy);
+		UpdateLinkDisplay();
 		animator.PerformAnimation();
+	}
+
+	public void UpdateLinkDisplay() {
+		docInformations.transform.Find("LinkPreview/DocPreview1").gameObject.SetActive(false);
+		docInformations.transform.Find("LinkPreview/DocPreview2").gameObject.SetActive(false);
+		docInformations.transform.Find("LinkPreview/DocPreview3").gameObject.SetActive(false);
+
+		if (this.Properties.LinkId != -1) {
+			docInformations.transform.Find("LinkPreview/NoLinks").gameObject.SetActive(false);
+			uint linkCount = 0;
+			List<GameObject> objects = DocLinkManager.Instance.GetObjects(this.Properties.LinkId);
+			foreach (GameObject go in objects) {
+				if (go != this.gameObject) {
+					linkCount++;
+					if (linkCount > 3) { break; }
+					GameObject preview = docInformations.transform.Find("LinkPreview/DocPreview" + linkCount).gameObject;
+					preview.SetActive(true);
+					preview.GetComponent<Renderer>().material.mainTexture = go.transform.Find("Preview").gameObject.GetComponent<Renderer>().material.mainTexture;
+				}
+			}
+		}
+		else {
+			docInformations.transform.Find("LinkPreview/NoLinks").gameObject.SetActive(true);
+		}
 	}
 
 	public void Toggle() {
@@ -130,8 +157,18 @@ public class DocManager : MonoBehaviour, IInputHandler, IInputClickHandler, IFoc
 		DocumentPanel.Instance.Toggle();
 	}
 
+	public void StartLink() {
+		DocLinkManager.Instance.OnLinkStarted(this.gameObject);
+	}
+
+
+	public void EndLink() {
+		DocLinkManager.Instance.OnLinkEnded(this.gameObject);
+	}
+
 	public void OnLinkBreak() {
 		this.OutlineQuad.SetActive(false);
+		UpdateLinkDisplay();
 		// NOTE: Maybe put a default color.
 		//RequestLauncher.Instance.BreakLink(this.Properties.Id);
 	}

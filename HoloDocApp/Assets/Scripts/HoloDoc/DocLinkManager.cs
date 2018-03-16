@@ -215,4 +215,8 @@ public class DocLinkManager : Singleton<DocLinkManager>
 			Links[linkId] = null;
 		}
 	}
+
+	public List<GameObject> GetObjects(int linkId) {
+		return this.Links[linkId].Objects;
+	}
 }

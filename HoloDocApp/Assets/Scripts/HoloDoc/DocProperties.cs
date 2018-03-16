@@ -18,7 +18,7 @@ public class DocProperties
 		this.LinkId = -1;
 		this.Label = "Default label";
 		this.Author = PersistentData.DefaultAuthor;
-		this.Description = "Default description";
+		this.Description = "This is where a detailed description of the document goes. You can write things about it's history or whatever you think is important enough to be saved here.";
 		this.Date = DateTime.Now.ToString("MM/dd/yyyy");
 	}
 

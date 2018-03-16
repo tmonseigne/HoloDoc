@@ -22,8 +22,14 @@ public class DocAnimator : MonoBehaviour
 	private Vector3 initialPosition;
 	private Quaternion initialRotation;
 
+	private GameObject docPreview;
+
+	void Awake() {
+		docPreview = transform.Find("Preview").gameObject;
+	}
+
 	void Start() {
-		initialScale = this.transform.localScale;
+		initialScale = docPreview.transform.localScale;
 		zoomSize = initialScale * ZoomFactor;
 		InitTransform();
 	}
@@ -36,13 +42,12 @@ public class DocAnimator : MonoBehaviour
 	// Update is called once per frame
 	void Update() {
 		if (zoomIn) {
-			this.transform.localScale = Vector3.Lerp(this.transform.localScale, zoomSize, ZoomSpeed * Time.deltaTime);
+			docPreview.transform.localScale = Vector3.Lerp(docPreview.transform.localScale, zoomSize, ZoomSpeed * Time.deltaTime);
 		}
 		else if (zoomOut) {
-			this.transform.localScale = Vector3.Lerp(this.transform.localScale, initialScale, ZoomSpeed * Time.deltaTime);
-			if (Vector3.Distance(this.transform.localScale, initialScale) < 0.005)
-			{
-				this.transform.localScale = initialScale;
+			docPreview.transform.localScale = Vector3.Lerp(docPreview.transform.localScale, initialScale, ZoomSpeed * Time.deltaTime);
+			if (Vector3.Distance(docPreview.transform.localScale, initialScale) < 0.005) {
+				docPreview.transform.localScale = initialScale;
 				zoomOut = false;
 			}
 		}
@@ -77,13 +82,18 @@ public class DocAnimator : MonoBehaviour
 	}
 
 	IEnumerator OpenTransformation(Vector3 targetPosition, Quaternion targetRotation, float speed) {
+		zoomOut = false;
+		zoomIn = false;
+
 		for (float time = 0f; time < 1f; time += speed * Time.deltaTime) {
 			this.transform.position = Vector3.Lerp(initialPosition, targetPosition, time);
 			this.transform.rotation = Quaternion.Lerp(initialRotation, targetRotation, time);
+			this.docPreview.transform.localScale = Vector3.Lerp(docPreview.transform.localScale, initialScale, ZoomSpeed * Time.deltaTime);
 			yield return null;
 		}
 		this.transform.position = targetPosition;
 		this.transform.rotation = targetRotation;
+		this.docPreview.transform.localScale = initialScale;
 	}
 
 	IEnumerator CloseTransformation(Vector3 currentPosition, Quaternion currentRotation, float speed) {

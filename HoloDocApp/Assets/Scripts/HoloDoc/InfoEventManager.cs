@@ -1,6 +1,7 @@
 ﻿using System;
 
 using UnityEngine;
+using UnityEngine.Windows.Speech;
 
 using HoloToolkit.Unity.InputModule;
 using HoloToolkit.UI.Keyboard;
@@ -33,6 +34,7 @@ public class InfoEventManager : MonoBehaviour, IInputClickHandler
 		// otherwise modifications will be propagated to the other edited fields.
 		Keyboard.Instance.OnTextUpdated -= OnKeyboardTextUpdated;
 		Keyboard.Instance.OnClosed -= OnKeyboardClosed;
+		PhraseRecognitionSystem.Restart();
 	}
 
 	private void OnKeyboardTextUpdated(string content)
@@ -70,8 +72,11 @@ public class InfoEventManager : MonoBehaviour, IInputClickHandler
 				break;
 		}
 
-		Keyboard.Instance.RepositionKeyboard(this.transform);
 
+		// We need to disable the SpeechRecognizer in order for the Dictation the work.
+		PhraseRecognitionSystem.Shutdown();
+
+		Keyboard.Instance.RepositionKeyboard(this.transform);
 		// We need to subscribe to this event after we set the variable currentField otherwise it is not working (???)
 		Keyboard.Instance.OnTextUpdated += OnKeyboardTextUpdated;
 		Keyboard.Instance.PresentKeyboard(selectedField.text, keyboardLayout);
