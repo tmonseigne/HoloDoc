@@ -21,7 +21,7 @@ let distances = [];
 for (let i = 0; i < nbFiles; ++i) {
   let row = [];
   for (let j = 0; j < nbFiles; ++j) {
-    row.push((1 - (improc.distance(features[i],features[j], [2,2,2,1,1,1]) / Math.sqrt(2))) * 100);
+    row.push((1 - (improc.featuresDistance(features[i],features[j], [2,2,2,1,1,1]) / Math.sqrt(2))) * 100);
   }
   distances.push(row);
 }

@@ -12,10 +12,12 @@ var options = {
 app.use(bodyParser.raw(options));
 
 var mainRoutes = require('./routes/routes');
-var docRoutes = require('./routes/document_routes');
+var docRoutes = require('./routes/document-routes');
+var linkRoutes = require('./routes/link-routes');
 
 app.use('/', mainRoutes);
 app.use('/document', docRoutes);
+app.use('/link', linkRoutes);
 
 var server = app.listen(8080, function() {
   let host = server.address().address;

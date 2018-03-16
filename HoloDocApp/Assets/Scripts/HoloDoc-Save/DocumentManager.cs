@@ -63,10 +63,17 @@ public class DocumentManager : MonoBehaviour, IInputClickHandler, IInputHandler 
 		this.Properties.Date = date;
 		this.Properties.Description = description;
 		this.Properties.Label = label;
-		RequestLauncher.Instance.UpdateDocumentInformations(this.Properties);
+        RequestLauncher.Instance.UpdateDocument(this.Properties, onUpdateDocument);
+        //RequestLauncher.Instance.UpdateDocumentInformations(this.Properties);
 	}
 
-	public void SetColor(Color color) {
+    private void onUpdateDocument(RequestLauncher.UpdateRequestData item, bool success)
+    {
+        // FOnction de callback quand le requeste d'update finie
+        //throw new NotImplementedException();
+    }
+
+    public void SetColor(Color color) {
 		material.SetColor("_OutlineColor", color);
 	}
 
@@ -90,7 +97,7 @@ public class DocumentManager : MonoBehaviour, IInputClickHandler, IInputHandler 
                 material = this.GetComponent<Renderer>().material;
                 this.SetColor(Color);
 			}
-			//PhotoTaker.Instance.Photo(OnPhotoTaken);
+			PhotoTaker.Instance.Photo(OnPhotoTaken);
 			Properties.Photographied = true;
 		}
 	}
@@ -113,9 +120,26 @@ public class DocumentManager : MonoBehaviour, IInputClickHandler, IInputHandler 
 
 	private void OnPhotoTaken(CameraFrame photo) {
 		this.Properties.Photo = photo;
-		RequestLauncher.Instance.MatchOrCreateDocument(this.Properties, OnMatchOrCreateResult);
+        
+		//RequestLauncher.Instance.MatchOrCreateDocument(this.Properties, OnMatchOrCreateResult);
 	}
-    
+
+    private void OnMatchOrCreateRequest(RequestLauncher.RequestAnswerDocument item, bool success)
+    {
+        Debug.Log("la");
+        if (success)
+        {
+            CameraFrame cropped = item.CameraFrameFromBase64();
+            this.Properties.Photo = cropped;
+            this.Properties.SetProperties(item.label, item.author, item.desc, item.date);
+        }
+        else
+        {
+            Debug.Log(item.error);
+        }
+        
+    }
+
     void Update() {
         if (!Properties.Photographied) {
             if (useBlinkEffect)

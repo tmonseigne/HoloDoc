@@ -5,128 +5,172 @@ using UnityEngine;
 using UnityEngine.Networking;
 
 using HoloToolkit.Unity;
+using System.Text;
 
 public class RequestLauncher : Singleton<RequestLauncher> {
+    public abstract class RequestData
+    {
+        public virtual string toJSON()
+        {
+            return JsonUtility.ToJson(this);
+        }
+    }
 
-	public delegate void OnDetectRequestCallback(Vector2Int[] points, int nbDocuments);
-	public delegate void OnMatchOrCreateDocumentCallback(DocumentProperties properties);
 
-	public void CreateNewDocument(CameraFrame frame) {
-		StartCoroutine(NewDocumentRequest(frame));
-	}
+    #region Answers classes
 
-	private IEnumerator NewDocumentRequest(CameraFrame frame) {
-		Texture2D texture = new Texture2D(frame.Resolution.width, frame.Resolution.height);
-		texture.SetPixels32(frame.Data);
-		texture.Apply(true);
-		byte[] payload = texture.EncodeToPNG();
-		Debug.Log("Display payload : " + BitConverter.ToString(payload));
+    [System.Serializable]
+    public class RequestAnswerDocument
+    {
+        public string name;
+        public string label;
+        public string desc;
+        public string author;
+        public string date;
+        public string path;
+        public string image;
+        public string error;
 
-		string url = "http://localhost:8080/document/new";
-		string method = UnityWebRequest.kHttpVerbPOST;
-		UploadHandler uploader = new UploadHandlerRaw(payload);
-		uploader.contentType = "custom/content-type";
+        public CameraFrame CameraFrameFromBase64()
+        {
+            Texture2D tex = new Texture2D(0, 0);
+            tex.LoadImage(Convert.FromBase64String(image));
 
-		DownloadHandler downloader = new DownloadHandlerBuffer();
-		UnityWebRequest www;
-		www = new UnityWebRequest(url, method, downloader, uploader);
+            CameraFrame frame = new CameraFrame(new Resolution { width = tex.width, height = tex.height }, tex.GetPixels32());
+            DestroyImmediate(tex);
 
-		yield return www.SendWebRequest();
+            return frame;
+        }
+    }
 
-		if (www.isNetworkError || www.isHttpError) {
-			Debug.Log(www.error);
-		}
-		else {
-			// Show results as text
-			Debug.Log(www.downloadHandler.text);
+    [System.Serializable]
+    public class RequestAnswerConnected
+    {
+        public bool connected;
+        public string error;
+    }
 
-			// Or retrieve results as binary data
-			byte[] results = www.downloadHandler.data;
-		}
+    [System.Serializable]
+    public class RequestAnswerSimple
+    {
+        public string error;
+    }
 
-		// Avoid memory leak
-		Destroy(texture);
-	}
+    #endregion
 
-	public void MatchOrCreateDocument(DocumentProperties properties, OnMatchOrCreateDocumentCallback callback) {
-		StartCoroutine(MatchOrCreateDocumentRequest(properties, callback));
-	}
 
-	// TODO: This function must send the current image stored in properties.Photo and match/create it.
-	// During match or create, the image should be cropped and wrapped on the server.
-	// Corners (for cropping) are available in properties.Corners
-	IEnumerator MatchOrCreateDocumentRequest(DocumentProperties properties, OnMatchOrCreateDocumentCallback callback) {
-		throw new NotImplementedException();
-	}
+    #region Document requests
 
-	public void CreateLink(int[] ids) {
-		StartCoroutine(CreateLinkRequest(ids));
-	}
+    public void MatchOrCreateDocument (CameraFrame frame, OnRequestResponse<RequestAnswerDocument> callback)
+    {
+        MatchOrCreateRequestData data = new MatchOrCreateRequestData();
+        data.image = frame;
+        StartCoroutine(launchRocket<RequestAnswerDocument>(data, "/document/matchorcreate", callback));
+    }
 
-	// TODO
-	IEnumerator CreateLinkRequest(int[] ids) {
-		throw new NotImplementedException();
-	}
+    public void UpdateDocument(DocumentProperties properties, OnRequestResponse<UpdateRequestData> callback)
+    {
+        UpdateRequestData data = new UpdateRequestData();
+        data.label = properties.Label;
+        data.desc = properties.Description;
+        data.author = properties.Author;
+        data.date = properties.Date;
 
-	public void UpdateDocumentInformations(DocumentProperties properties) {
-		StartCoroutine(UpdateDocumentInformationsRequest(properties));
-	}
+        StartCoroutine(launchRocket<UpdateRequestData>(data, "/document/update", callback));
+    }
 
-	IEnumerator UpdateDocumentInformationsRequest(DocumentProperties properties) {
-		string url = "http://localhost:8080/document/update";
-		string data = JsonUtility.ToJson(properties);
-		Debug.Log(data);
-		using (UnityWebRequest www = UnityWebRequest.Post(url, data)) {
-			yield return www.SendWebRequest();
+    public class MatchOrCreateRequestData : RequestData
+    {
+        public CameraFrame image;
 
-			if (www.isNetworkError || www.isHttpError) {
-				Debug.Log(www.error);
-			}
-			else {
-				Debug.Log("Properties upload complete!");
-			}
-		}
-	}
+        private string CameraFrameToJson(CameraFrame frame)
+        {
+            Texture2D tex = new Texture2D(frame.Resolution.width, frame.Resolution.height);
+            tex.SetPixels32(frame.Data);
 
-	public void DetectDocuments(Texture2D texture, OnDetectRequestCallback callback) {
-		DetectDocumentRequest(texture, callback);
-	}
+            string json = BitConverter.ToString(tex.EncodeToJPG()).Replace("-", "");
 
-	private void DetectDocumentRequest(Texture2D ploup, OnDetectRequestCallback callback) {
-		//byte[] payload = ploup.ToArray();
-		//byte[] payload = tex.GetRawTextureData();
+            Destroy(tex);
 
-		DateTime start = DateTime.Now;
+            return json;
+        }
 
-		byte[] payload = ploup.EncodeToJPG();
-		Debug.Log("Display payload : " + BitConverter.ToString(payload));
+        public override string toJSON()
+        {
+            return "{ \"image\" : \"" + CameraFrameToJson(image) + "\" }";
+        }
+    }
 
-		string url = "http://localhost:8080/document/detect";
-		string method = UnityWebRequest.kHttpVerbPOST;
-		UploadHandler uploader = new UploadHandlerRaw(payload);
-		uploader.contentType = "custom/content-type";
+    public class UpdateRequestData : RequestData
+    {
+        public string name;
+        public string label;
+        public string desc;
+        public string author;
+        public string date;
+    }
 
-		DownloadHandler downloader = new DownloadHandlerBuffer();
-		UnityWebRequest www;
-		www = new UnityWebRequest(url, method, downloader, uploader);
+    #endregion
 
-		Debug.Log("ici");
-		UnityWebRequestAsyncOperation request = www.SendWebRequest();
+    #region Link requests
 
-		request.completed += delegate(AsyncOperation op) {
-			if (www.isNetworkError || www.isHttpError) {
-				Debug.Log(www.error);
-			}
-			else {
-				// Show results as text
-				Debug.Log(www.downloadHandler.text);
+    public void CreateLink(string firstId, string secondId, OnRequestResponse<RequestAnswerSimple> callback)
+    {
+        LinkRequestData data = new LinkRequestData();
+        data.firstId = firstId;
+        data.secondId = secondId;
 
-				// Or retrieve results as binary data
-				byte[] results = www.downloadHandler.data;
-				DateTime end = DateTime.Now;
+        StartCoroutine(launchRocket<RequestAnswerSimple>(data, "/link/create", callback));
+    }
 
-				Debug.Log((end.Ticks - start.Ticks) / 10000.0f);
-			}
-		};
-	}
+    public void RemoveLink(string firstId, string secondId, OnRequestResponse<RequestAnswerSimple> callback)
+    {
+        LinkRequestData data = new LinkRequestData();
+        data.firstId = firstId;
+        data.secondId = secondId;
+
+        StartCoroutine(launchRocket<RequestAnswerSimple>(data, "/link/remove", callback));
+    }
+
+    public void AreConnected(string firstId, string secondId, OnRequestResponse<RequestAnswerConnected> callback)
+    {
+        LinkRequestData data = new LinkRequestData();
+        data.firstId = firstId;
+        data.secondId = secondId;
+
+        StartCoroutine(launchRocket<RequestAnswerConnected>(data, "/document/connected", callback));
+    }
+    #endregion
+
+    public class LinkRequestData : RequestData
+    {
+        public string firstId;
+        public string secondId;
+    }
+
+
+    public delegate void OnRequestResponse<T>(T item, bool success);
+
+    IEnumerator launchRocket <T>(RequestData data, string request, OnRequestResponse<T> onResponse)
+    {
+        string payload = data.toJSON();
+
+        string url = "http://localhost:8080" + request;
+        string method = UnityWebRequest.kHttpVerbPOST;
+        UploadHandler uploader = new UploadHandlerRaw(Encoding.ASCII.GetBytes(payload));
+        uploader.contentType = "custom/content-type";
+
+        DownloadHandler downloader = new DownloadHandlerBuffer();
+
+        UnityWebRequest www = new UnityWebRequest(url, method, downloader, uploader);
+
+        yield return www.SendWebRequest();
+
+        Debug.Log(www.downloadHandler.text);
+        T answer = JsonUtility.FromJson<T>(www.downloadHandler.text);
+        if (onResponse != null)
+        {
+            onResponse.Invoke(answer, !(www.isNetworkError || www.isHttpError));
+        }
+    }
 }

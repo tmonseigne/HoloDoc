@@ -122,14 +122,11 @@ describe('Testing database access layer - ', function() {
     it('Updating an existing document', function (done) {
       dal.getDocuments({name: 'one'}, function (err, docs) {
         dal.updateDocument(docs[0]._id, {label: 'picture'}, function (doc) {
-          dal.getDocuments({_id: doc._id}, function(err, docs){
-            assert(docs.length == 1);
 
-            assert(String(docs[0]._id) == String(d1._id));
-            assert(String(docs[0].label) != String(d1.label));
-            assert(String(docs[0].label) == 'picture');
+            assert(String(doc._id) == String(d1._id));
+            assert(String(doc.label) != String(d1.label));
+            assert(String(doc.label) == 'picture');
             done();
-          });
         });
       });
     });

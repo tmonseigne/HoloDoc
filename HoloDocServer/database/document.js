@@ -7,7 +7,7 @@ var documentSchema = mongoose.Schema({
   author: String,
   date: Date,
   path: String,
-  features: [Number],
+  features: [[Number]],
   captured: { type: Date, default: Date.Now }
 });
 

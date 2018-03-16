@@ -277,8 +277,13 @@ exports.streamToMat = function (stream) {
   return cv.imdecode(stream);
 };
 
-exports.matToStream = function (mat) {
+exports.matToBase64 = function (mat) {
+  let buf = exports.matToStream(mat);
+  return buf.toString('base64').replace(/-/g, "");
+}
 
+exports.matToStream = function (mat) {
+  return Buffer.from(cv.imencode('.jpeg', mat), 'base64');
 };
 
 exports.getCenter = function (image) {
@@ -298,7 +303,7 @@ function getNormalizedHistogram(image, channel, bins) {
   return cv.calcHist(image, getHistAxis(channel, bins)).div(nbPixels).transpose().getDataAsArray()[0];
 }
 
-exports.distance = function (features1, features2, coefs = [1,1,1,1,1,1]) {
+exports.featuresDistance = function (features1, features2, coefs = [1,1,1,1,1,1]) {
   let dist = 0;
   let cummulativeCoef = 0;
 
@@ -315,6 +320,12 @@ exports.distance = function (features1, features2, coefs = [1,1,1,1,1,1]) {
 
   return dist / cummulativeCoef;
 };
+
+exports.featureDistanceNormalization = function (distance) {
+  return distance / exports.maxFeaturesDistance;
+}
+
+exports.maxFeaturesDistance = Math.sqrt(2);
 
 exports.getNearestdocFrom = function (docs, from) {
   let distMin = Number.MAX_SAFE_INTEGER;
@@ -333,7 +344,7 @@ exports.getNearestdocFrom = function (docs, from) {
   return docs[idMin];
 }
 
-exports.extractFeatures = function (image, bins) {
+exports.extractFeatures = function (image, bins = 25) {
   let nbPixels = image.cols * image.rows;
 
   let hsv = image.cvtColor(cv.COLOR_BGR2HSV);

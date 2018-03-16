@@ -8,6 +8,7 @@ var mongoose = require('mongoose');
 
 var models = require("./models.js");
 var events = require('events');
+var improc = require('../improc/improc.js');
 
 var Queue = require('../utils/queue.js');
 
@@ -29,6 +30,11 @@ function saveModel (model, successCallback, errorCallback){
     model.save ( function (err) {
 
       if (err) {
+        if (errorCallback)
+        {
+          console.log(err);
+          errorCallback(err);
+        }
 	errorEventEmiter.raiseError(err);
 	return;
       }
@@ -78,9 +84,11 @@ function updateDocument (id, modifications, callback) {
       return;
     }
 
-    if (callback) {
-      callback(document);
-    }
+    getDocuments({_id: document._id}, function(err, docs){
+      if (callback && docs.length > 0) {
+        callback(docs[0]);
+      }
+    });
   });
 }
 
@@ -89,8 +97,29 @@ function getDocuments (query, callback) {
 }
 
 function matchFeatures (features, callback) {
-  if (callback) {
-    callback (undefined);
+  if (features) {
+    models.Document.find({}, function (err, documents) {
+      let minDist = improc.maxFeaturesDistance;
+      let minDoc;
+      documents.forEach(function (doc, index) {
+        let dist = improc.featuresDistance(doc.features, features);
+
+        if (dist < minDist) {
+          minDist = dist;
+          minDoc = doc;
+        }
+      });
+
+      // We compute the match percentage according to the distance
+      let match = (1 - improc.featureDistanceNormalization(minDist)) * 100;
+
+      if (match > 80) {
+        minDoc.match = match;
+        callback(minDoc);
+      } else {
+        callback(undefined);
+      }
+    });
   }
 }
 
@@ -211,3 +240,4 @@ exports.createLink = createLink;
 exports.deleteLink = deleteLink;
 exports.getDocumentCount = documentCount;
 exports.dropEverything = dropEverything;
+exports.matchFeatures = matchFeatures;
