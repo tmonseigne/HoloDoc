@@ -103,6 +103,7 @@ public class RequestLauncher : Singleton<RequestLauncher> {
 
     public class UpdateRequestData : RequestData
     {
+        public string id;
         public string name;
         public string label;
         public string desc;

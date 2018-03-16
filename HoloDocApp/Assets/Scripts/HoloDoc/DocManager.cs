@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using HoloToolkit.Unity.InputModule;
+using System.Collections.Generic;
 
 public class DocManager : MonoBehaviour, IInputHandler, IInputClickHandler, IFocusable {
 
@@ -8,15 +9,17 @@ public class DocManager : MonoBehaviour, IInputHandler, IInputClickHandler, IFoc
 	public DocProperties Properties;
 	public GameObject OutlineQuad;
 
-	private GameObject docPreview, docInformations;
+	private GameObject docPreview, docInformations, docButtons;
 	private Material material;
 	private DocAnimator animator;
 
 
 	void Awake() {
-		docPreview = transform.Find("DocPreview").gameObject;
-		docInformations = transform.Find("DocInformations").gameObject;
+		docPreview = transform.Find("Preview").gameObject;
+		docInformations = transform.Find("Informations").gameObject;
 		docInformations.SetActive(false);
+		docButtons = transform.Find("Buttons").gameObject;
+		docButtons.SetActive(false);
 
 		this.Properties = new DocProperties();
 
@@ -42,12 +45,12 @@ public class DocManager : MonoBehaviour, IInputHandler, IInputClickHandler, IFoc
 	public void SetPhoto(Texture2D photo) {
 		float finalHeight, finalWidth;
 		if (photo.height > photo.width)	{
-			finalHeight = 1;
-			finalWidth = (float)photo.width / (float)photo.height;
+			finalHeight = 1.35f;
+			finalWidth = ((float)photo.width / (float)photo.height) * 1.35f;
 		}
 		else {
-			finalHeight = (float)photo.height / (float)photo.width;
-			finalWidth = 1;
+			finalHeight = ((float)photo.height / (float)photo.width) * 1.35f;
+			finalWidth = 1.35f;
 		}
 
 		this.docPreview.transform.localScale = new Vector3(finalWidth, finalHeight, 1);
@@ -76,16 +79,17 @@ public class DocManager : MonoBehaviour, IInputHandler, IInputClickHandler, IFoc
 	}
 
 	public void OnInputDown(InputEventData eventData) {
-		DocLinkManager.Instance.OnLinkStarted(this.gameObject);
+		StartLink();
 	}
 
 	public void OnInputUp(InputEventData eventData) {
-		DocLinkManager.Instance.OnLinkEnded(this.gameObject);
+		EndLink();
 	}
 
 	public void OnInputClicked(InputClickedEventData eventData) {
 		DocumentPanel.Instance.SetFocusedDocument(this.transform.gameObject);
 	}
+
 
 	public void OnFocusEnter() {
 		animator.ZoomIn();
@@ -97,11 +101,94 @@ public class DocManager : MonoBehaviour, IInputHandler, IInputClickHandler, IFoc
 
 	public void ToggleFocus() {
 		docInformations.SetActive(!docInformations.activeInHierarchy);
+		docButtons.SetActive(!docButtons.activeInHierarchy);
+		UpdateLinkDisplay();
 		animator.PerformAnimation();
+	}
+
+	public void UpdateLinkDisplay() {
+		docInformations.transform.Find("LinkPreview/DocPreview1").gameObject.SetActive(false);
+		docInformations.transform.Find("LinkPreview/DocPreview2").gameObject.SetActive(false);
+		docInformations.transform.Find("LinkPreview/DocPreview3").gameObject.SetActive(false);
+
+		if (this.Properties.LinkId != -1) {
+			docInformations.transform.Find("LinkPreview/NoLinks").gameObject.SetActive(false);
+			uint linkCount = 0;
+			List<GameObject> objects = DocLinkManager.Instance.GetObjects(this.Properties.LinkId);
+			foreach (GameObject go in objects) {
+				if (go != this.gameObject) {
+					linkCount++;
+					if (linkCount > 3) { break; }
+					GameObject preview = docInformations.transform.Find("LinkPreview/DocPreview" + linkCount).gameObject;
+					preview.SetActive(true);
+					preview.GetComponent<Renderer>().material.mainTexture = go.transform.Find("Preview").gameObject.GetComponent<Renderer>().material.mainTexture;
+				}
+			}
+		}
+		else {
+			docInformations.transform.Find("LinkPreview/NoLinks").gameObject.SetActive(true);
+		}
 	}
 
 	public void Toggle() {
 		docPreview.SetActive(!docPreview.activeInHierarchy);
+	}
+
+	public void RetakePhoto() {
+		DocumentPanel.Instance.Toggle();
+		/*/
+		PhotoCapturer.Instance.TakePhoto(OnPhotoRetaken);
+		/*/
+		Texture2D tex = Resources.Load<Texture2D>("Images/MultiDoc - black background");
+		this.SetPhoto(tex);
+		StartCoroutine(Wait());
+		/**/
+	}
+
+	IEnumerator Wait() {
+		yield return new WaitForSeconds(1.5f);
+		DocumentPanel.Instance.Toggle();
+		DocumentPanel.Instance.SetFocusedDocument(this.transform.gameObject);
+	}
+
+	public void OnPhotoRetaken(Texture2D photo, Resolution res) {
+		//Texture2D newCroppedPhoto = RequestLauncher.Instance.UpdatePhoto(photo);
+		this.SetPhoto(photo);
+		DocumentPanel.Instance.Toggle();
+	}
+
+	public void StartLink() {
+		DocLinkManager.Instance.OnLinkStarted(this.gameObject);
+	}
+
+
+	public void EndLink() {
+		DocLinkManager.Instance.OnLinkEnded(this.gameObject);
+	}
+
+	public void OnLinkBreak() {
+		this.OutlineQuad.SetActive(false);
+		UpdateLinkDisplay();
+		// NOTE: Maybe put a default color.
+		//RequestLauncher.Instance.BreakLink(this.Properties.Id);
+	}
+
+	public void Open() {
+		if (animator.IsOpen) {
+			return;
+		}
+		docInformations.SetActive(true);
+		docButtons.SetActive(true);
+		animator.OpenAnimation();
+	}
+
+	public void Close() {
+		if (!animator.IsOpen) {
+			return;
+		}
+		docInformations.SetActive(false);
+		docButtons.SetActive(false);
+		animator.CloseAnimation();
 	}
 
 }

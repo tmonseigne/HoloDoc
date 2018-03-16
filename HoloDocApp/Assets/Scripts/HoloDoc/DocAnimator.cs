@@ -13,7 +13,7 @@ public class DocAnimator : MonoBehaviour
 	[Range(1.0f, 10.0f)]
 	public float TransformationSpeed = 2.0f;
 
-	private bool isOpen = false;
+	public bool IsOpen = false;
 	private bool zoomIn = false;
 	private bool zoomOut = false;
 
@@ -22,8 +22,14 @@ public class DocAnimator : MonoBehaviour
 	private Vector3 initialPosition;
 	private Quaternion initialRotation;
 
+	private GameObject docPreview;
+
+	void Awake() {
+		docPreview = transform.Find("Preview").gameObject;
+	}
+
 	void Start() {
-		initialScale = this.transform.localScale;
+		initialScale = docPreview.transform.localScale;
 		zoomSize = initialScale * ZoomFactor;
 		InitTransform();
 	}
@@ -36,53 +42,67 @@ public class DocAnimator : MonoBehaviour
 	// Update is called once per frame
 	void Update() {
 		if (zoomIn) {
-			this.transform.localScale = Vector3.Lerp(this.transform.localScale, zoomSize, ZoomSpeed * Time.deltaTime);
+			docPreview.transform.localScale = Vector3.Lerp(docPreview.transform.localScale, zoomSize, ZoomSpeed * Time.deltaTime);
 		}
 		else if (zoomOut) {
-			this.transform.localScale = Vector3.Lerp(this.transform.localScale, initialScale, ZoomSpeed * Time.deltaTime);
-			if (Vector3.Distance(this.transform.localScale, initialScale) < 0.005)
-			{
-				this.transform.localScale = initialScale;
+			docPreview.transform.localScale = Vector3.Lerp(docPreview.transform.localScale, initialScale, ZoomSpeed * Time.deltaTime);
+			if (Vector3.Distance(docPreview.transform.localScale, initialScale) < 0.005) {
+				docPreview.transform.localScale = initialScale;
 				zoomOut = false;
 			}
 		}
 	}
 
 	public void ZoomIn() {
-		if (!isOpen) {
+		if (!IsOpen) {
 			zoomIn = true;
 			zoomOut = false;
 		}
 	}
 
 	public void ZoomOut() {
-		if (!isOpen) {
+		if (!IsOpen) {
 			zoomOut = true;
 			zoomIn = false;
 		}
 	}
 
 	public void PerformAnimation() {
-		if (!isOpen) {
-			Vector3 destination = Camera.main.transform.position + Camera.main.transform.forward;
-			Vector3 offset = Camera.main.transform.right * this.transform.localScale.x / 2f;
-			Vector3 directionToTarget = Camera.main.transform.position - this.transform.position;
-			Quaternion rotation = Quaternion.LookRotation(-directionToTarget);
-			StartCoroutine(OpenTransformation(destination - offset, rotation, TransformationSpeed));
-		} else {
-			StartCoroutine(CloseTransformation(this.transform.position, this.transform.rotation, TransformationSpeed));
+		if (!IsOpen) {
+			OpenAnimation();
 		}
-		isOpen = !isOpen;
+		else {
+			CloseAnimation();
+		}
+	}
+
+	public void OpenAnimation() {
+		this.transform.rotation = Camera.main.transform.rotation;
+		Vector3 destination = Camera.main.transform.position + Camera.main.transform.forward * 0.8f;
+		Vector3 directionToTarget = Camera.main.transform.position - destination;
+		Quaternion rotation = Quaternion.LookRotation(-directionToTarget, this.transform.up);
+		StartCoroutine(OpenTransformation(destination, rotation, TransformationSpeed));
+		IsOpen = true;
+	}
+
+	public void CloseAnimation() {
+		StartCoroutine(CloseTransformation(this.transform.position, this.transform.rotation, TransformationSpeed));
+		IsOpen = false;
 	}
 
 	IEnumerator OpenTransformation(Vector3 targetPosition, Quaternion targetRotation, float speed) {
+		zoomOut = false;
+		zoomIn = false;
+
 		for (float time = 0f; time < 1f; time += speed * Time.deltaTime) {
 			this.transform.position = Vector3.Lerp(initialPosition, targetPosition, time);
 			this.transform.rotation = Quaternion.Lerp(initialRotation, targetRotation, time);
+			this.docPreview.transform.localScale = Vector3.Lerp(docPreview.transform.localScale, initialScale, ZoomSpeed * Time.deltaTime);
 			yield return null;
 		}
 		this.transform.position = targetPosition;
 		this.transform.rotation = targetRotation;
+		this.docPreview.transform.localScale = initialScale;
 	}
 
 	IEnumerator CloseTransformation(Vector3 currentPosition, Quaternion currentRotation, float speed) {

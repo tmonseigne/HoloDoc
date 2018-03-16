@@ -7,22 +7,24 @@ using HoloToolkit.Unity;
 
 public class DocLinkManager : Singleton<DocLinkManager>
 {
-
 	public class Link
 	{
 		public List<GameObject> Objects { get; set; }
 		public Color LinkColor { get; set; }
 
 		// override AddRange function
-		public void AddRange(Link l)
-		{
+		public void AddRange(Link l) {
 			this.Objects.AddRange(l.Objects);
 		}
 
 		// override Add function
-		public void Add(GameObject go)
-		{
+		public void Add(GameObject go) {
 			this.Objects.Add(go);
+		}
+
+		// override Remove function
+		public void Remove(GameObject go) {
+			this.Objects.Remove(go);
 		}
 	}
 
@@ -30,12 +32,9 @@ public class DocLinkManager : Singleton<DocLinkManager>
 
 	private GameObject linkHead;
 	private GameObject linkTail;
-	private Color[] linkColors;
 
-	void Start()
-	{
+	void Start() {
 		Links = new List<Link>();
-		linkColors = CreateColorList(10);
 	}
 
 	public void OnLinkStarted(GameObject document) {
@@ -62,7 +61,6 @@ public class DocLinkManager : Singleton<DocLinkManager>
 					if (head.LinkId == tail.LinkId)
 					{
 						Debug.Log("Tail and head are already linked and plus they are in the same link → Over !");
-						// TODO: Destroy links here.
 					}
 					else
 					{
@@ -138,12 +136,11 @@ public class DocLinkManager : Singleton<DocLinkManager>
 						linkHead,
 						linkTail
 						},
-						LinkColor = linkColors[linkId],
+						LinkColor = GenerateUniqueColor((uint) linkId),
 					};
 
 					// 3: Push the new link in the big list
 					AddToList(link, linkId);
-					//Links.Add(link);
 
 					// 4: Give it a color
 					linkHead.GetComponent<DocManager>().SetColor(Links[linkId].LinkColor);
@@ -158,61 +155,68 @@ public class DocLinkManager : Singleton<DocLinkManager>
 
 		// TO REMOVE: Only debug to check links current state
 		Debug.LogFormat("{0} link(s) has been created.", GetLinksCount());
-		for (int i = 0; i < Links.Count; i++)
-		{
-			if (Links[i] != null)
+		for (int i = 0; i < Links.Count; i++) {
+			if (Links[i] != null) {
 				Debug.LogFormat("Link[{0}]: {1} elems in it", i, Links[i].Objects.Count);
+			}
 		}
 	}
 
-	void AddToList(Link l, int linkId)
-	{
-		if (linkId != Links.Count)
-		{
+	void AddToList(Link l, int linkId) {
+		if (linkId != Links.Count) {
 			Links[linkId] = l;
 		}
-		else
-		{
+		else {
 			Links.Add(l);
 		}
 	}
 
-	public int GetLinksCount()
-	{
+	public int GetLinksCount() {
 		int count = 0;
-		for (int i = 0; i < Links.Count; i++)
-		{
-			if (Links[i] != null)
-			{
+		for (int i = 0; i < Links.Count; i++) {
+			if (Links[i] != null) {
 				count++;
 			}
 		}
 		return count;
 	}
 
-	Color[] CreateColorList(int nbColors)
+	Color GenerateUniqueColor(uint color)
 	{
-		Color[] colors = new Color[nbColors];
-
-		for (int i = 0; i < nbColors; i++)
-		{
-			colors[i] = Color.HSVToRGB(i / (float)nbColors, 1, 1);
+		float degreeColor = 0;
+		if (color < 6) {
+			 degreeColor = 60 * color;
 		}
-
-		return colors;
-	}
-
-	Color getColor(uint color)
-	{
-		if (color == 0)
-		{
-			return Color.HSVToRGB(0, 1, 1);
+		else {
+			float offset = 360f / 6f;
+			int currentBinary = (int)Mathf.Log(Mathf.Floor(color / 6f), 2);
+			degreeColor = offset / (1 << (currentBinary + 1)) + offset / (1 << currentBinary) * (color % (6 * (1 << currentBinary)));
 		}
-
-		int currentBinary = (int)Mathf.Floor(Mathf.Log(color, 2) + 1f);
-		float offset = 360f / (1 << currentBinary);
-		float degreeColor = offset + 2 * offset * (color - (1 << (currentBinary - 1)));
 
 		return Color.HSVToRGB(degreeColor / 360f, 1, 1);
+	}
+
+	public void BreakLink(GameObject document) {
+		DocManager manager = document.GetComponent<DocManager>();
+		int linkId = manager.Properties.LinkId;
+		if (linkId == -1) {
+			return;
+		}
+		Link link = Links[linkId];
+		link.Remove(document);
+		manager.Properties.LinkId = -1;
+		manager.OnLinkBreak();
+
+		if (link.Objects.Count == 1) {
+			DocManager manager2 = link.Objects[0].GetComponent<DocManager>();
+			link.Remove(link.Objects[0]);
+			manager2.Properties.LinkId = -1;
+			manager2.OnLinkBreak();
+			Links[linkId] = null;
+		}
+	}
+
+	public List<GameObject> GetObjects(int linkId) {
+		return this.Links[linkId].Objects;
 	}
 }

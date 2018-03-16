@@ -15,7 +15,7 @@ public class DocumentPanel : Singleton<DocumentPanel> {
 	private bool isActive = false;
 	private List<GameObject> documents = new List<GameObject>();
 	private float distancePanel = 2.0f;
-	private float offsetX = 0.12f, offsetY = -0.09f;
+	private float offsetX = 0.15f, offsetY = -0.12f;
 	private GameObject focusedDocument = null;
 
 	public void AddDocument(Texture2D croppedPhoto) {
@@ -51,21 +51,26 @@ public class DocumentPanel : Singleton<DocumentPanel> {
 		return isActive;
 	}
 
+	public int DocumentsCount() {
+		return documents.Count;
+	}
+
+
 	public void Toggle()
 	{
 		isActive = !isActive;
-		
+
 		if (isActive) {
 			// Reset rotation
 			this.transform.rotation = Camera.main.transform.rotation;
 
-			Vector3 position = Camera.main.transform.position + Camera.main.transform.forward * distancePanel; 
+			Vector3 position = Camera.main.transform.position + Camera.main.transform.forward * distancePanel;
 			Vector3 directionToTarget = Camera.main.transform.position - position;
-			Quaternion rotation = Quaternion.LookRotation(-directionToTarget);
+			Quaternion rotation = Quaternion.LookRotation(-directionToTarget, this.transform.up);
 
 			// Center the panel
 			position -= Camera.main.transform.right * (offsetX * (MaxDocumentsPerLine - 1) / 2f)
-					  + Camera.main.transform.up * (offsetY * Mathf.Floor(documents.Count / MaxDocumentsPerLine) / 2f);
+					  + Camera.main.transform.up	* (offsetY * Mathf.Floor(documents.Count / MaxDocumentsPerLine) / 2f);
 
 			this.transform.position = position;
 			this.transform.rotation = rotation;
@@ -84,5 +89,9 @@ public class DocumentPanel : Singleton<DocumentPanel> {
 		{
 			this.transform.GetChild(i).GetComponent<DocManager>().Toggle();
 		}
+	}
+
+	public bool IsFocused(GameObject document) {
+		return this.focusedDocument == document;
 	}
 }

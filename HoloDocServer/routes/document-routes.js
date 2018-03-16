@@ -78,6 +78,7 @@ router.post('/matchorcreate', function (req, res) {
           	  // 2. If matched we return the matched document information.
           	  // 2.1 The match call a callback function by passing the finded document in paramaters, we just have to return this to the client.
               let result = {
+                id: matchedDocument._id,
                 name: matchedDocument.name,
                 label: matchedDocument.label,
                 desc: matchedDocument.desc,
@@ -100,6 +101,7 @@ router.post('/matchorcreate', function (req, res) {
       			     features,
       			     function (doc) {
                    let result = {
+                     id: doc._id,
                      name: doc.name,
                      label: doc.label,
                      desc: doc.desc,

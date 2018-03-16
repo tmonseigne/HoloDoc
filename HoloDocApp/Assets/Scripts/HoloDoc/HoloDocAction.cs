@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class HoloDocAction : MonoBehaviour {
-	
+
 	public GameObject	GlobalInputReciever;
 	public Texture2D	DefaultTexture;
 
@@ -25,7 +25,7 @@ public class HoloDocAction : MonoBehaviour {
 
 	IEnumerator WaitForDoubleTap(float delay) {
 		yield return new WaitForSeconds(delay);
-		if (GlobalInput.SingleTapped && photoMode && !DocumentPanel.Instance.IsActive()) {
+		if (GlobalInput.SingleTapped && photoMode) {
 			Debug.Log("Single tap");
 			// This should take a photo, send it to the server which will check if its valid crop and unwrap it and send it back. Then call the instanciator with this new photo a create a document and add it to the document panel.
 			if (PhotoCapturer.Instance.HasFoundCamera) {
@@ -42,21 +42,24 @@ public class HoloDocAction : MonoBehaviour {
 
 	void DoubleTap() {
 		// This should toogle (open/close) the document viewer panel & deactivate/activate the single tap event.
-		// We need to deactivate the single tap event so that if we miss the documents, we won't take a photo while in 
+		// We need to deactivate the single tap event so that if we miss the documents, we won't take a photo while in
 		// document view mode.
 		Debug.Log("Double tap");
-		DocumentPanel.Instance.Toggle();
-		this.photoMode = true;
+		if (DocumentPanel.Instance.DocumentsCount() > 0) {
+			DocumentPanel.Instance.Toggle();
+			this.photoMode = !DocumentPanel.Instance.IsActive();
+		}
 	}
 
 	public void OnPhotoTaken(Texture2D photo, Resolution res) {
 		this.photoMode = false;
 
-        Debug.Log("ici");
-        CameraFrame frame = new CameraFrame(res, photo.GetPixels32());
-        RequestLauncher.Instance.MatchOrCreateDocument(frame, OnMatchOrCreateRequest);
-        
+    Debug.Log("ici");
+    CameraFrame frame = new CameraFrame(res, photo.GetPixels32());
+    RequestLauncher.Instance.MatchOrCreateDocument(frame, OnMatchOrCreateRequest);
+
 	}
+
 
     private void OnMatchOrCreateRequest(RequestLauncher.RequestAnswerDocument item, bool success)
     {
