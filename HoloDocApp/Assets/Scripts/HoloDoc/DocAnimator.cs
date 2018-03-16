@@ -13,7 +13,7 @@ public class DocAnimator : MonoBehaviour
 	[Range(1.0f, 10.0f)]
 	public float TransformationSpeed = 2.0f;
 
-	private bool isOpen = false;
+	public bool IsOpen = false;
 	private bool zoomIn = false;
 	private bool zoomOut = false;
 
@@ -54,31 +54,40 @@ public class DocAnimator : MonoBehaviour
 	}
 
 	public void ZoomIn() {
-		if (!isOpen) {
+		if (!IsOpen) {
 			zoomIn = true;
 			zoomOut = false;
 		}
 	}
 
 	public void ZoomOut() {
-		if (!isOpen) {
+		if (!IsOpen) {
 			zoomOut = true;
 			zoomIn = false;
 		}
 	}
 
 	public void PerformAnimation() {
-		if (!isOpen) {
-			this.transform.rotation = Camera.main.transform.rotation;
-			Vector3 destination = Camera.main.transform.position + Camera.main.transform.forward;
-			Vector3 directionToTarget = Camera.main.transform.position - destination;
-			Quaternion rotation = Quaternion.LookRotation(-directionToTarget, this.transform.up);
-			StartCoroutine(OpenTransformation(destination, rotation, TransformationSpeed));
+		if (!IsOpen) {
+			OpenAnimation();
 		}
 		else {
-			StartCoroutine(CloseTransformation(this.transform.position, this.transform.rotation, TransformationSpeed));
+			CloseAnimation();
 		}
-		isOpen = !isOpen;
+	}
+
+	public void OpenAnimation() {
+		this.transform.rotation = Camera.main.transform.rotation;
+		Vector3 destination = Camera.main.transform.position + Camera.main.transform.forward * 0.8f;
+		Vector3 directionToTarget = Camera.main.transform.position - destination;
+		Quaternion rotation = Quaternion.LookRotation(-directionToTarget, this.transform.up);
+		StartCoroutine(OpenTransformation(destination, rotation, TransformationSpeed));
+		IsOpen = true;
+	}
+
+	public void CloseAnimation() {
+		StartCoroutine(CloseTransformation(this.transform.position, this.transform.rotation, TransformationSpeed));
+		IsOpen = false;
 	}
 
 	IEnumerator OpenTransformation(Vector3 targetPosition, Quaternion targetRotation, float speed) {

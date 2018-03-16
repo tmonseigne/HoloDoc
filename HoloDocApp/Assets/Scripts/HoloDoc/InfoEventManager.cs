@@ -74,9 +74,11 @@ public class InfoEventManager : MonoBehaviour, IInputClickHandler
 
 
 		// We need to disable the SpeechRecognizer in order for the Dictation the work.
-		PhraseRecognitionSystem.Shutdown();
+		if (PhraseRecognitionSystem.Status == SpeechSystemStatus.Running) {
+			PhraseRecognitionSystem.Shutdown();
+		}
 
-		Keyboard.Instance.RepositionKeyboard(this.transform);
+		Keyboard.Instance.RepositionKeyboard(Camera.main.transform.position + Camera.main.transform.forward * 0.6f + Camera.main.transform.up * -0.1f);
 		// We need to subscribe to this event after we set the variable currentField otherwise it is not working (???)
 		Keyboard.Instance.OnTextUpdated += OnKeyboardTextUpdated;
 		Keyboard.Instance.PresentKeyboard(selectedField.text, keyboardLayout);

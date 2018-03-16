@@ -21,6 +21,12 @@ public class SpeechManager : MonoBehaviour, ISpeechHandler {
 			case "end link":
 				this.GetComponent<DocManager>().EndLink();
 				break;
+			case "open":
+				this.GetComponent<DocManager>().Open();
+				break;
+			case "close":
+				this.GetComponent<DocManager>().Close();
+				break;
 		}
 	}
 

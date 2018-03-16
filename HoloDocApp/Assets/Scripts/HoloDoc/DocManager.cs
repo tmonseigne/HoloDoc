@@ -173,4 +173,22 @@ public class DocManager : MonoBehaviour, IInputHandler, IInputClickHandler, IFoc
 		//RequestLauncher.Instance.BreakLink(this.Properties.Id);
 	}
 
+	public void Open() {
+		if (animator.IsOpen) {
+			return;
+		}
+		docInformations.SetActive(true);
+		docButtons.SetActive(true);
+		animator.OpenAnimation();
+	}
+
+	public void Close() {
+		if (!animator.IsOpen) {
+			return;
+		}
+		docInformations.SetActive(false);
+		docButtons.SetActive(false);
+		animator.CloseAnimation();
+	}
+
 }
