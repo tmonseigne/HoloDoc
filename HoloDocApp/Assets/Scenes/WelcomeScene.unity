@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.37311992, g: 0.38074034, b: 0.35872713, a: 1}
+  m_IndirectSpecularColor: {r: 0.3731193, g: 0.38073996, b: 0.35872698, a: 1}
 --- !u!157 &3
 LightmapSettings:
   m_ObjectHideFlags: 0
@@ -268,7 +268,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   PickingAreaPercentage: 0.1
-  forceSquared: 1
+  ForceSquared: 0
 --- !u!4 &425346681
 Transform:
   m_ObjectHideFlags: 0
@@ -413,11 +413,11 @@ MonoBehaviour:
     lineCount: 1
     pageCount: 1
     materialCount: 1
-  m_havePropertiesChanged: 0
+  m_havePropertiesChanged: 1
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_spriteAnimator: {fileID: 0}
-  m_isInputParsingRequired: 0
+  m_isInputParsingRequired: 1
   m_inputSource: 0
   m_hasFontAssetChanged: 0
   m_renderer: {fileID: 452516592}
@@ -1062,7 +1062,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1a4d6f532fa623f42bb88fe4f198ee6d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GlobalInput: {fileID: 932114673}
+  GlobalInputReceiver: {fileID: 932114673}
   UIContainer: {fileID: 1601924781}
 --- !u!4 &1518101517
 Transform:

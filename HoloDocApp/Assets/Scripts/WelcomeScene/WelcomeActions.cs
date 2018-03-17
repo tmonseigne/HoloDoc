@@ -1,13 +1,13 @@
 ﻿using System.Collections;
 
+using TMPro;
+
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-using TMPro;
+public class WelcomeActions : MonoBehaviour {
 
-public class WelcomeActions : MonoBehaviour
-{
-	public GlobalInputReciever GlobalInput;
+	public GlobalInputReceiver GlobalInputReceiver;
 	public GameObject UIContainer;
 
 	private GameObject colorFoundUI;
@@ -20,13 +20,13 @@ public class WelcomeActions : MonoBehaviour
 	
 
 	void Start() {
-		GlobalInput.OnSingleTap += SingleTap;
-		GlobalInput.OnDoubleTap += DoubleTap;
+		this.GlobalInputReceiver.OnSingleTap += SingleTap;
+		this.GlobalInputReceiver.OnDoubleTap += DoubleTap;
 
-		fadeEffect = this.GetComponent<CustomFade>();
+		this.fadeEffect = this.GetComponent<CustomFade>();
 
-		textMeshPro = UIContainer.transform.GetChild(0).gameObject.GetComponent<TextMeshPro>();
-		colorFoundUI = UIContainer.transform.GetChild(1).gameObject;
+		this.textMeshPro = UIContainer.transform.GetChild(0).gameObject.GetComponent<TextMeshPro>();
+		this.colorFoundUI = UIContainer.transform.GetChild(1).gameObject;
 	}
 
 	void SingleTap(float delay) {
@@ -37,8 +37,8 @@ public class WelcomeActions : MonoBehaviour
 
 	IEnumerator WaitForDoubleTap(float delay) {
 		yield return new WaitForSeconds(delay);
-		if (GlobalInput.SingleTapped && !processing) {
-			processing = true;
+		if (this.GlobalInputReceiver.SingleTapped && !processing) {
+			this.processing = true;
 			if (!PhotoCapturer.Instance.HasFoundCamera) {
 				StartCoroutine(FadeEffect(Color.blue));
 			}
@@ -49,7 +49,7 @@ public class WelcomeActions : MonoBehaviour
 	}
 
 	void DoubleTap() {
-		if (backgroundColorPicked && !processing) {
+		if (this.backgroundColorPicked && !this.processing) {
 			Destroy(GameObject.Find("InputManager"));
 			Destroy(GameObject.Find("PhotoCapturer"));
 			Destroy(GameObject.Find("ColorPicker"));
@@ -63,16 +63,16 @@ public class WelcomeActions : MonoBehaviour
 	}
 
 	IEnumerator FadeEffect(Color backgroundColor) {
-		fadeEffect.Fade(textMeshPro, 0.0f, 2.5f);
+		this.fadeEffect.Fade(textMeshPro, 0.0f, 2.5f);
 		yield return new WaitForSeconds(1.5f);
 
-		textMeshPro.text = "If you wish to redo the operation please air tap again, otherwise just double tap to start working.";
-		fadeEffect.Fade(textMeshPro, 1.0f, 2.5f);
+		this.textMeshPro.text = "If you wish to redo the operation please air tap again, otherwise just double tap to start working.";
+		this.fadeEffect.Fade(textMeshPro, 1.0f, 2.5f);
 
-		colorFoundUI.transform.GetChild(1).GetComponent<Renderer>().material.color = backgroundColor;
-		colorFoundUI.SetActive(true);
+		this.colorFoundUI.transform.GetChild(1).GetComponent<Renderer>().material.color = backgroundColor;
+		this.colorFoundUI.SetActive(true);
 
-		processing = false;
-		backgroundColorPicked = true;
+		this.processing = false;
+		this.backgroundColorPicked = true;
 	}
 }

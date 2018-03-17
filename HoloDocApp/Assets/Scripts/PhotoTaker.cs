@@ -17,7 +17,7 @@ public class PhotoTaker : Singleton<PhotoTaker> {
 	public float photoDelay = 0.1f;
 
 	private AudioSource audioSource;
-	private CameraFrame currentPhoto;
+	//private CameraFrame currentPhoto;
 
 	// Callback is invoked when a photo has been taken
 	public delegate void OnPhotoTakenCallback(CameraFrame resultFrame);
@@ -37,10 +37,12 @@ public class PhotoTaker : Singleton<PhotoTaker> {
 	IEnumerator TakePhoto(OnPhotoTakenCallback callback) {
 		yield return new WaitForSeconds(photoDelay);
 		audioSource.PlayOneShot(PhotoSound, photoVolume);
+		/*
 		currentPhoto = CameraStream.Instance.Frame;
 
 		if (callback != null) {
 			callback.Invoke(currentPhoto);
 		}
+		*/
 	}
 }

@@ -157,7 +157,7 @@ public class RequestLauncher : Singleton<RequestLauncher> {
     {
         string payload = data.ToJSON();
 
-        string url = PersistentData.ServerIp + ":" + PersistentData.ServerPort + request;
+        string url = "http://" + PersistentData.ServerIp + ":" + PersistentData.ServerPort + request;
         string method = UnityWebRequest.kHttpVerbPOST;
 		UploadHandler uploader = new UploadHandlerRaw(Encoding.ASCII.GetBytes(payload)) {
 			contentType = "custom/content-type"

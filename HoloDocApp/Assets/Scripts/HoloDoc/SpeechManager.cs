@@ -1,40 +1,32 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using HoloToolkit.Unity.InputModule;
+
 using UnityEngine;
-using HoloToolkit.Unity.InputModule;
 
 public class SpeechManager : MonoBehaviour, ISpeechHandler {
 
 	public void OnSpeechKeywordRecognized(SpeechEventData eventData) {
+		DocumentManager manager = this.GetComponent<DocumentManager>();
 		Debug.Log("Speech trigger");
 		string keyword = eventData.RecognizedText.ToLower();
 		switch (keyword) {
 			case "break links":
-				DocLinkManager.Instance.BreakLink(this.transform.gameObject);
+				LinkManager.Instance.BreakLink(this.transform.gameObject);
 				break;
 			case "update photo":
-				this.GetComponent<DocManager>().UpdatePhoto();
+				manager.UpdatePhoto();
 				break;
 			case "start link":
-				this.GetComponent<DocManager>().StartLink();
+				manager.StartLink();
 				break;
 			case "end link":
-				this.GetComponent<DocManager>().EndLink();
+				manager.EndLink();
 				break;
 			case "open":
-				this.GetComponent<DocManager>().Open();
+				manager.Open();
 				break;
 			case "close":
-				this.GetComponent<DocManager>().Close();
+				manager.Close();
 				break;
 		}
-	}
-
-	void Start () {
-		Debug.Log(this.GetComponent<DocManager>().name);
-	}
-
-	void Update () {
-		
 	}
 }
