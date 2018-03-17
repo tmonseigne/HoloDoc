@@ -14,6 +14,6 @@ public class PhotoButtonActions : MonoBehaviour, IInputClickHandler, ISpeechHand
 	}
 
 	public void TakePhoto() {
-		this.transform.parent.parent.GetComponent<DocManager>().RetakePhoto();
+		this.transform.parent.parent.GetComponent<DocManager>().UpdatePhoto();
 	}
 }

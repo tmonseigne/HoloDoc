@@ -54,14 +54,15 @@ public class HoloDocAction : MonoBehaviour {
 	public void OnPhotoTaken(Texture2D photo, Resolution res) {
 		this.photoMode = false;
 
-		/* For tests without launch the server
+		/**/
 		Texture2D croppedPhoto = new Texture2D(photo.width, photo.height);
 		croppedPhoto.SetPixels32(photo.GetPixels32());
 		croppedPhoto.Apply();
 		DocumentPanel.Instance.AddDocument(croppedPhoto); 
-		*/
+		/*/
 		CameraFrame frame = new CameraFrame(res, photo.GetPixels32());
 		RequestLauncher.Instance.MatchOrCreateDocument(frame, OnMatchOrCreateRequest);
+		/**/
 	}
 
 
@@ -78,7 +79,7 @@ public class HoloDocAction : MonoBehaviour {
         }
         else
         {
-            Debug.Log(item.error);
+            Debug.Log(item.Error);
         }
     }
 }

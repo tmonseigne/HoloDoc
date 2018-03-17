@@ -8,9 +8,10 @@ using HoloToolkit.Unity;
 using System.Text;
 
 public class RequestLauncher : Singleton<RequestLauncher> {
+
     public abstract class RequestData
     {
-        public virtual string toJSON()
+        public virtual string ToJSON()
         {
             return JsonUtility.ToJson(this);
         }
@@ -18,22 +19,22 @@ public class RequestLauncher : Singleton<RequestLauncher> {
 
     #region Answers classes
 
-    [System.Serializable]
+    [Serializable]
     public class RequestAnswerDocument
     {
-        public string name;
-        public string label;
-        public string desc;
-        public string author;
-        public string date;
-        public string path;
-        public string image;
-        public string error;
+        public string Name;
+        public string Label;
+        public string Desc;
+        public string Author;
+        public string Date;
+        public string Path;
+        public string Image;
+        public string Error;
 
         public CameraFrame CameraFrameFromBase64()
         {
             Texture2D tex = new Texture2D(0, 0);
-            tex.LoadImage(Convert.FromBase64String(image));
+            tex.LoadImage(Convert.FromBase64String(Image));
 
             CameraFrame frame = new CameraFrame(new Resolution { width = tex.width, height = tex.height }, tex.GetPixels32());
             DestroyImmediate(tex);
@@ -42,17 +43,17 @@ public class RequestLauncher : Singleton<RequestLauncher> {
         }
     }
 
-    [System.Serializable]
+    [Serializable]
     public class RequestAnswerConnected
     {
-        public bool connected;
-        public string error;
+        public bool Connected;
+        public string Error;
     }
 
-    [System.Serializable]
+    [Serializable]
     public class RequestAnswerSimple
     {
-        public string error;
+        public string Error;
     }
 
     #endregion
@@ -64,7 +65,7 @@ public class RequestLauncher : Singleton<RequestLauncher> {
 		MatchOrCreateRequestData data = new MatchOrCreateRequestData {
 			image = frame
 		};
-		StartCoroutine(launchRocket<RequestAnswerDocument>(data, "/document/matchorcreate", callback));
+		StartCoroutine(LaunchRocket<RequestAnswerDocument>(data, "/document/matchorcreate", callback));
     }
 
     public void UpdateDocument(DocumentProperties properties, OnRequestResponse<UpdateRequestData> callback)
@@ -76,7 +77,7 @@ public class RequestLauncher : Singleton<RequestLauncher> {
 			date = properties.Date
 		};
 
-		StartCoroutine(launchRocket<UpdateRequestData>(data, "/document/update", callback));
+		StartCoroutine(LaunchRocket<UpdateRequestData>(data, "/document/update", callback));
     }
 
     public class MatchOrCreateRequestData : RequestData
@@ -95,7 +96,7 @@ public class RequestLauncher : Singleton<RequestLauncher> {
             return json;
         }
 
-        public override string toJSON()
+        public override string ToJSON()
         {
             return "{ \"image\" : \"" + CameraFrameToJson(image) + "\" }";
         }
@@ -121,7 +122,7 @@ public class RequestLauncher : Singleton<RequestLauncher> {
         data.firstId = firstId;
         data.secondId = secondId;
 
-        StartCoroutine(launchRocket<RequestAnswerSimple>(data, "/link/create", callback));
+        StartCoroutine(LaunchRocket<RequestAnswerSimple>(data, "/link/create", callback));
     }
 
     public void RemoveLink(string firstId, string secondId, OnRequestResponse<RequestAnswerSimple> callback)
@@ -130,7 +131,7 @@ public class RequestLauncher : Singleton<RequestLauncher> {
         data.firstId = firstId;
         data.secondId = secondId;
 
-        StartCoroutine(launchRocket<RequestAnswerSimple>(data, "/link/remove", callback));
+        StartCoroutine(LaunchRocket<RequestAnswerSimple>(data, "/link/remove", callback));
     }
 
     public void AreConnected(string firstId, string secondId, OnRequestResponse<RequestAnswerConnected> callback)
@@ -139,9 +140,8 @@ public class RequestLauncher : Singleton<RequestLauncher> {
         data.firstId = firstId;
         data.secondId = secondId;
 
-        StartCoroutine(launchRocket<RequestAnswerConnected>(data, "/document/connected", callback));
+        StartCoroutine(LaunchRocket<RequestAnswerConnected>(data, "/document/connected", callback));
     }
-    #endregion
 
     public class LinkRequestData : RequestData
     {
@@ -149,19 +149,21 @@ public class RequestLauncher : Singleton<RequestLauncher> {
         public string secondId;
     }
 
+	#endregion
 
-    public delegate void OnRequestResponse<T>(T item, bool success);
+	public delegate void OnRequestResponse<T>(T item, bool success);
 
-    IEnumerator launchRocket <T>(RequestData data, string request, OnRequestResponse<T> onResponse)
+    IEnumerator LaunchRocket <T>(RequestData data, string request, OnRequestResponse<T> onResponse)
     {
-        string payload = data.toJSON();
+        string payload = data.ToJSON();
 
-        string url = "http://localhost:8080" + request;
+        string url = PersistentData.ServerIp + ":" + PersistentData.ServerPort + request;
         string method = UnityWebRequest.kHttpVerbPOST;
-        UploadHandler uploader = new UploadHandlerRaw(Encoding.ASCII.GetBytes(payload));
-        uploader.contentType = "custom/content-type";
+		UploadHandler uploader = new UploadHandlerRaw(Encoding.ASCII.GetBytes(payload)) {
+			contentType = "custom/content-type"
+		};
 
-        DownloadHandler downloader = new DownloadHandlerBuffer();
+		DownloadHandler downloader = new DownloadHandlerBuffer();
 
         UnityWebRequest www = new UnityWebRequest(url, method, downloader, uploader);
 

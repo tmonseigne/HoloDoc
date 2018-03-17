@@ -12,8 +12,8 @@ public class SpeechManager : MonoBehaviour, ISpeechHandler {
 			case "break links":
 				DocLinkManager.Instance.BreakLink(this.transform.gameObject);
 				break;
-			case "take photo":
-				this.GetComponent<DocManager>().RetakePhoto();
+			case "update photo":
+				this.GetComponent<DocManager>().UpdatePhoto();
 				break;
 			case "start link":
 				this.GetComponent<DocManager>().StartLink();

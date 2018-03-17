@@ -15,7 +15,7 @@ public class DocumentPanel : Singleton<DocumentPanel> {
 	private bool isActive = false;
 	private List<GameObject> documents = new List<GameObject>();
 	private float distancePanel = 2.0f;
-	private float offsetX = 0.15f, offsetY = -0.12f;
+	private float offsetX = 0.17f, offsetY = -0.12f;
 	private GameObject focusedDocument = null;
 
 	public void AddDocument(Texture2D croppedPhoto) {

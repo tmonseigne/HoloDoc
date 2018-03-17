@@ -134,27 +134,29 @@ public class DocManager : MonoBehaviour, IInputHandler, IInputClickHandler, IFoc
 		docPreview.SetActive(!docPreview.activeInHierarchy);
 	}
 
-	public void RetakePhoto() {
+	public void UpdatePhoto() {
 		DocumentPanel.Instance.Toggle();
 		/*/
 		PhotoCapturer.Instance.TakePhoto(OnPhotoRetaken);
 		/*/
-		Texture2D tex = Resources.Load<Texture2D>("Images/MultiDoc - black background");
-		this.SetPhoto(tex);
-		StartCoroutine(Wait());
+		StartCoroutine(MimickPhoto());
 		/**/
 	}
 
-	IEnumerator Wait() {
+	IEnumerator MimickPhoto() {
 		yield return new WaitForSeconds(1.5f);
+		Texture2D tex = Resources.Load<Texture2D>("Images/MultiDoc - black background");
+		this.SetPhoto(tex);
 		DocumentPanel.Instance.Toggle();
 		DocumentPanel.Instance.SetFocusedDocument(this.transform.gameObject);
 	}
 
-	public void OnPhotoRetaken(Texture2D photo, Resolution res) {
+	public void OnPhotoUpdated(Texture2D photo, Resolution resolution) {
 		//Texture2D newCroppedPhoto = RequestLauncher.Instance.UpdatePhoto(photo);
 		this.SetPhoto(photo);
 		DocumentPanel.Instance.Toggle();
+		DocumentPanel.Instance.SetFocusedDocument(this.transform.gameObject);
+
 	}
 
 	public void StartLink() {
@@ -177,18 +179,13 @@ public class DocManager : MonoBehaviour, IInputHandler, IInputClickHandler, IFoc
 		if (DocumentPanel.Instance.IsFocused(this.gameObject)) {
 			return;
 		}
-		docInformations.SetActive(true);
-		docButtons.SetActive(true);
-		animator.OpenAnimation();
+		DocumentPanel.Instance.SetFocusedDocument(this.gameObject);
 	}
 
 	public void Close() {
 		if (!DocumentPanel.Instance.IsFocused(this.gameObject)) {
 			return;
 		}
-		docInformations.SetActive(false);
-		docButtons.SetActive(false);
-		animator.CloseAnimation();
+		DocumentPanel.Instance.SetFocusedDocument(this.gameObject);
 	}
-
 }

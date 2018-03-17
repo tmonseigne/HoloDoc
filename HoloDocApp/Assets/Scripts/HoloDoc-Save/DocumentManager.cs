@@ -131,11 +131,11 @@ public class DocumentManager : MonoBehaviour, IInputClickHandler, IInputHandler 
         {
             CameraFrame cropped = item.CameraFrameFromBase64();
             this.Properties.Photo = cropped;
-            this.Properties.SetProperties(item.label, item.author, item.desc, item.date);
+            this.Properties.SetProperties(item.Label, item.Author, item.Desc, item.Date);
         }
         else
         {
-            Debug.Log(item.error);
+            Debug.Log(item.Error);
         }
         
     }
