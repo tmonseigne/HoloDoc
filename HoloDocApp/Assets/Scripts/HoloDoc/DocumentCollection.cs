@@ -86,6 +86,13 @@ public class DocumentCollection : Singleton<DocumentCollection> {
 		for (int i = 0; i < this.transform.childCount; i++)	{
 			this.transform.GetChild(i).GetComponent<DocumentManager>().Toggle();
 		}
+
+		if (isActive) {
+			AudioPlayer.Instance.PlayClip(AudioPlayer.Instance.OpenCollection);
+		}
+		else {
+			AudioPlayer.Instance.PlayClip(AudioPlayer.Instance.CloseCollection);
+		}
 	}
 
 	public bool IsFocused(GameObject document) {

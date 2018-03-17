@@ -42,6 +42,7 @@ public class LinkManager : Singleton<LinkManager>
 	public void OnLinkStarted(GameObject document) {
 		// If this is an actual document
 		if (document.CompareTag("Document")) {
+			AudioPlayer.Instance.PlayClip(AudioPlayer.Instance.StartLinking);
 			this.linkHead = document;
 		}
 	}
@@ -71,6 +72,11 @@ public class LinkManager : Singleton<LinkManager>
 						this.Links[headProperties.LinkId].AddRange(Links[oldTailLinkId]);
 						// 3: We "remove" the merged list
 						this.Links[oldTailLinkId] = null;
+						
+						AudioPlayer.Instance.PlayClip(AudioPlayer.Instance.EndLinking);
+					}
+					else {
+						AudioPlayer.Instance.PlayClip(AudioPlayer.Instance.BadLinking);
 					}
 				}
 				else {
@@ -82,6 +88,8 @@ public class LinkManager : Singleton<LinkManager>
 					this.Links[headProperties.LinkId].Add(linkTail);
 					// 3: We propagate the color
 					linkTail.GetComponent<DocumentManager>().SetColor(Links[headProperties.LinkId].LinkColor);
+
+					AudioPlayer.Instance.PlayClip(AudioPlayer.Instance.EndLinking);
 				}
 			}
 			else { 
@@ -95,6 +103,8 @@ public class LinkManager : Singleton<LinkManager>
 					this.Links[tailProperties.LinkId].Add(linkHead);
 					// 3: Propagate the color
 					this.linkHead.GetComponent<DocumentManager>().SetColor(Links[tailProperties.LinkId].LinkColor);
+					
+					AudioPlayer.Instance.PlayClip(AudioPlayer.Instance.EndLinking);
 				}
 				else {
 					/* Both has never been linked before
@@ -126,8 +136,13 @@ public class LinkManager : Singleton<LinkManager>
 					// 4: Give it a color
 					this.linkHead.GetComponent<DocumentManager>().SetColor(Links[linkId].LinkColor);
 					this.linkTail.GetComponent<DocumentManager>().SetColor(Links[linkId].LinkColor);
+
+					AudioPlayer.Instance.PlayClip(AudioPlayer.Instance.EndLinking);
 				}
 			}
+		}
+		else if (linkHead == document) {
+			AudioPlayer.Instance.PlayClip(AudioPlayer.Instance.BadLinking);
 		}
 
 		// Finally clear head (and tail to keep consistency) otherwise clicking in the empty space will lead to a new link with an old head.
@@ -187,6 +202,8 @@ public class LinkManager : Singleton<LinkManager>
 			manager.OnLinkBreak();
 			this.Links[linkId] = null;
 		}
+
+		AudioPlayer.Instance.PlayClip(AudioPlayer.Instance.BreakLinking);
 	}
 
 	public List<GameObject> GetObjects(int linkId) {

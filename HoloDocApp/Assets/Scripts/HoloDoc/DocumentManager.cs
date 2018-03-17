@@ -17,6 +17,8 @@ public class DocumentManager : MonoBehaviour, IInputHandler, IInputClickHandler,
 	private Material			material;
 	private DocumentAnimator	animator;
 
+	private bool clicked;
+
 	void Awake() {
 		this.docPreview = transform.Find("Preview").gameObject;
 		this.docInformations = transform.Find("Informations").gameObject;
@@ -83,14 +85,24 @@ public class DocumentManager : MonoBehaviour, IInputHandler, IInputClickHandler,
 	}
 
 	public void OnInputDown(InputEventData eventData) {
-		StartLink();
+		/* Since a standard click is an Down then a Up, we need to delay the invoke of StartLink in case
+		 * we only wanted to click 
+		 */
+		Invoke("StartLink", 0.2f);
 	}
 
 	public void OnInputUp(InputEventData eventData) {
-		EndLink();
+		if (clicked) {
+			clicked = false;
+		}
+		else {
+			EndLink();
+		}
 	}
 
 	public void OnInputClicked(InputClickedEventData eventData) {
+		CancelInvoke("StartLink");
+		clicked = true;
 		DocumentCollection.Instance.SetFocusedDocument(this.gameObject);
 	}
 
@@ -139,33 +151,24 @@ public class DocumentManager : MonoBehaviour, IInputHandler, IInputClickHandler,
 
 	public void UpdatePhoto() {
 		DocumentCollection.Instance.Toggle();
-		/*/
-		PhotoCapturer.Instance.TakePhoto(OnPhotoUpdated);
-		/*/
-		StartCoroutine(MimickPhoto());
-		/**/
+		GlobalActions.Instance.UpdateDocumentPhoto(this.gameObject);
 	}
 
-	IEnumerator MimickPhoto() {
-		yield return new WaitForSeconds(1.5f);
-		Texture2D tex = Resources.Load<Texture2D>("Images/MultiDoc - black background");
-		this.SetPhoto(tex);
+	IEnumerator WaitTransition(Texture2D photo, Resolution res) {
+		yield return new WaitForSeconds(0.5f);
+		//Texture2D newCroppedPhoto = RequestLauncher.Instance.UpdatePhoto(photo);
+		this.SetPhoto(photo);
 		DocumentCollection.Instance.Toggle();
 		DocumentCollection.Instance.SetFocusedDocument(this.transform.gameObject);
 	}
 
 	public void OnPhotoUpdated(Texture2D photo, Resolution resolution) {
-		//Texture2D newCroppedPhoto = RequestLauncher.Instance.UpdatePhoto(photo);
-		this.SetPhoto(photo);
-		DocumentCollection.Instance.Toggle();
-		DocumentCollection.Instance.SetFocusedDocument(this.transform.gameObject);
-
+		StartCoroutine(WaitTransition(photo, resolution));
 	}
 
 	public void StartLink() {
 		LinkManager.Instance.OnLinkStarted(this.gameObject);
 	}
-
 
 	public void EndLink() {
 		LinkManager.Instance.OnLinkEnded(this.gameObject);
