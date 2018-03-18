@@ -152,7 +152,7 @@ MonoBehaviour:
   StartLinking: {fileID: 8300000, guid: c6e19bd22eb4a6c4c8e4924d6a6d2438, type: 3}
   EndLinking: {fileID: 8300000, guid: c6e19bd22eb4a6c4c8e4924d6a6d2438, type: 3}
   BreakLinking: {fileID: 8300000, guid: 4f57dae1d9eee2d43a191dcbce078a35, type: 3}
-  BadLinking: {fileID: 8300000, guid: fb9af867d8f786a4e8f0a8a1cf49ed9f, type: 3}
+  BadLinking: {fileID: 8300000, guid: 905e82e443a137b4d983338c683af4ef, type: 3}
 --- !u!82 &149167468
 AudioSource:
   m_ObjectHideFlags: 0
@@ -412,7 +412,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a0484decaed64b24c8325690e33c630a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  DocumentPrefab: {fileID: 1096984854659714, guid: dda813b099954d649b7b971639d3cb64,
+  DocumentPrefab: {fileID: 1289279045195962, guid: c61deabbe86080f4eac4a02d254ea82a,
     type: 2}
   MaxDocumentsPerLine: 5
 --- !u!1 &845296949

@@ -98,7 +98,7 @@ public class RequestLauncher : Singleton<RequestLauncher> {
         StartCoroutine(LaunchRocket<RequestAnswerDocument>(data, "/document/updatephoto", callback));
     }
 
-    public void SetBackGroundColor(Color32 color, OnRequestResponse<BackGroundColorRequestData> callback)
+    public void SetBackgroundColor(Color32 color, OnRequestResponse<BackGroundColorRequestData> callback)
     {
         BackGroundColorRequestData data = new BackGroundColorRequestData
         {

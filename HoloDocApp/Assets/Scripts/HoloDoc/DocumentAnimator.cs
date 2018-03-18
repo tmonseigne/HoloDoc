@@ -72,10 +72,11 @@ public class DocumentAnimator : MonoBehaviour {
 	}
 
 	public void OpenAnimation() {
-		this.transform.rotation = Camera.main.transform.rotation;
+		//this.transform.rotation = Camera.main.transform.rotation;
+		this.transform.right = Vector3.right;
 		Vector3 destination = Camera.main.transform.position + Camera.main.transform.forward * 0.8f;
 		Vector3 directionToTarget = Camera.main.transform.position - destination;
-		Quaternion rotation = Quaternion.LookRotation(-directionToTarget, this.transform.up);
+		Quaternion rotation = Quaternion.LookRotation(-directionToTarget/*, this.transform.up*/);
 		StartCoroutine(OpenTransformation(destination, rotation, this.TransformationSpeed));
 	}
 

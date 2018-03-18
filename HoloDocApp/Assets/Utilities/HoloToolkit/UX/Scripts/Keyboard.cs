@@ -282,10 +282,21 @@ namespace HoloToolkit.UI.Keyboard
         {
             if (text != null)
             {
-                InputField.text.Insert(InputField.caretPosition, text);
-                InputField.caretPosition += text.Length;
-            }
+				m_CaretPosition = InputField.caretPosition;
+
+				InputField.text = InputField.text.Insert(m_CaretPosition, text);
+				m_CaretPosition += text.Length;
+
+				UpdateCaratPosition(m_CaretPosition);
+				EndDictation();
+			}
         }
+
+		/// <summary>
+		/// Event fire when dictation stopped.
+		/// </summary>
+		/// <param name="completeCause">The reason why it stopped.</param>
+		private void OnDictationComplete(DictationCompletionCause completeCause) { }
 #endif
 
         /// <summary>
@@ -469,6 +480,7 @@ namespace HoloToolkit.UI.Keyboard
             {
                 m_Dictation = new DictationRecognizer();
                 m_Dictation.DictationResult += OnDictationResult;
+				m_Dictation.DictationComplete += OnDictationComplete;
             }
 
             m_Dictation.Start();

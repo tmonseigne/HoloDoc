@@ -1,10 +1,11 @@
 ﻿using System;
 
-using UnityEngine;
 using HoloToolkit.Unity.InputModule;
 using HoloToolkit.UI.Keyboard;
 
 using TMPro;
+
+using UnityEngine;
 
 using UnityEngine.Windows.Speech;
 
@@ -12,27 +13,33 @@ public class InformationEventManager : MonoBehaviour, IInputClickHandler {
 	private InformationManager informationManager;
 
 	private TextMeshPro selectedField = null;
+	private bool textSubmitted = false;
+	private string defaultText;
 
 	void Awake() {
 		this.informationManager = this.transform.parent.GetComponent<InformationManager>();
-		Keyboard.Instance.OnTextSubmitted += OnKeyboardSubmitted;
-		Keyboard.Instance.OnClosed += OnKeyboardClosed;
 	}
 
 	private void OnKeyboardClosed(object sender, EventArgs e) {
 		// It is really important to unsubscribe to these events as soon as the text is submitted/keyboard closed
 		// otherwise modifications will be propagated to the other edited fields.
-		Keyboard.Instance.OnTextUpdated -= OnKeyboardTextUpdated;
-		Keyboard.Instance.OnClosed -= OnKeyboardClosed;
-		Keyboard.Instance.Close();
-	}
+		if (!this.textSubmitted) {
+			this.selectedField.text = this.defaultText;
+		}
+		else {
+			this.textSubmitted = false;
+		}
 
-	private void OnKeyboardSubmitted(object sender, EventArgs e) { 
-		// It is really important to unsubscribe to these events as soon as the text is submitted/keyboard closed 
-		// otherwise modifications will be propagated to the other edited fields.
 		Keyboard.Instance.OnTextUpdated -= OnKeyboardTextUpdated;
+		Keyboard.Instance.OnTextSubmitted -= OnKeyboardTextSubmitted;
 		Keyboard.Instance.OnClosed -= OnKeyboardClosed;
 		PhraseRecognitionSystem.Restart();
+	}
+
+	private void OnKeyboardTextSubmitted(object sender, EventArgs e) {
+		// OnKeyboardSubmitted calls OnClosed
+		this.textSubmitted = true;
+		this.informationManager.InformationsChanged();
 	}
 
 	private void OnKeyboardTextUpdated(string content) {
@@ -40,7 +47,6 @@ public class InformationEventManager : MonoBehaviour, IInputClickHandler {
 			this.selectedField.text = content;
 			// This line should go in the OnKeyboardSubmitted but atm there is a bug
 			// causing the event to be thrown too many times and the label ends up resetting for no reasons.
-			this.informationManager.InformationsChanged();
 		}
 	}
 
@@ -48,24 +54,34 @@ public class InformationEventManager : MonoBehaviour, IInputClickHandler {
 		if (eventData.selectedObject == null) {
 			return;
 		}
-	
+
+		if (Keyboard.Instance.isActiveAndEnabled) {
+			Keyboard.Instance.Close();
+		}
+
+		// Each time we open the keyboard we subscribe to events
+		Keyboard.Instance.OnClosed += OnKeyboardClosed;
+		Keyboard.Instance.OnTextSubmitted += OnKeyboardTextSubmitted;
+
 		string editField = eventData.selectedObject.name;
 		Keyboard.LayoutType keyboardLayout = Keyboard.LayoutType.Alpha;
 		switch (editField) { 
 			case "Label":
-				selectedField = informationManager.Label;
+				this.selectedField = informationManager.Label;
 				break;
 			case "Author":
-				selectedField = informationManager.Author;
+				this.selectedField = informationManager.Author;
 				break;
 			case "Date":
 				keyboardLayout = Keyboard.LayoutType.Symbol;
-				selectedField = informationManager.Date;
+				this.selectedField = informationManager.Date;
 				break;
 			case "Description":
-				selectedField = informationManager.Description;
+				this.selectedField = informationManager.Description;
 				break;
 		}
+
+		this.defaultText = selectedField.text;
 
 		// We need to disable the SpeechRecognizer in order for the Dictation the work.
 		if (PhraseRecognitionSystem.Status == SpeechSystemStatus.Running) {
@@ -75,6 +91,6 @@ public class InformationEventManager : MonoBehaviour, IInputClickHandler {
 		Keyboard.Instance.RepositionKeyboard(Camera.main.transform.position + Camera.main.transform.forward * 0.6f + Camera.main.transform.up * -0.1f);
 		// We need to subscribe to this event after we set the variable currentField otherwise it is not working (???)
 		Keyboard.Instance.OnTextUpdated += OnKeyboardTextUpdated;
-		Keyboard.Instance.PresentKeyboard(selectedField.text, keyboardLayout);
+		Keyboard.Instance.PresentKeyboard(this.selectedField.text, keyboardLayout);
 	}
 }

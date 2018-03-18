@@ -40,7 +40,8 @@ public class WelcomeActions : MonoBehaviour {
 		if (this.GlobalInputReceiver.SingleTapped && !processing) {
 			this.processing = true;
 			if (!PhotoCapturer.Instance.HasFoundCamera) {
-				StartCoroutine(FadeEffect(Color.blue));
+				PersistentData.WorkspaceBackgroundColor = Color.blue;
+				StartCoroutine(FadeEffect(PersistentData.WorkspaceBackgroundColor));
 			}
 			else {
 				PhotoCapturer.Instance.TakePhoto(OnPhotoTaken);
@@ -50,9 +51,11 @@ public class WelcomeActions : MonoBehaviour {
 
 	void DoubleTap() {
 		if (this.backgroundColorPicked && !this.processing) {
+			RequestLauncher.Instance.SetBackgroundColor((Color32) PersistentData.WorkspaceBackgroundColor, OnBackGroundColorSetRequest);
 			Destroy(GameObject.Find("InputManager"));
 			Destroy(GameObject.Find("PhotoCapturer"));
 			Destroy(GameObject.Find("ColorPicker"));
+			Destroy(GameObject.Find("RequestLauncher"));
 			SceneManager.LoadScene("Scenes/HoloDoc");
 		}
 	}
@@ -74,5 +77,14 @@ public class WelcomeActions : MonoBehaviour {
 
 		this.processing = false;
 		this.backgroundColorPicked = true;
+	}
+
+	private void OnBackGroundColorSetRequest(RequestLauncher.BackGroundColorRequestData item, bool success) {
+		if (success) {
+			Debug.Log("Successfully sent background color request");
+		}
+		else {
+			Debug.Log("Error");
+		}
 	}
 }

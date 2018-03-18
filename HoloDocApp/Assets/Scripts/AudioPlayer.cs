@@ -21,4 +21,12 @@ public class AudioPlayer : Singleton<AudioPlayer> {
 	public void PlayClip(AudioClip clip) {
 		audioPlayer.PlayOneShot(clip);
 	}
+
+	public void Mute() {
+		audioPlayer.mute = true;
+	}
+
+	public void Unmute() {
+		audioPlayer.mute = false;
+	}
 }

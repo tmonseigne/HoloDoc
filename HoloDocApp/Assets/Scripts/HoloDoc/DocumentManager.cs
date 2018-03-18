@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 using UnityEngine;
 
-public class DocumentManager : MonoBehaviour, IInputHandler, IInputClickHandler, IFocusable {
+public class DocumentManager : MonoBehaviour, IFocusable {
 
 	[HideInInspector]
 	public DocumentProperties	Properties;
@@ -82,28 +82,6 @@ public class DocumentManager : MonoBehaviour, IInputHandler, IInputClickHandler,
 		this.Properties.Description = description;
 		this.Properties.Label = label;
 		//RequestLauncher.Instance.UpdateDocumentInformations(this.properties);
-	}
-
-	public void OnInputDown(InputEventData eventData) {
-		/* Since a standard click is an Down then a Up, we need to delay the invoke of StartLink in case
-		 * we only wanted to click 
-		 */
-		Invoke("StartLink", 0.2f);
-	}
-
-	public void OnInputUp(InputEventData eventData) {
-		if (clicked) {
-			clicked = false;
-		}
-		else {
-			EndLink();
-		}
-	}
-
-	public void OnInputClicked(InputClickedEventData eventData) {
-		CancelInvoke("StartLink");
-		clicked = true;
-		DocumentCollection.Instance.SetFocusedDocument(this.gameObject);
 	}
 
 	public void OnFocusEnter() {

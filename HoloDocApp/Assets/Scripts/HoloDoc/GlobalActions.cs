@@ -61,7 +61,7 @@ public class GlobalActions : Singleton<GlobalActions> {
 	public void OnPhotoTaken(Texture2D photo, Resolution res) {
 		this.photoMode = false;
 
-		/*/
+		/**/
 		Texture2D croppedPhoto = new Texture2D(photo.width, photo.height);
 		croppedPhoto.SetPixels32(photo.GetPixels32());
 		croppedPhoto.Apply();
@@ -107,7 +107,6 @@ public class GlobalActions : Singleton<GlobalActions> {
 		} else {
 			Debug.Log(item.Error);
 		}
-
 		updatingDocument = false;
 	}
 

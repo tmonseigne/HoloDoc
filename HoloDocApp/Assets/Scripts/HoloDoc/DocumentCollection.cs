@@ -63,11 +63,12 @@ public class DocumentCollection : Singleton<DocumentCollection> {
 		// Reposition the collection
 		if (this.isActive) {
 			// Reset rotation
-			this.transform.rotation = Camera.main.transform.rotation;
+			//this.transform.rotation = Camera.main.transform.rotation;
+			this.transform.right = Vector3.right;
 
 			Vector3 position = Camera.main.transform.position + Camera.main.transform.forward * distancePanel;
 			Vector3 directionToTarget = Camera.main.transform.position - position;
-			Quaternion rotation = Quaternion.LookRotation(-directionToTarget, this.transform.up);
+			Quaternion rotation = Quaternion.LookRotation(-directionToTarget/*, this.transform.up*/);
 
 			// Center the panel
 			position -= Camera.main.transform.right * (offsetX * (MaxDocumentsPerLine - 1) / 2f)
