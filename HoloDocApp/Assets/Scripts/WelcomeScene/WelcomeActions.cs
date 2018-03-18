@@ -7,10 +7,11 @@ using UnityEngine.SceneManagement;
 
 public class WelcomeActions : MonoBehaviour {
 
-	public GlobalInputReceiver GlobalInputReceiver;
-	public GameObject UIContainer;
+	public GlobalInputReceiver	GlobalInputReceiver;
+	public GameObject			UIContainer;
+	public Texture2D			defaultTexture;
 
-	private GameObject colorFoundUI;
+	private GameObject	colorFoundUI;
 	private TextMeshPro textMeshPro;
 
 	private CustomFade fadeEffect;
@@ -40,7 +41,7 @@ public class WelcomeActions : MonoBehaviour {
 		if (this.GlobalInputReceiver.SingleTapped && !processing) {
 			this.processing = true;
 			if (!PhotoCapturer.Instance.HasFoundCamera) {
-				PersistentData.WorkspaceBackgroundColor = Color.blue;
+				PersistentData.WorkspaceBackgroundColor = (defaultTexture == null) ? Color.blue : ColorPicker.Instance.AverageColor(defaultTexture);
 				StartCoroutine(FadeEffect(PersistentData.WorkspaceBackgroundColor));
 			}
 			else {
@@ -51,7 +52,9 @@ public class WelcomeActions : MonoBehaviour {
 
 	void DoubleTap() {
 		if (this.backgroundColorPicked && !this.processing) {
+#if USE_SERVER
 			RequestLauncher.Instance.SetBackgroundColor((Color32) PersistentData.WorkspaceBackgroundColor, OnBackGroundColorSetRequest);
+#endif
 			Destroy(GameObject.Find("InputManager"));
 			Destroy(GameObject.Find("PhotoCapturer"));
 			Destroy(GameObject.Find("ColorPicker"));

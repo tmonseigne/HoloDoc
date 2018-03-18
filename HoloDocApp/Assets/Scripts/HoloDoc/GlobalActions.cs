@@ -31,6 +31,7 @@ public class GlobalActions : Singleton<GlobalActions> {
 	IEnumerator WaitForDoubleTap(float delay) {
 		yield return new WaitForSeconds(delay);
 		if (this.globalInputReceiver.SingleTapped && photoMode) {
+			Debug.Log("Single tap");
 			// This should take a photo, send it to the server which will check if its valid crop and unwrap it and send it back. Then call the instanciator with this new photo a create a document and add it to the document panel.
 			AudioPlayer.Instance.PlayClip(AudioPlayer.Instance.Photo);
 			if (PhotoCapturer.Instance.HasFoundCamera) {
@@ -48,6 +49,7 @@ public class GlobalActions : Singleton<GlobalActions> {
 	}
 
 	void DoubleTap() {
+		Debug.Log("Double tap" + this.globalInputReceiver.SingleTapped + ";" + this.photoMode);
 		// This should toogle (open/close) the document viewer panel & deactivate/activate the single tap event.
 		// We need to deactivate the single tap event so that if we miss the documents, we won't take a photo while in
 		// document view mode.
@@ -61,39 +63,44 @@ public class GlobalActions : Singleton<GlobalActions> {
 	public void OnPhotoTaken(Texture2D photo, Resolution res) {
 		this.photoMode = false;
 
-		/**/
+#if USE_SERVER
+		CameraFrame frame = new CameraFrame(res, photo.GetPixels32());
+#else
 		Texture2D croppedPhoto = new Texture2D(photo.width, photo.height);
 		croppedPhoto.SetPixels32(photo.GetPixels32());
 		croppedPhoto.Apply();
-		/*/
-		CameraFrame frame = new CameraFrame(res, photo.GetPixels32());
-		/**/
+#endif
 
 		if (updatingDocument) {
-			Debug.Log("Updating");
-			document.GetComponent<DocumentManager>().SetPhoto(Resources.Load<Texture2D>("Images/MultiDoc - black background"));
+#if USE_SERVER
+			RequestLauncher.Instance.UpdateDocumentPhoto(document.GetComponent<DocumentManager>().Properties.Id, frame, OnUpdatePhotoRequest);
+#else
+			document.GetComponent<DocumentManager>().SetPhoto(Resources.Load<Texture2D>("Images/MultiDocTestImage"));
 			DocumentCollection.Instance.Toggle();
 			DocumentCollection.Instance.SetFocusedDocument(document);
 			updatingDocument = false;
-			// RequestLauncher.Instance.UpdatePhoto(frame, OnUpdatePhotoRequest);
+#endif
 		}
 		else {
-			DocumentCollection.Instance.AddDocument(croppedPhoto);
-			//RequestLauncher.Instance.MatchOrCreateDocument(frame, OnMatchOrCreateRequest);
+#if USE_SERVER
+			RequestLauncher.Instance.MatchOrCreateDocument(frame, OnMatchOrCreateRequest);
+#else
+			DocumentCollection.Instance.AddDocument(croppedPhoto, "-1");
+#endif
 		}
 	}
 
     private void OnMatchOrCreateRequest(RequestLauncher.RequestAnswerDocument item, bool success) {
         if (success) {
-            Debug.Log(item.Id);
             CameraFrame frame = item.CameraFrameFromBase64();
             Texture2D croppedPhoto = new Texture2D(frame.Resolution.width, frame.Resolution.height);
             croppedPhoto.SetPixels32(frame.Data);
             croppedPhoto.Apply();
-            DocumentCollection.Instance.AddDocument(croppedPhoto);
+            DocumentCollection.Instance.AddDocument(croppedPhoto, item.Id);
         }
         else {
             Debug.Log(item.Error);
+			this.photoMode = true;
         }
     }
 
@@ -104,8 +111,12 @@ public class GlobalActions : Singleton<GlobalActions> {
 			croppedPhoto.SetPixels32(frame.Data);
 			croppedPhoto.Apply();
 			document.GetComponent<DocumentManager>().SetPhoto(croppedPhoto);
-		} else {
+			DocumentCollection.Instance.Toggle();
+			DocumentCollection.Instance.SetFocusedDocument(document);
+		}
+		else {
 			Debug.Log(item.Error);
+			this.photoMode = true;
 		}
 		updatingDocument = false;
 	}

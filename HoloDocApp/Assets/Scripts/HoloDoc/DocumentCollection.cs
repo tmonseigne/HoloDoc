@@ -19,12 +19,13 @@ public class DocumentCollection : Singleton<DocumentCollection> {
 	private float offsetY = -0.12f;
 
 
-	public void AddDocument(Texture2D croppedPhoto) {
+	public void AddDocument(Texture2D croppedPhoto, string documentId) {
 		Toggle();
 
 		GameObject newDocument = Instantiate(DocumentPrefab, this.transform);
 		newDocument.GetComponent<DocumentManager>().SetPosition(GetPosition(documents.Count));
 		newDocument.GetComponent<DocumentManager>().SetPhoto(croppedPhoto);
+		newDocument.GetComponent<DocumentManager>().Properties.Id = documentId;
 
 		this.documents.Add(newDocument);
 	}

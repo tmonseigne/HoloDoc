@@ -639,7 +639,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   GlobalInput: {fileID: 913392427}
-  DefaultTexture: {fileID: 2800000, guid: ded70081180fcac4cb2cf31edf6bc1a6, type: 3}
+  DefaultTexture: {fileID: 2800000, guid: 5712ebd413da1424e9487f8d686fdd31, type: 3}
 --- !u!4 &1009469365
 Transform:
   m_ObjectHideFlags: 0

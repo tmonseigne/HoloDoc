@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.37311926, g: 0.38073996, b: 0.35872698, a: 1}
+  m_IndirectSpecularColor: {r: 0.3731193, g: 0.38073996, b: 0.35872698, a: 1}
 --- !u!157 &3
 LightmapSettings:
   m_ObjectHideFlags: 0
@@ -267,7 +267,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d81195ce5ef2803439ed60fe0c5c083b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  PickingAreaPercentage: 0.1
+  PickingAreaPercentage: 0.05
   ForceSquared: 0
 --- !u!4 &425346681
 Transform:
@@ -1104,6 +1104,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   GlobalInputReceiver: {fileID: 932114673}
   UIContainer: {fileID: 1601924781}
+  defaultTexture: {fileID: 2800000, guid: 5712ebd413da1424e9487f8d686fdd31, type: 3}
 --- !u!4 &1518101517
 Transform:
   m_ObjectHideFlags: 0
