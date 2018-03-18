@@ -20,8 +20,9 @@ public class RequestLauncher : Singleton<RequestLauncher> {
     #region Answers classes
 
     [Serializable]
-    public class RequestAnswerDocument
+    public class RequestAnswerDocument : RequestAnswerSimple
     {
+        public string Id;
         public string Name;
         public string Label;
         public string Desc;
@@ -29,7 +30,6 @@ public class RequestLauncher : Singleton<RequestLauncher> {
         public string Date;
         public string Path;
         public string Image;
-        public string Error;
 
         public CameraFrame CameraFrameFromBase64()
         {
@@ -44,16 +44,23 @@ public class RequestLauncher : Singleton<RequestLauncher> {
     }
 
     [Serializable]
-    public class RequestAnswerConnected
+    public class RequestAnswerConnected : RequestAnswerSimple
     {
         public bool Connected;
-        public string Error;
     }
 
     [Serializable]
     public class RequestAnswerSimple
     {
         public string Error;
+    }
+
+    [Serializable]
+    public class RequestAnswerColor : RequestAnswerSimple
+    {
+        public int R;
+        public int G;
+        public int B;
     }
 
     #endregion
@@ -80,11 +87,34 @@ public class RequestLauncher : Singleton<RequestLauncher> {
 		StartCoroutine(LaunchRocket<UpdateRequestData>(data, "/document/update", callback));
     }
 
+    public void UpdateDocumentPhoto(string documentId, CameraFrame frame, OnRequestResponse<RequestAnswerDocument> callback)
+    {
+        UpdatePhotoRequestData data = new UpdatePhotoRequestData
+        {
+            image = frame,
+            id = documentId
+        };
+
+        StartCoroutine(LaunchRocket<RequestAnswerDocument>(data, "/document/updatephoto", callback));
+    }
+
+    public void SetBackGroundColor(Color32 color, OnRequestResponse<BackGroundColorRequestData> callback)
+    {
+        BackGroundColorRequestData data = new BackGroundColorRequestData
+        {
+            R = color.r,
+            G = color.g,
+            B = color.b
+        };
+
+        StartCoroutine(LaunchRocket<BackGroundColorRequestData>(data, "/document/background", callback));
+    }
+
     public class MatchOrCreateRequestData : RequestData
     {
         public CameraFrame image;
 
-        private string CameraFrameToJson(CameraFrame frame)
+        protected string CameraFrameToJson(CameraFrame frame)
         {
             Texture2D tex = new Texture2D(frame.Resolution.width, frame.Resolution.height);
             tex.SetPixels32(frame.Data);
@@ -102,6 +132,16 @@ public class RequestLauncher : Singleton<RequestLauncher> {
         }
     }
 
+    public class UpdatePhotoRequestData : MatchOrCreateRequestData
+    {
+        public string id;
+
+        public override string ToJSON()
+        {
+            return "{ \"id\": \"" + id +"\", \"image\" : \"" + CameraFrameToJson(image) + "\" }";
+        }
+    }
+
     public class UpdateRequestData : RequestData
     {
         public string id;
@@ -110,6 +150,13 @@ public class RequestLauncher : Singleton<RequestLauncher> {
         public string desc;
         public string author;
         public string date;
+    }
+
+    public class BackGroundColorRequestData : RequestData
+    {
+        public int R;
+        public int G;
+        public int B;
     }
 
     #endregion
@@ -156,7 +203,7 @@ public class RequestLauncher : Singleton<RequestLauncher> {
     IEnumerator LaunchRocket <T>(RequestData data, string request, OnRequestResponse<T> onResponse)
     {
         string payload = data.ToJSON();
-
+        Debug.Log(payload);
         string url = "http://" + PersistentData.ServerIp + ":" + PersistentData.ServerPort + request;
         string method = UnityWebRequest.kHttpVerbPOST;
 		UploadHandler uploader = new UploadHandlerRaw(Encoding.ASCII.GetBytes(payload)) {
@@ -168,9 +215,9 @@ public class RequestLauncher : Singleton<RequestLauncher> {
         UnityWebRequest www = new UnityWebRequest(url, method, downloader, uploader);
 
         yield return www.SendWebRequest();
-
-        Debug.Log(www.downloadHandler.text);
+        
         T answer = JsonUtility.FromJson<T>(www.downloadHandler.text);
+        
         if (onResponse != null)
         {
             onResponse.Invoke(answer, !(www.isNetworkError || www.isHttpError));

@@ -8,14 +8,12 @@ router.use(function timeLog (req, res, next) {
   next();
 });
 
-
 // Add a link between two documents
 router.post('/create', function (req, res) {
   utils.asyncGetDataStream(req, function(buffer) {
     let params = JSON.parse(buffer);
     if (params && params.firstId && params.secondId)
     {
-
       let first = params.firstId;
       let second = params.secondId;
 
@@ -26,12 +24,10 @@ router.post('/create', function (req, res) {
     }
     else
     {
-      res.status(500).send({ error: 'wrong parameters' });
+      res.status(500).send({ "Error": 'wrong parameters' });
     }
   });
 });
-
-
 
 // Add a link between two documents
 router.post('/remove', function (req, res) {
@@ -39,18 +35,17 @@ router.post('/remove', function (req, res) {
     let params = JSON.parse(buffer);
     if (params && params.firstId && params.secondId)
     {
-
       let first = params.firstId;
       let second = params.secondId;
 
-      dal.createLink(first, second,
+      dal.deleteLink(first, second,
   		   function (link) {res.status(200).send();},
   		   function (err)  {res.status(500).send({ error: err });});
 
     }
     else
     {
-      res.status(500).send({ error: 'wrong parameters' });
+      res.status(500).send({ "Error": 'wrong parameters' });
     }
   });
 });

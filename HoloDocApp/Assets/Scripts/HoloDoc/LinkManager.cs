@@ -3,7 +3,7 @@
 using UnityEngine;
 
 using HoloToolkit.Unity;
-
+using System;
 
 public class LinkManager : Singleton<LinkManager>
 {
@@ -54,6 +54,8 @@ public class LinkManager : Singleton<LinkManager>
 			this.linkTail = document;
 			DocumentProperties headProperties = this.linkHead.GetComponent<DocumentManager>().Properties;
 			DocumentProperties tailProperties = this.linkTail.GetComponent<DocumentManager>().Properties;
+
+            //RequestLauncher.Instance.CreateLink(headProperties.Id, tailProperties.Id, OnLinkCreated);
 			if (headProperties.LinkId != -1) {
 				// The head has a link
 				if (tailProperties.LinkId != -1) {
@@ -150,7 +152,15 @@ public class LinkManager : Singleton<LinkManager>
 		this.linkTail = null;
 	}
 
-	void AddToList(Link link, int linkId) {
+    private void OnLinkCreated(RequestLauncher.RequestAnswerSimple item, bool success)
+    {
+        if (!success)
+        {
+            Debug.Log(item.Error);
+        }
+    }
+
+    void AddToList(Link link, int linkId) {
 		if (linkId != this.Links.Count) {
 			this.Links[linkId] = link;
 		}

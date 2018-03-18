@@ -2,7 +2,7 @@
 
 public class DocumentProperties
 {
-	public int Id;
+	public string Id;
 	public int LinkId;
 	public string Label;
 	public string Author;
@@ -13,7 +13,7 @@ public class DocumentProperties
 	public CameraFrame Photo;
 
 	public DocumentProperties() {
-		this.Id = -1;
+		this.Id = "";
 		this.LinkId = -1;
 		this.Label = "Default label";
 		this.Author = PersistentData.DefaultAuthor;

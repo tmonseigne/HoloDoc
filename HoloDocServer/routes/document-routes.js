@@ -8,15 +8,30 @@ const improc = require('../improc/improc');
 
 const dal = require('../database/dal.js');
 
-
+var BackGroundColor = [25, 25, 25];
 // middleware that is specific to this router
 router.use(function timeLog (req, res, next) {
   console.log('Time: ', Date.now());
   next();
 });
 
+router.post('/background', function (req, res) {
+  utils.asyncGetDataStream(req, function(buffer) {
+    let params = JSON.parse(buffer);
+    if (params && params.R && params.G && params.B)
+    {
+      BackGroundColor = [params.B, params.G, params.R];
+      res.status(200).send(params);
+    }
+    else
+    {
+      res.status(500).send({ "Error": 'wrong parameters' });
+    }
+  });
+});
+
 // Get all the linked documents for a given document
-router.get('/connected', function (req, res) {
+router.post('/connected', function (req, res) {
   utils.asyncGetDataStream(req, function(buffer) {
     let params = JSON.parse(buffer);
     if (params && params.firstId && params.secondId)
@@ -26,12 +41,12 @@ router.get('/connected', function (req, res) {
       let second = params.secondId;
 
       dal.areConnected(function (connected) {
-        res.status(200).send({ connected: connected });
+        res.status(200).send({ Connected: connected });
       });
     }
     else
     {
-      res.status(500).send({ error: 'wrong parameters' });
+      res.status(500).send({ "Error": 'wrong parameters' });
     }
   });
 });
@@ -58,8 +73,9 @@ router.post('/matchorcreate', function (req, res) {
 
         let buf = Buffer.from(params.image, 'hex');
         let image = improc.streamToMat(buf);
+        cv.imwrite('test.jpg', image);
 
-        let bidule = improc.detectDocuments(image, [25, 25, 25]);
+        let bidule = improc.detectDocuments(image, BackGroundColor);
         if (bidule.length > 0) {
           let center = improc.getCenter(image);
           let toExtract = improc.getNearestdocFrom(bidule, center);
@@ -78,13 +94,13 @@ router.post('/matchorcreate', function (req, res) {
           	  // 2. If matched we return the matched document information.
           	  // 2.1 The match call a callback function by passing the finded document in paramaters, we just have to return this to the client.
               let result = {
-                id: matchedDocument._id,
-                name: matchedDocument.name,
-                label: matchedDocument.label,
-                desc: matchedDocument.desc,
-                author: matchedDocument.author,
-                path: matchedDocument.path,
-                image: improc.matToBase64(cv.imread(matchedDocument.path))
+                Id: matchedDocument._id,
+                Name: matchedDocument.name,
+                Label: matchedDocument.label,
+                Desc: matchedDocument.desc,
+                Author: matchedDocument.author,
+                Path: matchedDocument.path,
+                Image: improc.matToBase64(cv.imread(matchedDocument.path))
               }
 
           	  res.status(200).json(result);
@@ -101,18 +117,18 @@ router.post('/matchorcreate', function (req, res) {
       			     features,
       			     function (doc) {
                    let result = {
-                     id: doc._id,
-                     name: doc.name,
-                     label: doc.label,
-                     desc: doc.desc,
-                     author: doc.author,
-                     path: doc.path,
-                     image: improc.matToBase64(croped)
+                     Id: doc._id,
+                     Name: doc.name,
+                     Label: doc.label,
+                     Desc: doc.desc,
+                     Author: doc.author,
+                     Path: doc.path,
+                     Image: improc.matToBase64(croped)
                    }
       			       res.status(200).json(result);
       			     },
       			     function (err) {
-      			       res.status(500).send({ error: err });
+      			       res.status(500).send({ "Error": err });
       			     }
     			    );
 
@@ -122,13 +138,13 @@ router.post('/matchorcreate', function (req, res) {
         }
         else
         {
-          res.status(500).send({ error: 'No documents found' });
+          res.status(500).send({ "Error": 'No documents found' });
         }
       });
     }
     else
     {
-      res.status(500).send({ error: 'wrong parameters' });
+      res.status(500).send({ "Error": 'wrong parameters' });
     }
   });
 });
@@ -147,7 +163,66 @@ router.post('/update', function (req, res) {
     }
     else
     {
-      res.status(500).send({ error: 'wrong parameters' });
+      res.status(500).send({ "Error": 'wrong parameters' });
+    }
+  });
+
+});
+
+// Update a document of the database
+router.post('/updatephoto', function (req, res) {
+  console.log('document - post - /update');
+
+  utils.asyncGetDataStream(req, function(buffer) {
+    let params = JSON.parse(buffer);
+
+    if (params && params.id && params.image) {
+      dal.getDocuments({_id: params.id}, function (err, docs) {
+        if (docs.length > 0) {
+          let path = docs[0].path;
+
+          let buf = Buffer.from(params.image, 'hex');
+          let image = improc.streamToMat(buf);
+          cv.imwrite('test.jpg', image);
+
+          let bidule = improc.detectDocuments(image, BackGroundColor);
+          if (bidule.length > 0)
+          {
+            let center = improc.getCenter(image);
+            let toExtract = improc.getNearestdocFrom(bidule, center);
+
+            let croped = improc.undistordDoc(image, toExtract);
+            let features = improc.extractFeatures(croped);
+
+            dal.updateDocument(params.id, {features: features}, function (doc) {
+              let result = {
+                Id: doc._id,
+                Name: doc.name,
+                Label: doc.label,
+                Desc: doc.desc,
+                Author: doc.author,
+                Path: doc.path,
+                Image: improc.matToBase64(croped)
+              }
+              res.status(200).json(result);
+            });
+
+            cv.imwrite(path, croped);
+          }
+          else
+          {
+            res.status(500).send({ "Error": 'Cannot detect a document' });
+          }
+        } else {
+          res.status(500).send({ "Error": 'The document does not exist' });
+        }
+      });
+
+      res.status(200).send();
+    }
+    else
+    {
+      res.status(500).send({ "Error": 'wrong parameters' });
     }
   });
 
