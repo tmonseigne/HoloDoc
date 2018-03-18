@@ -40,6 +40,7 @@ In summary:
  * Download and install [Git](https://git-scm.com/downloads).
  * Download and install [CMake](https://cmake.org/download/).
  * Download and install [Node.js](https://nodejs.org/en/download/).
+ * Download and install [MongoDB](https://docs.mongodb.com/manual/tutorial/install-mongodb-on-windows/#get-mongodb-community-edition).
 
 After that, launch the program `Node.js command prompt` and go to the folder `HoloDocServer` with the command `cd [APP_PATH]HoloDocServer`. Then, type the command `npm start` to install and launch the server.
 
