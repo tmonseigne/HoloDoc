@@ -29,9 +29,6 @@ public class DocumentManager : MonoBehaviour, IFocusable {
 		this.docButtons = transform.Find("Buttons").gameObject;
 		this.docButtons.SetActive(false);
 
-		this.docBackground = transform.Find("Background").gameObject;
-		this.docBackground.SetActive(false);
-
 		this.Properties = new DocumentProperties();
 
 		this.animator = transform.GetComponent<DocumentAnimator>();
@@ -88,9 +85,12 @@ public class DocumentManager : MonoBehaviour, IFocusable {
 		this.Properties.Description = description;
 		this.Properties.Label = label;
 #if USE_SERVER
-		RequestLauncher.Instance.UpdateDocumentInformations(this.properties);
+		RequestLauncher.Instance.UpdateDocument(this.Properties, OnUpdateDocument);
 #endif
 	}
+
+	// TODO: Implement this function
+	private void OnUpdateDocument(RequestLauncher.UpdateRequestData item, bool success) {}
 
 	public void OnFocusEnter() {
 		this.animator.ZoomIn();
@@ -103,7 +103,6 @@ public class DocumentManager : MonoBehaviour, IFocusable {
 	public void ToggleFocus() {
 		this.docInformations.SetActive(!docInformations.activeInHierarchy);
 		this.docButtons.SetActive(!docButtons.activeInHierarchy);
-		this.docBackground.SetActive(!docBackground.activeInHierarchy);
 		UpdateLinkDisplay();
 		this.animator.Animate();
 	}
