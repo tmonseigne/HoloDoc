@@ -10,11 +10,9 @@ public class SpeechManager : MonoBehaviour, ISpeechHandler {
 		string keyword = eventData.RecognizedText.ToLower();
 		switch (keyword) {
 			case "break links":
-				Debug.Log("Break links");
 				LinkManager.Instance.BreakLink(this.transform.gameObject);
 				break;
 			case "update photo":
-				Debug.Log("Update photo");
 				manager.UpdatePhoto();
 				break;
 			case "start link":

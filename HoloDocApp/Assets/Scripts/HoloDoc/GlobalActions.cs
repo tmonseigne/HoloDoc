@@ -49,7 +49,8 @@ public class GlobalActions : Singleton<GlobalActions> {
 	}
 
 	void DoubleTap() {
-		Debug.Log("Double tap" + this.globalInputReceiver.SingleTapped + ";" + this.photoMode);
+		Debug.Log("Double tap");
+
 		// This should toogle (open/close) the document viewer panel & deactivate/activate the single tap event.
 		// We need to deactivate the single tap event so that if we miss the documents, we won't take a photo while in
 		// document view mode.
@@ -65,29 +66,26 @@ public class GlobalActions : Singleton<GlobalActions> {
 
 #if USE_SERVER
 		CameraFrame frame = new CameraFrame(res, photo.GetPixels32());
+		if (updatingDocument) {	
+			RequestLauncher.Instance.UpdateDocumentPhoto(document.GetComponent<DocumentManager>().Properties.Id, frame, OnUpdatePhotoRequest);
+		}
+		else {
+			RequestLauncher.Instance.MatchOrCreateDocument(frame, OnMatchOrCreateRequest);
+		}
 #else
 		Texture2D croppedPhoto = new Texture2D(photo.width, photo.height);
 		croppedPhoto.SetPixels32(photo.GetPixels32());
 		croppedPhoto.Apply();
-#endif
-
 		if (updatingDocument) {
-#if USE_SERVER
-			RequestLauncher.Instance.UpdateDocumentPhoto(document.GetComponent<DocumentManager>().Properties.Id, frame, OnUpdatePhotoRequest);
-#else
-			document.GetComponent<DocumentManager>().SetPhoto(Resources.Load<Texture2D>("Images/MultiDocTestImage"));
+			document.GetComponent<DocumentManager>().SetPhoto(croppedPhoto);
 			DocumentCollection.Instance.Toggle();
 			DocumentCollection.Instance.SetFocusedDocument(document);
 			updatingDocument = false;
-#endif
 		}
 		else {
-#if USE_SERVER
-			RequestLauncher.Instance.MatchOrCreateDocument(frame, OnMatchOrCreateRequest);
-#else
 			DocumentCollection.Instance.AddDocument(croppedPhoto, "-1");
-#endif
 		}
+#endif
 	}
 
     private void OnMatchOrCreateRequest(RequestLauncher.RequestAnswerDocument item, bool success) {

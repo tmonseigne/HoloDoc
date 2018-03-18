@@ -14,10 +14,9 @@ public class DocumentCollection : Singleton<DocumentCollection> {
 	private bool		isActive = false;
 	private GameObject	focusedDocument = null;
 
-	private float distancePanel = 2.0f;
+	private float distancePanel = 1.5f;
 	private float offsetX = 0.17f;
 	private float offsetY = -0.12f;
-
 
 	public void AddDocument(Texture2D croppedPhoto, string documentId) {
 		Toggle();

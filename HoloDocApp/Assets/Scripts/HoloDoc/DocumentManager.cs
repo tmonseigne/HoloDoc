@@ -14,6 +14,7 @@ public class DocumentManager : MonoBehaviour, IFocusable {
 	private GameObject			docPreview;
 	private GameObject			docInformations;
 	private GameObject			docButtons;
+	private GameObject			docBackground;
 	private Material			material;
 	private DocumentAnimator	animator;
 
@@ -21,10 +22,15 @@ public class DocumentManager : MonoBehaviour, IFocusable {
 
 	void Awake() {
 		this.docPreview = transform.Find("Preview").gameObject;
+
 		this.docInformations = transform.Find("Informations").gameObject;
 		this.docInformations.SetActive(false);
+
 		this.docButtons = transform.Find("Buttons").gameObject;
 		this.docButtons.SetActive(false);
+
+		this.docBackground = transform.Find("Background").gameObject;
+		this.docBackground.SetActive(false);
 
 		this.Properties = new DocumentProperties();
 
@@ -81,7 +87,9 @@ public class DocumentManager : MonoBehaviour, IFocusable {
 		this.Properties.Date = date;
 		this.Properties.Description = description;
 		this.Properties.Label = label;
-		//RequestLauncher.Instance.UpdateDocumentInformations(this.properties);
+#if USE_SERVER
+		RequestLauncher.Instance.UpdateDocumentInformations(this.properties);
+#endif
 	}
 
 	public void OnFocusEnter() {
@@ -95,6 +103,7 @@ public class DocumentManager : MonoBehaviour, IFocusable {
 	public void ToggleFocus() {
 		this.docInformations.SetActive(!docInformations.activeInHierarchy);
 		this.docButtons.SetActive(!docButtons.activeInHierarchy);
+		this.docBackground.SetActive(!docBackground.activeInHierarchy);
 		UpdateLinkDisplay();
 		this.animator.Animate();
 	}
@@ -130,18 +139,6 @@ public class DocumentManager : MonoBehaviour, IFocusable {
 	public void UpdatePhoto() {
 		DocumentCollection.Instance.Toggle();
 		GlobalActions.Instance.UpdateDocumentPhoto(this.gameObject);
-	}
-
-	IEnumerator WaitTransition(Texture2D photo, Resolution res) {
-		yield return new WaitForSeconds(0.5f);
-		//Texture2D newCroppedPhoto = RequestLauncher.Instance.UpdatePhoto(photo);
-		this.SetPhoto(photo);
-		DocumentCollection.Instance.Toggle();
-		DocumentCollection.Instance.SetFocusedDocument(this.transform.gameObject);
-	}
-
-	public void OnPhotoUpdated(Texture2D photo, Resolution resolution) {
-		StartCoroutine(WaitTransition(photo, resolution));
 	}
 
 	public void StartLink() {
