@@ -55,7 +55,7 @@ public class LinkManager : Singleton<LinkManager>
 			DocumentProperties headProperties = this.linkHead.GetComponent<DocumentManager>().Properties;
 			DocumentProperties tailProperties = this.linkTail.GetComponent<DocumentManager>().Properties;
 
-            //RequestLauncher.Instance.CreateLink(headProperties.Id, tailProperties.Id, OnLinkCreated);
+            RequestLauncher.Instance.CreateLink(headProperties.Id, tailProperties.Id, OnLinkCreated);
 			if (headProperties.LinkId != -1) {
 				// The head has a link
 				if (tailProperties.LinkId != -1) {

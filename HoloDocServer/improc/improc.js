@@ -1,7 +1,7 @@
 const cv = require('opencv4nodejs');
 
 var MAGIC_NUMBER1 = 0.5;
-var MAGIC_NUMBER2 = 25;
+var MAGIC_NUMBER2 = 50;
 
 ///////////////////////////// ALREADY MOVED ON improc-utils ////////////////////////////////
 
@@ -91,8 +91,8 @@ function extractCorners(contour, minLength, maxLength) {
 
 	let corners = [];
 	// we grab the farest point from the centroid and the farest from the first one to get the diagonal
-	corners = addIfNotIn(corners, findfarestPointFrom(points, centroid)); 	
-	corners = addIfNotIn(corners, findfarestPointFrom(points, points[corners[0]])); 
+	corners = addIfNotIn(corners, findfarestPointFrom(points, centroid));
+	corners = addIfNotIn(corners, findfarestPointFrom(points, points[corners[0]]));
 
 	// Now we try to maximaxe the area
 	let areaMax = [0, 0];
@@ -202,6 +202,7 @@ exports.getCenter = function (image) {
  * @returns {Array.<Array.<cv.Point>>} Array of Array of Opencv4NodeJS points represented all docs in image
  */
 exports.detectDocuments = function (image, backgroundColor) {
+	console.log(backgroundColor);
 	[lower, higher] = getColorRange(backgroundColor, 25);
 
 	const thresholdResult = image.inRange(lower, higher);
@@ -209,6 +210,8 @@ exports.detectDocuments = function (image, backgroundColor) {
 	let height = image.rows;
 	let minLength = 0.2 * (width + height);
 	let maxLength = 1.4 * (width + height);
+
+	cv.imwrite('./seuillage.jpg', thresholdResult);
 
 	let contours = thresholdResult.findContours(cv.RETR_LIST, cv.CHAIN_APPROX_SIMPLE);
 
@@ -250,7 +253,7 @@ exports.detectDocuments = function (image, backgroundColor) {
  * Crop the quad and correct the perspective
  * @param {cv.Mat} image Opencv4NodeJS Mat represent image
  * @param {Array.<cv.Point>} doc Array of four Opencv4NodeJS points represent the doc to extract
- * @returns {cv.Mat} The undeformed quad 
+ * @returns {cv.Mat} The undeformed quad
  */
 exports.undistordDoc = function (image, doc) {
 	let newOrder = sortDocCorners(doc); // illuminatus es spiritus sancti
@@ -283,7 +286,7 @@ exports.write = function (mat, filename) {
 
 /**
  * Decode the image from Hololens
- * @param {*} stream 
+ * @param {*} stream
  * @returns {cv.Mat} mat Opencv4NodeJS Mat represent image
  */
 exports.streamToMat = function (stream) {
@@ -293,7 +296,7 @@ exports.streamToMat = function (stream) {
 /**
  * Change coding of mat
  * @param {cv.Mat} mat Opencv4NodeJS Mat represent image
- * @returns {*} buffer 
+ * @returns {*} buffer
  */
 exports.matToBase64 = function (mat) {
 	let buf = exports.matToStream(mat);
@@ -303,7 +306,7 @@ exports.matToBase64 = function (mat) {
 /**
  * Code the image to Hololens
  * @param {cv.Mat} mat Opencv4NodeJS Mat represent image
- * @returns {*} stream 
+ * @returns {*} stream
  */
 exports.matToStream = function (mat) {
 	return Buffer.from(cv.imencode('.jpeg', mat), 'base64');

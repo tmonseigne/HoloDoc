@@ -172,11 +172,10 @@ public class RequestLauncher : Singleton<RequestLauncher> {
         StartCoroutine(LaunchRocket<RequestAnswerSimple>(data, "/link/create", callback));
     }
 
-    public void RemoveLink(string firstId, string secondId, OnRequestResponse<RequestAnswerSimple> callback)
+    public void RemoveLink(string firstId, OnRequestResponse<RequestAnswerSimple> callback)
     {
         LinkRequestData data = new LinkRequestData();
         data.firstId = firstId;
-        data.secondId = secondId;
 
         StartCoroutine(LaunchRocket<RequestAnswerSimple>(data, "/link/remove", callback));
     }
@@ -203,7 +202,7 @@ public class RequestLauncher : Singleton<RequestLauncher> {
     IEnumerator LaunchRocket <T>(RequestData data, string request, OnRequestResponse<T> onResponse)
     {
         string payload = data.ToJSON();
-        Debug.Log(payload);
+        //Debug.Log(payload);
         string url = "http://" + PersistentData.ServerIp + ":" + PersistentData.ServerPort + request;
         string method = UnityWebRequest.kHttpVerbPOST;
 		UploadHandler uploader = new UploadHandlerRaw(Encoding.ASCII.GetBytes(payload)) {
@@ -217,7 +216,7 @@ public class RequestLauncher : Singleton<RequestLauncher> {
         yield return www.SendWebRequest();
         
         T answer = JsonUtility.FromJson<T>(www.downloadHandler.text);
-        
+        Debug.Log(!(www.isNetworkError || www.isHttpError) + "  ====  " + www.downloadHandler.text);
         if (onResponse != null)
         {
             onResponse.Invoke(answer, !(www.isNetworkError || www.isHttpError));

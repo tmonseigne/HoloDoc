@@ -13,6 +13,8 @@ var improc = require('../improc/improc.js');
 var Queue = require('../utils/queue.js');
 
 var errorEventEmiter = new events.EventEmitter;
+var ObjectId = mongoose.Schema.Types.ObjectId;
+
 
 errorEventEmiter.raiseError = function (err){
   var data = {
@@ -32,7 +34,6 @@ function saveModel (model, successCallback, errorCallback){
       if (err) {
         if (errorCallback)
         {
-          console.log(err);
           errorCallback(err);
         }
 	errorEventEmiter.raiseError(err);
@@ -130,17 +131,59 @@ function matchFeatures (features, callback) {
  * in a same conex component.
  **/
 function createLink(firstDocumentId, secondDocumentId, successCallback, errorCallback) {
-  var forward = new models.Link({
-    from: firstDocumentId,
-    to: secondDocumentId
-  });
-  saveModel(forward);
+  models.Link.find({ objects : firstDocumentId}).exec(function (err1, links1) {
+    let L1 = undefined;
+    if (links1 && links1.length > 0) {
+      L1 = links1[0];
+    }
 
-  var backward = new models.Link({
-    from: secondDocumentId,
-    to: firstDocumentId
+    models.Link.find({ objects : secondDocumentId}).exec(function (err2, links2) {
+      let L2 = undefined;
+      if (links2 && links2.length > 0) {
+        L2 = links2[0];
+      }
+
+      let updateCallback = function (err, link) {
+        if (err) {
+          if (errorCallback) errorCallback(err);
+        } else {
+          models.Link.findOne({ _id : link._id}).exec(function (error, updated) {
+            if (updated){
+              if (successCallback) successCallback(updated);
+            } else {
+              if (errorCallback) errorCallback(error);
+            }
+          });
+        }
+      }
+
+      if (L1 && L2) {
+        let objects = L1.objects.concat(L2.objects);
+
+        models.Link.findByIdAndUpdate(L1._id, {objects: objects}).exec(updateCallback);
+
+        models.Link.findByIdAndRemove (L2._id).exec();
+      }
+      else if (L1 || L2)
+      {
+        let objects = L1 ?
+          L1.objects.concat(secondDocumentId) :
+          L2.objects.concat(firstDocumentId);
+
+        models.Link.findByIdAndUpdate((L1 ? L1._id : L2._id), {objects: objects}).exec(updateCallback);
+      }
+      else
+      {
+        let objects = [firstDocumentId, secondDocumentId];
+
+        var link = new models.Link ({
+          objects: objects
+        });
+
+        saveModel(link, successCallback, errorCallback);
+      }
+    });
   });
-  saveModel(backward, successCallback, errorCallback);
 }
 
 function getNeighboors (links, from) {
@@ -161,58 +204,54 @@ function areConnected (firstDocumentId, secondDocumentId, callback) {
   let first = String(firstDocumentId);
   let second = String(secondDocumentId);
 
-  models.Link.find({}).exec(function (err, links) {
-      var marked = {};
-      var queue = new Queue();
+  if (first == second && callback) {
+    callback(true);
+    return;
+  }
 
-      queue.enqueue(first);
-
-      marked[first] = true;
-
-      while (!queue.isEmpty()) {
-        let current = queue.dequeue();
-
-        if (current == second && callback) {
-           callback(true);
-           return;
-        }
-
-        let neighbors = getNeighboors(links, current);
-
-        neighbors.forEach(function (neighborLink) {
-        	let to = String(neighborLink.to);
-        	if (!marked[to]) {
-        	  queue.enqueue(to);
-        	  marked[to] = true;
-        	}
-        });
-
-      }
-
-      if (callback) {
+  models.Link.find({ objects: {$all: [first, second]}}).exec(function (err, links) {
+    if (callback){
+      if (links && links.length > 0) {
+        callback(true);
+      } else {
         callback(false);
       }
-    });
+    }
+  });
 }
 
-function deleteLink (from, to, successCallback, errorCallback) {
-  let idForward, idBackward;
+function deleteLink (id, successCallback, errorCallback) {
+  models.Link.find({ objects : id}).exec(function (err, links) {
+    //console.log(err);
+    if (links && links.length > 0) {
+      let l = links[0];
 
-  models.Link.find({from:from, to:to}).exec(function (fferr, flinks) {
-    idForward = flinks.length == 1 ? flinks[0]._id : undefined;
-    models.Link.find({from:to, to:from}).exec(function (fberr, blinks) {
-        idBackward = blinks.length == 1 ? blinks[0]._id : undefined;
-
-        if (idForward && idBackward) {
-          models.Link.findByIdAndRemove(idForward, function (ferr, flink) {
-            models.Link.findByIdAndRemove(idBackward, function (berr, blink) {
-              successCallback();
-            });
+      let index = l.objects.findIndex(x => String(x) == String(id));
+      if (index != -1) {
+        var objects = l.objects.splice(index, 1);
+        if (l.objects.length > 1) {
+          models.Link.findByIdAndUpdate(l._id, {objects: objects}).exec(function (err, link) {
+            if (err) {
+              if (errorCallback) errorCallback(err);
+            } else {
+              models.Link.findOne({ _id : link._id}).exec(function (error, updated) {
+                if (updated){
+                  if (successCallback) successCallback(updated);
+                } else {
+                  if (errorCallback) errorCallback(error);
+                }
+              });
+            }
           });
         } else {
-          errorCallback();
+          models.Link.findByIdAndRemove (l._id).exec();
         }
-    });
+      } else {
+        if (errorCallback) errorCallback();
+      }
+    } else {
+      if (errorCallback) errorCallback(err);
+    }
   });
 }
 

@@ -1,8 +1,7 @@
 var mongoose = require('mongoose');
 
 var linkSchema = mongoose.Schema({
-  from: mongoose.Schema.Types.ObjectId,
-  to: mongoose.Schema.Types.ObjectId
+  objects: [String],
 });
 
 module.exports = function (connection) {

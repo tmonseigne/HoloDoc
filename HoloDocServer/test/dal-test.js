@@ -22,10 +22,10 @@ describe('Testing database access layer - ', function() {
                 dal.createDocument('four', 'album', '', 'arnaud', Date.Now, 'four.png', [],
                   function(doc4) {
                     d4 = doc4;
-                  dal.createLink(doc1._id, doc2._id,
+                  dal.createLink(String(doc1._id), String(doc2._id),
                     function (link1){
                       l1 = link1;
-                      dal.createLink(doc2._id, doc3._id,
+                      dal.createLink(String(doc2._id), String(doc3._id),
                         function (link2){
                           l2 = link2;
                           done();
@@ -157,13 +157,13 @@ describe('Testing database access layer - ', function() {
 
   describe('Testing the link suppression', function () {
     it('Existing link', function (done) {
-      dal.deleteLink(d1._id, d2._id, function () {
+      dal.deleteLink(String(d1._id), function () {
         done();
       }, function () {});
     });
 
     it('Non Existing link', function (done) {
-      dal.deleteLink(d1._id, d3._id, function () {}, function () {
+      dal.deleteLink(String(d4._id), function () {}, function () {
         done();
       });
     });

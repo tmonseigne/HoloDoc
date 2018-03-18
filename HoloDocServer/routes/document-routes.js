@@ -171,7 +171,7 @@ router.post('/update', function (req, res) {
 
 // Update a document of the database
 router.post('/updatephoto', function (req, res) {
-  console.log('document - post - /update');
+  console.log('document - post - /updatephoto');
 
   utils.asyncGetDataStream(req, function(buffer) {
     let params = JSON.parse(buffer);
@@ -188,6 +188,7 @@ router.post('/updatephoto', function (req, res) {
           let bidule = improc.detectDocuments(image, BackGroundColor);
           if (bidule.length > 0)
           {
+            console.log("ici");
             let center = improc.getCenter(image);
             let toExtract = improc.getNearestdocFrom(bidule, center);
 
@@ -203,11 +204,11 @@ router.post('/updatephoto', function (req, res) {
                 Author: doc.author,
                 Path: doc.path,
                 Image: improc.matToBase64(croped)
-              }
+              };
+              console.log("la");
               res.status(200).json(result);
+              cv.imwrite(path, croped);
             });
-
-            cv.imwrite(path, croped);
           }
           else
           {
@@ -217,8 +218,6 @@ router.post('/updatephoto', function (req, res) {
           res.status(500).send({ "Error": 'The document does not exist' });
         }
       });
-
-      res.status(200).send();
     }
     else
     {
