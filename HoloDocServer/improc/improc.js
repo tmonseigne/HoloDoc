@@ -207,7 +207,7 @@ exports.detectDocuments = function (image, backgroundColor) {
 
   image = image.cvtColor(cv.COLOR_BGR2GRAY);
   image = image.gaussianBlur(new cv.Size(3,3), 0);
-  let thresholdResult = image.canny(50, 205);
+  let thresholdResult = image.canny(0, 100);
   thresholdResult = thresholdResult.dilate(new cv.Mat(3,3, cv.CV_8U, 1));
 	let width = image.cols;
 	let height = image.rows;

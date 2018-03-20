@@ -11,7 +11,15 @@ public class DocumentCollection : Singleton<DocumentCollection> {
 
 	private List<GameObject> documents = new List<GameObject>();
 
-	private bool		isActive = false;
+    public List<GameObject> Documents
+    {
+        get
+        {
+            return documents;
+        }
+    }
+
+    private bool		isActive = false;
 	private GameObject	focusedDocument = null;
 
 	private float distancePanel = 1.5f;

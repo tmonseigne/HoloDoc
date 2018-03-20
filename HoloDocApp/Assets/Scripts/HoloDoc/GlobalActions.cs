@@ -1,7 +1,7 @@
 ﻿using HoloToolkit.Unity;
 
 using System.Collections;
-
+using System.Collections.Generic;
 using UnityEngine;
 
 public class GlobalActions : Singleton<GlobalActions> {
@@ -95,6 +95,38 @@ public class GlobalActions : Singleton<GlobalActions> {
             croppedPhoto.SetPixels32(frame.Data);
             croppedPhoto.Apply();
             DocumentCollection.Instance.AddDocument(croppedPhoto, item.Id);
+            Debug.Log("ici");
+            if (item.Link != null) // we are in a link, we need to see if the link localy exists
+            {
+                Debug.Log("ici");
+                List<GameObject> docs = DocumentCollection.Instance.Documents;
+
+                foreach (string id in item.Link)
+                {
+                    foreach (GameObject doc in docs)
+                    {
+                        DocumentProperties prop = doc.GetComponent<DocumentManager>().Properties;
+                        if (prop != null && id == prop.Id)
+                        {
+                            if (prop.LinkId != -1)
+                            {
+                                Debug.Log("la");
+                                LinkManager.Instance.Links[prop.LinkId].Add(doc);
+                                doc.GetComponent<DocumentManager>().SetColor(LinkManager.Instance.Links[prop.LinkId].LinkColor);
+                            }
+                            else if (docs[docs.Count - 1] != doc)
+                            {
+                                Debug.Log("bloup");
+                                LinkManager.Instance.OnLinkStarted(doc);
+                                LinkManager.Instance.OnLinkEnded(docs[docs.Count - 1], false);
+                            }
+
+                            goto EndOfLoop;
+                        }
+                    }
+                }
+                EndOfLoop:;
+            }
         }
         else {
             Debug.Log(item.Error);
@@ -104,13 +136,18 @@ public class GlobalActions : Singleton<GlobalActions> {
 
 	private void OnUpdatePhotoRequest(RequestLauncher.RequestAnswerDocument item, bool success) {
 		if (success) {
-			CameraFrame frame = item.CameraFrameFromBase64();
-			Texture2D croppedPhoto = new Texture2D(frame.Resolution.width, frame.Resolution.height);
-			croppedPhoto.SetPixels32(frame.Data);
-			croppedPhoto.Apply();
-			document.GetComponent<DocumentManager>().SetPhoto(croppedPhoto);
-			DocumentCollection.Instance.Toggle();
-			DocumentCollection.Instance.SetFocusedDocument(document);
+            if (item.Image != null)
+            {
+                CameraFrame frame = item.CameraFrameFromBase64();
+                Texture2D croppedPhoto = new Texture2D(frame.Resolution.width, frame.Resolution.height);
+                croppedPhoto.SetPixels32(frame.Data);
+                croppedPhoto.Apply();
+                document.GetComponent<DocumentManager>().SetPhoto(croppedPhoto);
+                DocumentCollection.Instance.Toggle();
+                DocumentCollection.Instance.SetFocusedDocument(document);
+
+                
+            }
 		}
 		else {
 			Debug.Log(item.Error);

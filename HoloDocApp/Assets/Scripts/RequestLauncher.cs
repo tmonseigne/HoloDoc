@@ -30,6 +30,7 @@ public class RequestLauncher : Singleton<RequestLauncher> {
         public string Date;
         public string Path;
         public string Image;
+        public string[] Link;
 
         public CameraFrame CameraFrameFromBase64()
         {
@@ -78,6 +79,7 @@ public class RequestLauncher : Singleton<RequestLauncher> {
     public void UpdateDocument(DocumentProperties properties, OnRequestResponse<UpdateRequestData> callback)
     {
 		UpdateRequestData data = new UpdateRequestData {
+            id = properties.Id,
 			label = properties.Label,
 			desc = properties.Description,
 			author = properties.Author,
@@ -145,7 +147,6 @@ public class RequestLauncher : Singleton<RequestLauncher> {
     public class UpdateRequestData : RequestData
     {
         public string id;
-        public string name;
         public string label;
         public string desc;
         public string author;

@@ -57,7 +57,32 @@ function documentValidParameters(params) {
     return false;
   }
 
-  return params.name && params.label && params.desc && params.author && params.date;
+  return params.label && params.desc && params.author && params.date && params.id;
+}
+
+function saveDocument (image, features, res, number) {
+  let path = './data/' + number + '.png';
+  dal.createDocument(String(number), 'undefined', '',
+     'undefined', Date.Now, path,
+     features,
+     function (doc) {
+       let result = {
+         Id: doc._id,
+         Name: doc.name,
+         Label: doc.label,
+         Desc: doc.desc,
+         Author: doc.author,
+         Path: doc.path,
+         Image: improc.matToBase64(image)
+       }
+       res.status(200).json(result);
+     },
+     function (err) {
+       res.status(500).send({ "Error": err });
+     }
+  );
+
+  improc.write(image, path);
 }
 
 // Add a new document into the database
@@ -75,71 +100,61 @@ router.post('/matchorcreate', function (req, res) {
         let image = improc.streamToMat(buf);
         cv.imwrite('test.jpg', image);
 
+        let toSave = image;
         let bidule = improc.detectDocuments(image, BackGroundColor);
+
+        let detected = false;
         if (bidule.length > 0) {
+          detected = true;
           let center = improc.getCenter(image);
           let toExtract = improc.getNearestdocFrom(bidule, center);
 
           let croped = improc.undistordDoc(image, toExtract);
-          let features = improc.extractFeatures(croped);
+          toSave = croped;
+        }
 
-          // 1. Need to find a match.
-          // 1.1 First we compute the features for the document.
-          // 1.2 We compare these features with all of a part of the features in the database.
-          // 1.3 If the feature distance is below a threshold we have a match, else not.
+        let features = improc.extractFeatures(toSave);
+
+        // 1. Need to find a match.
+        // 1.1 First we compute the features for the document.
+        // 1.2 We compare these features with all of a part of the features in the database.
+        // 1.3 If the feature distance is below a threshold we have a match, else not.
+        if (detected) {
           dal.matchFeatures(features, function(matchedDocument) {
-            console.log("bloup");
           	if (matchedDocument)
           	{
           	  // 2. If matched we return the matched document information.
           	  // 2.1 The match call a callback function by passing the finded document in paramaters, we just have to return this to the client.
-              let result = {
-                Id: matchedDocument._id,
-                Name: matchedDocument.name,
-                Label: matchedDocument.label,
-                Desc: matchedDocument.desc,
-                Author: matchedDocument.author,
-                Path: matchedDocument.path,
-                Image: improc.matToBase64(cv.imread(matchedDocument.path))
-              }
+              dal.getLink(matchedDocument._id, function (link) {
+                let result = {
+                  Id: matchedDocument._id,
+                  Name: matchedDocument.name,
+                  Label: matchedDocument.label,
+                  Desc: matchedDocument.desc,
+                  Author: matchedDocument.author,
+                  Path: matchedDocument.path,
+                  Link: link.objects,
+                  Image: improc.matToBase64(cv.imread(matchedDocument.path))
+                }
 
-          	  res.status(200).json(result);
+            	  res.status(200).json(result);
+              });
           	}
           	else
           	{
-              console.log("la");
           	  // 3. Else we create then add the new document to the database and then return all the information.
           	  // 3.1 First creation of the document in the database.
           	  // 3.2 Then writing the image on disk.
-          	  let path = './data/' + number + '.png';
-          	  dal.createDocument(String(number), 'undefined', '',
-      			     'undefined', Date.Now, path,
-      			     features,
-      			     function (doc) {
-                   let result = {
-                     Id: doc._id,
-                     Name: doc.name,
-                     Label: doc.label,
-                     Desc: doc.desc,
-                     Author: doc.author,
-                     Path: doc.path,
-                     Image: improc.matToBase64(croped)
-                   }
-      			       res.status(200).json(result);
-      			     },
-      			     function (err) {
-      			       res.status(500).send({ "Error": err });
-      			     }
-    			    );
-
-          	  improc.write(croped, path);
+              saveDocument(toSave, features, res, number);
           	}
           });
         }
         else
         {
-          res.status(500).send({ "Error": 'No documents found' });
+          saveDocument(toSave, features, res, number);
         }
+
+
       });
     }
     else
@@ -186,34 +201,33 @@ router.post('/updatephoto', function (req, res) {
           cv.imwrite('test.jpg', image);
 
           let bidule = improc.detectDocuments(image, BackGroundColor);
+
+          let toSave = image;
           if (bidule.length > 0)
           {
-            console.log("ici");
             let center = improc.getCenter(image);
             let toExtract = improc.getNearestdocFrom(bidule, center);
 
             let croped = improc.undistordDoc(image, toExtract);
-            let features = improc.extractFeatures(croped);
+            toSave = croped;
+          }
 
-            dal.updateDocument(params.id, {features: features}, function (doc) {
-              let result = {
-                Id: doc._id,
-                Name: doc.name,
-                Label: doc.label,
-                Desc: doc.desc,
-                Author: doc.author,
-                Path: doc.path,
-                Image: improc.matToBase64(croped)
-              };
-              console.log("la");
-              res.status(200).json(result);
-              cv.imwrite(path, croped);
-            });
-          }
-          else
-          {
-            res.status(500).send({ "Error": 'Cannot detect a document' });
-          }
+
+          let features = improc.extractFeatures(toSave);
+
+          dal.updateDocument(params.id, {features: features}, function (doc) {
+            let result = {
+              Id: doc._id,
+              Name: doc.name,
+              Label: doc.label,
+              Desc: doc.desc,
+              Author: doc.author,
+              Path: doc.path,
+              Image: improc.matToBase64(toSave)
+            };
+            res.status(200).json(result);
+            cv.imwrite(path, toSave);
+          });
         } else {
           res.status(500).send({ "Error": 'The document does not exist' });
         }

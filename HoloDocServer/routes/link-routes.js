@@ -1,5 +1,7 @@
 var express = require('express');
 var router = express.Router();
+const utils = require('./route-utils');
+const dal = require('../database/dal.js');
 
 // middleware that is specific to this router
 router.use(function timeLog (req, res, next) {
