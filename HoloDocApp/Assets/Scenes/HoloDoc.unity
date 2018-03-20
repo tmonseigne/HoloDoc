@@ -412,7 +412,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a0484decaed64b24c8325690e33c630a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  DocumentPrefab: {fileID: 1845056566976688, guid: 098dd214f1568da43b2a17e3b6d813fb,
+  DocumentPrefab: {fileID: 1918643712715928, guid: 3cf7cbd7c61bbba438d9d0653c9c5026,
     type: 2}
   MaxDocumentsPerLine: 5
 --- !u!1 &845296949
