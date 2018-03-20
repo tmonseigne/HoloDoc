@@ -1,7 +1,7 @@
 const cv = require('opencv4nodejs');
 
 var MAGIC_NUMBER1 = 0.5;
-var MAGIC_NUMBER2 = 50;
+var MAGIC_NUMBER2 = 75;
 
 ///////////////////////////// ALREADY MOVED ON improc-utils ////////////////////////////////
 
@@ -205,7 +205,10 @@ exports.detectDocuments = function (image, backgroundColor) {
 	console.log(backgroundColor);
 	[lower, higher] = getColorRange(backgroundColor, 25);
 
-	const thresholdResult = image.inRange(lower, higher);
+  image = image.cvtColor(cv.COLOR_BGR2GRAY);
+  image = image.gaussianBlur(new cv.Size(3,3), 0);
+  let thresholdResult = image.canny(50, 205);
+  thresholdResult = thresholdResult.dilate(new cv.Mat(3,3, cv.CV_8U, 1));
 	let width = image.cols;
 	let height = image.rows;
 	let minLength = 0.2 * (width + height);

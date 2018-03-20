@@ -1,7 +1,7 @@
 const cv = require('opencv4nodejs');
 const improc = require('../improc/improc.js');
 
-let image = cv.imread('./D.jpg');
+let image = cv.imread('./bla2.jpg');
 
 let bidule = improc.detectDocuments(image, [25, 25, 25]);
 
