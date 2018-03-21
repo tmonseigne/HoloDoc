@@ -158,7 +158,7 @@ public class LinkManager : Singleton<LinkManager>
 
     private void OnLinkCreated(RequestLauncher.RequestAnswerSimple item, bool success)
     {
-        if (!success)
+        if (success && !String.IsNullOrEmpty(item.Error))
         {
             Debug.Log(item.Error);
         }
@@ -224,11 +224,10 @@ public class LinkManager : Singleton<LinkManager>
 
     private void onRemoveLink(RequestLauncher.RequestAnswerSimple item, bool success)
     {
-        if (!success)
+        if (success && !String.IsNullOrEmpty(item.Error))
         {
-            Debug.Log("Unable to delete Link");
+            Debug.Log(item.Error);
         }
-        
     }
 
     public List<GameObject> GetObjects(int linkId) {

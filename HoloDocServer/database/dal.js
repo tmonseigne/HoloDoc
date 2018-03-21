@@ -240,7 +240,8 @@ function deleteLink (id, successCallback, errorCallback) {
 
       let index = l.objects.findIndex(x => String(x) == String(id));
       if (index != -1) {
-        var objects = l.objects.splice(index, 1);
+        var objects = l.objects;
+        objects.splice(index, 1);
         if (l.objects.length > 1) {
           models.Link.findByIdAndUpdate(l._id, {objects: objects}).exec(function (err, link) {
             if (err) {

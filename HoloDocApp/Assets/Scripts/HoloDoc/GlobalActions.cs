@@ -1,5 +1,5 @@
 ﻿using HoloToolkit.Unity;
-
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -89,12 +89,19 @@ public class GlobalActions : Singleton<GlobalActions> {
 	}
 
     private void OnMatchOrCreateRequest(RequestLauncher.RequestAnswerDocument item, bool success) {
-        if (success) {
+        if (String.IsNullOrEmpty(item.Error))
+        {
             CameraFrame frame = item.CameraFrameFromBase64();
             Texture2D croppedPhoto = new Texture2D(frame.Resolution.width, frame.Resolution.height);
             croppedPhoto.SetPixels32(frame.Data);
             croppedPhoto.Apply();
+            
             DocumentCollection.Instance.AddDocument(croppedPhoto, item.Id);
+            DocumentProperties received = DocumentCollection.Instance.Documents[DocumentCollection.Instance.Documents.Count - 1].GetComponent<DocumentManager>().Properties;
+            received.Author = item.Author;
+            received.Description = item.Desc;
+            received.Label = item.Label;
+
             Debug.Log("ici");
             if (item.Link != null) // we are in a link, we need to see if the link localy exists
             {
@@ -130,12 +137,14 @@ public class GlobalActions : Singleton<GlobalActions> {
         }
         else {
             Debug.Log(item.Error);
-			this.photoMode = true;
+            Debug.Log("nop");
+            this.photoMode = true;
         }
     }
 
 	private void OnUpdatePhotoRequest(RequestLauncher.RequestAnswerDocument item, bool success) {
-		if (success) {
+        if (String.IsNullOrEmpty(item.Error))
+        { 
             if (item.Image != null)
             {
                 CameraFrame frame = item.CameraFrameFromBase64();
@@ -151,6 +160,7 @@ public class GlobalActions : Singleton<GlobalActions> {
 		}
 		else {
 			Debug.Log(item.Error);
+            Debug.Log("nop");
 			this.photoMode = true;
 		}
 		updatingDocument = false;

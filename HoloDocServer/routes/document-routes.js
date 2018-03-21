@@ -133,7 +133,7 @@ router.post('/matchorcreate', function (req, res) {
                   Desc: matchedDocument.desc,
                   Author: matchedDocument.author,
                   Path: matchedDocument.path,
-                  Link: link.objects,
+                  Link: link ? link.objects : undefined,
                   Image: improc.matToBase64(cv.imread(matchedDocument.path))
                 }
 
