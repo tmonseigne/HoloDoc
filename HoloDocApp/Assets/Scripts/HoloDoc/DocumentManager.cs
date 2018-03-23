@@ -94,7 +94,7 @@ public class DocumentManager : MonoBehaviour, IFocusable {
     {
         if (String.IsNullOrEmpty(item.Error))
         {
-            this.Properties = new DocumentProperties()
+            this.Properties = new DocumentProperties(this.Properties)
             {
                 Label = item.Label,
                 Description = item.Desc,

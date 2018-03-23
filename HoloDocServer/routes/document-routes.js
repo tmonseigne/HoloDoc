@@ -57,7 +57,7 @@ function documentValidParameters(params) {
     return false;
   }
 
-  return params.label && params.desc && params.author && params.date && params.id;
+  return params.label && params.author && params.date && params.id;
 }
 
 function saveDocument (image, features, res, number) {
@@ -170,7 +170,7 @@ router.post('/update', function (req, res) {
 
   utils.asyncGetDataStream(req, function(buffer) {
     let params = JSON.parse(buffer);
-
+    console.log(params);
     if (params && documentValidParameters(params)) {
       dal.updateDocument(params.id, params,  function (doc) {
         res.status(200).json(doc);
