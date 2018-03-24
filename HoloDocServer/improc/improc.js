@@ -4,6 +4,7 @@ const utils = require('./improc-utils');
 const reco = require('./improc-recognition')
 
 exports.MAX_FEATURES_DISTANCE = reco.MAX_FEATURES_DISTANCE;
+exports.HIST_BINS = reco.HIST_BINS;
 
 /**
  * Detect all Documents of an image
@@ -96,7 +97,7 @@ exports.extractFeatures = function (image, bins = reco.HIST_BINS) {
  * @returns {Number} Weighted Mean Distance of Six Features
  */
 exports.featuresDistance = function (features1, features2, coefs = reco.HIST_COEFS) {
-	return reco.featuresDistance(features1, feastures2, coefs);
+	return reco.featuresDistance(features1, features2, coefs);
 }
 
 /**

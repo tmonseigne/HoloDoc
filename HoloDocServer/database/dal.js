@@ -10,8 +10,6 @@ var models = require("./models.js");
 var events = require('events');
 var improc = require('../improc/improc.js');
 
-var Queue = require('../utils/queue.js');
-
 var errorEventEmiter = new events.EventEmitter;
 var ObjectId = mongoose.Schema.Types.ObjectId;
 
@@ -97,11 +95,18 @@ function getDocuments (query, callback) {
   models.Document.find(query).exec(callback);
 }
 
+function areValidFeatures (features) {
+  return features &&
+    features.length == 6 &&
+    features.every(function (x) {return x.length == improc.HIST_BINS});
+}
+
 function matchFeatures (features, callback) {
-  if (features) {
+  if (areValidFeatures(features)) {
     models.Document.find({}, function (err, documents) {
-      let minDist = improc.maxFeaturesDistance;
+      let minDist = improc.MAX_FEATURES_DISTANCE;
       let minDoc;
+
       documents.forEach(function (doc, index) {
         let dist = improc.featuresDistance(doc.features, features);
 
@@ -110,6 +115,7 @@ function matchFeatures (features, callback) {
           minDoc = doc;
         }
       });
+
 
       // We compute the match percentage according to the distance
       let match = (1 - improc.featureDistanceNormalization(minDist)) * 100;
@@ -121,6 +127,8 @@ function matchFeatures (features, callback) {
         callback(undefined);
       }
     });
+  } else {
+    callback(undefined);
   }
 }
 
@@ -186,15 +194,6 @@ function createLink(firstDocumentId, secondDocumentId, successCallback, errorCal
   });
 }
 
-function getNeighboors (links, from) {
-  let result = [];
-
-  result = links.filter(function (link) {
-    return link.from == from;
-  });
-
-  return result;
-}
 
 /**
  * This function will try to find a path between the two given documents.

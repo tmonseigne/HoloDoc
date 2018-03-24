@@ -8,12 +8,14 @@ const reco = require('../improc/improc-recognition.js');
 
 describe('Testing Image Processing ', function() {
   this.timeout(5000);
-  let im1, im2, im3;
+  let im1, im2, im3, im4, im5;
 
   beforeEach(function(done) {
     im1 = cv.imread('./test/res/1.jpg');
     im2 = cv.imread('./test/res/2.jpg');
     im3 = undefined;
+    im4 = cv.imread('./test/res/3.png');
+    im5 = cv.imread('./test/res/4.png');
     done();
   });
 
@@ -21,6 +23,8 @@ describe('Testing Image Processing ', function() {
       im1 = undefined;
       im2 = undefined;
       im3 = undefined;
+      im4 = undefined;
+      im5 = undefined;
       done();
     });
 
@@ -77,6 +81,71 @@ describe('Testing Image Processing ', function() {
 
         assert(!croped);
         done();
+      });
+
+    });
+
+    describe('Testing Document Recognition', function () {
+
+      describe('Testing Feature Extraction', function () {
+        it('Feature extraction with a correct image input', function (done) {
+          let features = reco.extractFeatures(im4);
+
+          assert(features);
+          assert(features.length == 6);
+          assert(features.every(function (x) {return x.length == reco.HIST_BINS}));
+          done();
+        });
+
+        it('Feature extraction with a correct image input and a given number of bins', function (done) {
+          let bins = 42;
+          let features = reco.extractFeatures(im4, bins);
+
+          assert(features);
+          assert(features.length == 6);
+          assert(features.every(function (x) {return x.length == 42}));
+          done();
+        });
+
+        it('Feature extraction with an invalid image', function (done) {
+          let features = reco.extractFeatures(undefined);
+
+          assert(!features);
+          done();
+        });
+
+      });
+
+      describe('Testing features distance function', function () {
+        it('Distance between the same image', function (done) {
+          let features1 = reco.extractFeatures(im4);
+          let features2 = reco.extractFeatures(im4);
+
+          let dist = reco.featuresDistance(features1, features2);
+
+          assert(features1);
+          assert(features2);
+          assert(dist != undefined);
+          assert(dist < Number.EPSILON);
+
+          assert (reco.featureDistanceNormalization(dist) < Number.EPSILON)
+          done();
+        });
+
+        it('Distance between oppisites images', function (done) {
+          let features1 = reco.extractFeatures(im4);
+          let features2 = reco.extractFeatures(im5);
+
+          let dist = reco.featuresDistance(features1, features2);
+
+          assert(features1);
+          assert(features2);
+          assert(dist != undefined);
+          assert(dist > reco.MAX_FEATURES_DISTANCE - Number.EPSILON);
+
+          assert (reco.featureDistanceNormalization(dist) > 1 - Number.EPSILON)
+          done();
+        });
       });
 
     });

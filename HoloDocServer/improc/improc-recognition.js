@@ -76,6 +76,10 @@ exports.featureDistanceNormalization = function (distance) {
  * @returns {Array.<Array.<Number>>} Features represented by six rows and N columns
  */
 exports.extractFeatures = function (image, bins = HIST_BINS) {
+	if (!image) {
+		return undefined;
+	}
+
 	let nbPixels = image.cols * image.rows;
 
 	let hsv = image.cvtColor(cv.COLOR_BGR2HSV);

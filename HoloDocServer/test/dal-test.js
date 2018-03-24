@@ -4,22 +4,24 @@ var globals = require ('../utils/globals.js');
 globals.dbUri = 'mongodb://localhost/test';
 
 var dal = require ('../database/dal.js');
+var improc = require ('../improc/improc');
+var cv = require('opencv4nodejs');
 
 describe('Testing database access layer - ', function() {
   this.timeout(5000);
   let d1, d2, d3, d4, l1, l2;
 
   beforeEach(function(done) {
-    dal.createDocument('one', 'article', '', 'arnaud', Date.Now, 'one.png', [],
+    dal.createDocument('one', 'article', '', 'arnaud', Date.Now, 'one.png', improc.extractFeatures(cv.imread('./test/res/2.jpg')),
       function(doc1) {
         d1 = doc1;
-        dal.createDocument('two', 'picture', '', 'arnaud', Date.Now, 'two.png', [],
+        dal.createDocument('two', 'picture', '', 'arnaud', Date.Now, 'two.png', improc.extractFeatures(cv.imread('./test/res/3.png')),
           function(doc2) {
             d2 = doc2;
-            dal.createDocument('three', 'article', '', 'arnaud', Date.Now, 'three.png', [],
+            dal.createDocument('three', 'article', '', 'arnaud', Date.Now, 'three.png', improc.extractFeatures(cv.imread('./test/res/4.png')),
               function(doc3) {
                 d3 = doc3;
-                dal.createDocument('four', 'album', '', 'arnaud', Date.Now, 'four.png', [],
+                dal.createDocument('four', 'album', '', 'arnaud', Date.Now, 'four.png', improc.extractFeatures(cv.imread('./test/res/5.jpg')),
                   function(doc4) {
                     d4 = doc4;
                   dal.createLink(String(doc1._id), String(doc2._id),
@@ -116,6 +118,28 @@ describe('Testing database access layer - ', function() {
         done();
       })
     });
+
+    it('Get Link function - valid id with link', function (done) {
+      dal.getLink(String(d1._id), function(link) {
+        assert(link);
+        assert(link.objects.length == 3);
+        done();
+      })
+    });
+
+    it('Get Link function - valid id without link', function (done) {
+      dal.getLink(String(d4._id), function(link) {
+        assert(!link);
+        done();
+      })
+    });
+
+    it('Get Link function - with no id', function (done) {
+      dal.getLink(undefined, function(link) {
+        assert(!link);
+        done();
+      })
+    });
   });
 
   describe('Testing the document update function', function () {
@@ -155,6 +179,49 @@ describe('Testing database access layer - ', function() {
     });
   });
 
+  describe('Testing the invalid document creation', function () {
+    it ('creating document with invalid parameters', function (done) {
+      dal.createDocument([42, 43], -1, false, {x: 4, y:6}, 42, 42, [],
+        function(doc) {
+
+        },
+        function (err) {
+          done();
+        });
+    });
+  });
+
+  describe('Testing the features matching', function () {
+    it ('In DB features', function (done) {
+      dal.matchFeatures(improc.extractFeatures(cv.imread('./test/res/3.png')), function (doc) {
+        assert(doc);
+        assert(String(doc._id) == String(d2._id));
+        done();
+      });
+    });
+
+    it ('Not in DB features', function (done) {
+      dal.matchFeatures(improc.extractFeatures(cv.imread('./test/res/6.jpg')), function (doc) {
+        assert(!doc);
+        done();
+      });
+    });
+
+    it ('Invalid features - undefined', function (done) {
+      dal.matchFeatures(undefined, function (doc) {
+        assert(!doc);
+        done();
+      });
+    });
+
+    it ('Invalid features - wrong format', function (done) {
+      dal.matchFeatures([[1,3,4], [4, 5, 6]], function (doc) {
+        assert(!doc);
+        done();
+      });
+    });
+  });
+
   describe('Testing the link suppression', function () {
     it('Existing link', function (done) {
       dal.deleteLink(String(d1._id), function () {
@@ -164,6 +231,12 @@ describe('Testing database access layer - ', function() {
 
     it('Non Existing link', function (done) {
       dal.deleteLink(String(d4._id), function () {}, function () {
+        done();
+      });
+    });
+
+    it('without id', function (done) {
+      dal.deleteLink('', function () {}, function () {
         done();
       });
     });
