@@ -30,6 +30,7 @@ public class RequestLauncher : Singleton<RequestLauncher> {
         public string Date;
         public string Path;
         public string Image;
+        public string[] Link;
 
         public CameraFrame CameraFrameFromBase64()
         {
@@ -75,16 +76,17 @@ public class RequestLauncher : Singleton<RequestLauncher> {
 		StartCoroutine(LaunchRocket<RequestAnswerDocument>(data, "/document/matchorcreate", callback));
     }
 
-    public void UpdateDocument(DocumentProperties properties, OnRequestResponse<UpdateRequestData> callback)
+    public void UpdateDocument(DocumentProperties properties, OnRequestResponse<RequestAnswerDocument> callback)
     {
 		UpdateRequestData data = new UpdateRequestData {
+            id = properties.Id,
 			label = properties.Label,
 			desc = properties.Description,
 			author = properties.Author,
 			date = properties.Date
 		};
 
-		StartCoroutine(LaunchRocket<UpdateRequestData>(data, "/document/update", callback));
+		StartCoroutine(LaunchRocket<RequestAnswerDocument>(data, "/document/update", callback));
     }
 
     public void UpdateDocumentPhoto(string documentId, CameraFrame frame, OnRequestResponse<RequestAnswerDocument> callback)
@@ -142,14 +144,19 @@ public class RequestLauncher : Singleton<RequestLauncher> {
         }
     }
 
+    
     public class UpdateRequestData : RequestData
     {
         public string id;
-        public string name;
         public string label;
         public string desc;
         public string author;
         public string date;
+
+        public override string ToJSON()
+        {
+            return "{ \"id\": \"" + id + "\", \"label\" : \"" + label + "\", \"desc\" : \"" + desc + "\", \"author\": \"" + author + "\", \"date\" : \"" + date + "\" }";
+        }
     }
 
     public class BackGroundColorRequestData : RequestData
@@ -157,6 +164,11 @@ public class RequestLauncher : Singleton<RequestLauncher> {
         public int R;
         public int G;
         public int B;
+
+        public override string ToJSON()
+        {
+            return "{ \"R\": \"" + R + "\", \"G\" : \"" + G + "\", \"B\" : \"" + B + "\" }";
+        }
     }
 
     #endregion
@@ -165,26 +177,32 @@ public class RequestLauncher : Singleton<RequestLauncher> {
 
     public void CreateLink(string firstId, string secondId, OnRequestResponse<RequestAnswerSimple> callback)
     {
-        LinkRequestData data = new LinkRequestData();
-        data.firstId = firstId;
-        data.secondId = secondId;
+        LinkRequestData data = new LinkRequestData
+        {
+            firstId = firstId,
+            secondId = secondId
+        };
 
         StartCoroutine(LaunchRocket<RequestAnswerSimple>(data, "/link/create", callback));
     }
 
     public void RemoveLink(string firstId, OnRequestResponse<RequestAnswerSimple> callback)
     {
-        LinkRequestData data = new LinkRequestData();
-        data.firstId = firstId;
+        LinkRequestData data = new LinkRequestData
+        {
+            firstId = firstId
+        };
 
         StartCoroutine(LaunchRocket<RequestAnswerSimple>(data, "/link/remove", callback));
     }
 
     public void AreConnected(string firstId, string secondId, OnRequestResponse<RequestAnswerConnected> callback)
     {
-        LinkRequestData data = new LinkRequestData();
-        data.firstId = firstId;
-        data.secondId = secondId;
+        LinkRequestData data = new LinkRequestData
+        {
+            firstId = firstId,
+            secondId = secondId
+        };
 
         StartCoroutine(LaunchRocket<RequestAnswerConnected>(data, "/document/connected", callback));
     }
@@ -193,6 +211,11 @@ public class RequestLauncher : Singleton<RequestLauncher> {
     {
         public string firstId;
         public string secondId;
+
+        public override string ToJSON()
+        {
+            return "{ \"firstId\": \"" + firstId + "\", \"secondId\" : \"" + secondId + "\" }";
+        }
     }
 
 	#endregion
@@ -216,10 +239,9 @@ public class RequestLauncher : Singleton<RequestLauncher> {
         yield return www.SendWebRequest();
         
         T answer = JsonUtility.FromJson<T>(www.downloadHandler.text);
-        Debug.Log(!(www.isNetworkError || www.isHttpError) + "  ====  " + www.downloadHandler.text);
         if (onResponse != null)
         {
-            onResponse.Invoke(answer, !(www.isNetworkError || www.isHttpError));
+            onResponse.Invoke(answer,  !String.IsNullOrEmpty(www.downloadHandler.text));
         }
     }
 }

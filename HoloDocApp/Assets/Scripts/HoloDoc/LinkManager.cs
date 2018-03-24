@@ -49,13 +49,17 @@ public class LinkManager : Singleton<LinkManager>
 
 	// TODO : Receive a request to create link.
 	// TODO : Send a request to the server with linked document ids.
-	public void OnLinkEnded(GameObject document) {
+	public void OnLinkEnded(GameObject document, bool sendRequest = true) {
 		if (document.CompareTag("Document") && (this.linkHead != null) && (this.linkHead != document)) {
 			this.linkTail = document;
 			DocumentProperties headProperties = this.linkHead.GetComponent<DocumentManager>().Properties;
 			DocumentProperties tailProperties = this.linkTail.GetComponent<DocumentManager>().Properties;
 
-            RequestLauncher.Instance.CreateLink(headProperties.Id, tailProperties.Id, OnLinkCreated);
+            if (sendRequest)
+            {
+                RequestLauncher.Instance.CreateLink(headProperties.Id, tailProperties.Id, OnLinkCreated);
+            }
+            
 			if (headProperties.LinkId != -1) {
 				// The head has a link
 				if (tailProperties.LinkId != -1) {
@@ -154,7 +158,7 @@ public class LinkManager : Singleton<LinkManager>
 
     private void OnLinkCreated(RequestLauncher.RequestAnswerSimple item, bool success)
     {
-        if (!success)
+        if (success && !String.IsNullOrEmpty(item.Error))
         {
             Debug.Log(item.Error);
         }
@@ -195,7 +199,9 @@ public class LinkManager : Singleton<LinkManager>
 
 	public void BreakLink(GameObject document) {
 		DocumentManager manager = document.GetComponent<DocumentManager>();
-		int linkId = manager.Properties.LinkId;
+        string docId = manager.Properties.Id;
+        RequestLauncher.Instance.RemoveLink(docId, onRemoveLink);
+        int linkId = manager.Properties.LinkId;
 		if (linkId == -1) {
 			return;
 		}
@@ -216,7 +222,15 @@ public class LinkManager : Singleton<LinkManager>
 		AudioPlayer.Instance.PlayClip(AudioPlayer.Instance.BreakLinking);
 	}
 
-	public List<GameObject> GetObjects(int linkId) {
+    private void onRemoveLink(RequestLauncher.RequestAnswerSimple item, bool success)
+    {
+        if (success && !String.IsNullOrEmpty(item.Error))
+        {
+            Debug.Log(item.Error);
+        }
+    }
+
+    public List<GameObject> GetObjects(int linkId) {
 		return this.Links[linkId].Objects;
 	}
 }

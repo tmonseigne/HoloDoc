@@ -220,6 +220,18 @@ function areConnected (firstDocumentId, secondDocumentId, callback) {
   });
 }
 
+function getLink (documentId, callback) {
+  let id = String(documentId);
+
+  if (id) {
+    models.Link.find({ objects: id}).exec( function (err, links) {
+      if (callback && links) {
+          callback(links.length > 0 ? links[0] : undefined);
+      }
+    });
+  }
+}
+
 function deleteLink (id, successCallback, errorCallback) {
   models.Link.find({ objects : id}).exec(function (err, links) {
     //console.log(err);
@@ -228,7 +240,8 @@ function deleteLink (id, successCallback, errorCallback) {
 
       let index = l.objects.findIndex(x => String(x) == String(id));
       if (index != -1) {
-        var objects = l.objects.splice(index, 1);
+        var objects = l.objects;
+        objects.splice(index, 1);
         if (l.objects.length > 1) {
           models.Link.findByIdAndUpdate(l._id, {objects: objects}).exec(function (err, link) {
             if (err) {
@@ -277,6 +290,7 @@ exports.getDocuments = getDocuments;
 exports.areConnected = areConnected;
 exports.createLink = createLink;
 exports.deleteLink = deleteLink;
+exports.getLink = getLink;
 exports.getDocumentCount = documentCount;
 exports.dropEverything = dropEverything;
 exports.matchFeatures = matchFeatures;

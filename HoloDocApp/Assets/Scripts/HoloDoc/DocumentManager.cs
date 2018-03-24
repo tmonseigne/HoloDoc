@@ -1,5 +1,5 @@
 ﻿using HoloToolkit.Unity.InputModule;
-
+using System;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -89,10 +89,21 @@ public class DocumentManager : MonoBehaviour, IFocusable {
 #endif
 	}
 
-	// TODO: Implement this function
-	private void OnUpdateDocument(RequestLauncher.UpdateRequestData item, bool success) {}
+    // TODO: Implement this function
+    private void OnUpdateDocument(RequestLauncher.RequestAnswerDocument item, bool success)
+    {
+        if (String.IsNullOrEmpty(item.Error))
+        {
+            this.Properties = new DocumentProperties(this.Properties)
+            {
+                Label = item.Label,
+                Description = item.Desc,
+                Author = item.Author,
+            };
+        }
+    }
 
-	public void OnFocusEnter() {
+        public void OnFocusEnter() {
 		this.animator.ZoomIn();
 	}
 
