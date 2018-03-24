@@ -241,7 +241,9 @@ public class RequestLauncher : Singleton<RequestLauncher> {
         T answer = JsonUtility.FromJson<T>(www.downloadHandler.text);
         if (onResponse != null)
         {
-            onResponse.Invoke(answer,  !String.IsNullOrEmpty(www.downloadHandler.text));
+            bool success = !String.IsNullOrEmpty(www.downloadHandler.text);
+            
+            onResponse.Invoke(answer,  success);
         }
     }
 }

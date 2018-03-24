@@ -89,7 +89,7 @@ public class GlobalActions : Singleton<GlobalActions> {
 	}
 
     private void OnMatchOrCreateRequest(RequestLauncher.RequestAnswerDocument item, bool success) {
-        if (String.IsNullOrEmpty(item.Error))
+        if (success && String.IsNullOrEmpty(item.Error))
         {
             CameraFrame frame = item.CameraFrameFromBase64();
             Texture2D croppedPhoto = new Texture2D(frame.Resolution.width, frame.Resolution.height);

@@ -1,13 +1,18 @@
 const cv = require('opencv4nodejs');
 
 const HIST_BINS = 25;
+exports.HIST_BINS = HIST_BINS;
+
 const HIST_COEFS = [2, 2, 2, 1, 1, 1];
+exports.HIST_COEFS = HIST_COEFS;
+
 const MAX_FEATURES_DISTANCE = Math.sqrt(2);
+exports.MAX_FEATURES_DISTANCE = MAX_FEATURES_DISTANCE;
 
 /**
  * Hist Options for calcHist
  * @param {Number} channel Channel number in the image
- * @param {Number} bins Number of bins in the Histogramms 
+ * @param {Number} bins Number of bins in the Histogramms
  */
 const getHistAxis = (channel = 0, bins = HIST_BINS) => ([
 	{
@@ -21,9 +26,9 @@ const getHistAxis = (channel = 0, bins = HIST_BINS) => ([
  * Get Normalized Histogramm
  * @param {cv.Mat} image Image
  * @param {Number} channel Channel number in the image
- * @param {Number} bins Number of bins in the Histogramms 
+ * @param {Number} bins Number of bins in the Histogramms
  * @returns {Array.<Number>} Histogramm of the channel with N bins
- * 
+ *
  */
 function getNormalizedHistogram(image, channel = 0, bins = HIST_BINS) {
 	let nbPixels = image.cols * image.rows;
@@ -67,7 +72,7 @@ exports.featureDistanceNormalization = function (distance) {
 /**
  * Extract all features
  * @param {cv.Mat} image Image in BGR
- * @param {Number} bins Number of bins in the Histogramms 
+ * @param {Number} bins Number of bins in the Histogramms
  * @returns {Array.<Array.<Number>>} Features represented by six rows and N columns
  */
 exports.extractFeatures = function (image, bins = HIST_BINS) {

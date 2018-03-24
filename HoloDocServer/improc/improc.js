@@ -1,6 +1,9 @@
 
 const cv = require('opencv4nodejs');
-const utils = require('./improc-utils.js');
+const utils = require('./improc-utils');
+const reco = require('./improc-recognition')
+
+exports.MAX_FEATURES_DISTANCE = reco.MAX_FEATURES_DISTANCE;
 
 /**
  * Detect all Documents of an image
@@ -55,6 +58,55 @@ exports.detectDocuments = function (image, backgroundColor = [25,25,25]) {
 
 	return result;
 };
+
+/**
+ * Get the coordinates of the center of the image
+ * @param {cv.Mat} image Image
+ * @returns {cv.Point} The coordinates of the center of the image
+ */
+exports.getCenter = function (image) {
+	return utils.getCenter(image);
+}
+
+/**
+ * Get the Array of Opencv4NodeJS points where the centroid is closest to the point passed in parameter
+ * @param {Array.<Array.<cv.Point>>} docs Array of Array of Opencv4NodeJS points
+ * @param {cv.Point} from Opencv4NodeJS points
+ * @returns {Array.<cv.Point>} Array of Opencv4NodeJS points selected
+ */
+exports.getNearestdocFrom = function (docs, from) {
+	return utils.getNearestdocFrom(docs, from);
+};
+
+/**
+ * Extract all features
+ * @param {cv.Mat} image Image in BGR
+ * @param {Number} bins Number of bins in the Histogramms
+ * @returns {Array.<Array.<Number>>} Features represented by six rows and N columns
+ */
+exports.extractFeatures = function (image, bins = reco.HIST_BINS) {
+	return reco.extractFeatures(image, bins);
+};
+
+/**
+ * Compare two set of features with weight
+ * @param {Array.<Array.<Number>>} features1 Features One
+ * @param {Array.<Array.<Number>>} features2 Features Two
+ * @param {Array.<Number>} coefs Weight (Array of Six Numbers) => (H,S,V,B,G,R)
+ * @returns {Number} Weighted Mean Distance of Six Features
+ */
+exports.featuresDistance = function (features1, features2, coefs = reco.HIST_COEFS) {
+	return reco.featuresDistance(features1, feastures2, coefs);
+}
+
+/**
+ * Normalize Distance by the maximum distance possible
+ * @param {Number} distance Distance to normalized
+ * @returns {Number} Distance Normalized
+ */
+exports.featureDistanceNormalization = function (distance) {
+	return reco.featureDistanceNormalization(distance);
+}
 
 /**
  * Crop the quad and correct the perspective
