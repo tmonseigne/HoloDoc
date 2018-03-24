@@ -1,5 +1,5 @@
 const cv = require('opencv4nodejs');
-const improc = require('../improc/improc.js');
+const reco = require('../improc/improc-recognition.js');
 const csv = require('csv');
 var fs = require('fs');
 
@@ -14,14 +14,14 @@ for (let i = 1; i <= nbFiles; ++i) {
 let features = [];
 
 for (let i = 0; i < nbFiles; ++i) {
-  features.push(improc.extractFeatures(images[i], 25));
+  features.push(reco.extractFeatures(images[i], 25));
 }
 
 let distances = [];
 for (let i = 0; i < nbFiles; ++i) {
   let row = [];
   for (let j = 0; j < nbFiles; ++j) {
-    row.push((1 - (improc.featuresDistance(features[i],features[j], [2,2,2,1,1,1]) / Math.sqrt(2))) * 100);
+    row.push((1 - (reco.featuresDistance(features[i],features[j], [2,2,2,1,1,1]) / Math.sqrt(2))) * 100);
   }
   distances.push(row);
 }

@@ -14,9 +14,9 @@ function arrayToVector3(array) {
 
 /**
  * Get a two-range color interval on each channel with two Vec3 for Opencv4NodeJS
- * @param {Array.<Number>} color Original color  
- * @param {Number} range Half Range 
- * @returns {Array.<cv.Vec>}  Array of two Opencv4NodeJS Vec3, the lower and higher color 
+ * @param {Array.<Number>} color Original color
+ * @param {Number} range Half Range
+ * @returns {Array.<cv.Vec>}  Array of two Opencv4NodeJS Vec3, the lower and higher color
  */
 function getColorRange(color, range = MAGIC_NUMBER2) {
 	if (range > 127) {	range = 127;	}
@@ -40,11 +40,11 @@ function getColorRange(color, range = MAGIC_NUMBER2) {
 }
 
 /**
- * Get the average points of an array of Opencv4NodeJS points 
- * @param {Array.<cv.Point>} points Array of Opencv4NodeJS points 
+ * Get the average points of an array of Opencv4NodeJS points
+ * @param {Array.<cv.Point>} points Array of Opencv4NodeJS points
  * @returns {cv.Point} Centroid of the array
  */
-function getCentroid(points) {
+exports.getCentroid = function (points) {
 	let centroid = new cv.Point(0, 0);
 
 	points.forEach(function (point) {
@@ -74,13 +74,13 @@ function addIfNotIn(arr, value) {
  * @param {cv.Point} p2 Opencv4NodeJS point
  * @returns {Number} Euclidian Distance between the two points
  */
-function distBetweenPoints(p1, p2) {
+exports.distBetweenPoints = function (p1, p2) {
 	return p2.sub(p1).norm();
 }
 
 /**
  * Find the farest point from the array to the point
- * @param {Array.<cv.Point>} points Array of Opencv4NodeJS points 
+ * @param {Array.<cv.Point>} points Array of Opencv4NodeJS points
  * @param {cv.Point} from Opencv4NodeJS Point to compare
  * @returns {Number} The index of the farest point
  */
@@ -89,7 +89,7 @@ function findfarestPointFrom(points, from) {
 	let idMax = 0;
 
 	points.forEach(function (point, index) {
-		let dist = distBetweenPoints(point, from);
+		let dist = exports.distBetweenPoints(point, from);
 		if (dist > distMax) {
 			distMax = dist;
 			idMax = index;
@@ -100,7 +100,7 @@ function findfarestPointFrom(points, from) {
 }
 
 /**
- * Get the sum of the distance of an array of Opencv4NodeJS points 
+ * Get the sum of the distance of an array of Opencv4NodeJS points
  * (if the array is a contour it's the perimeter)
  * @param {Array.<cv.Point>} points Array of Opencv4NodeJS points
  * @returns {Number} Perimeter of the contour
@@ -116,14 +116,14 @@ function getPerimeter(points) {
 }
 
 /**
- * Get the distance between each Opencv4NodeJS point of an array 
+ * Get the distance between each Opencv4NodeJS point of an array
  * (if the array is a closed polygone it's all side of this)
  * @param {Array.<cv.Point>} points Array of Opencv4NodeJS points
  * @returns {Array.<Number>} Length of all sides of the polygone
  */
 function getDistances(points) {
 	let distances = points.map(function (value, index) {
-		return distBetweenPoints(value, points[(index + 1) % points.length]);
+		return exports.distBetweenPoints(value, points[(index + 1) % points.length]);
 	});
 
 	return distances;
@@ -132,18 +132,18 @@ function getDistances(points) {
 /**
  * Extracts four corners of the contour that maximizes the area
  * @param {cv.Contour} contour Opencv4NodeJS Contour Object
- * @param {Number} minLength Minimum Length of perimeter 
+ * @param {Number} minLength Minimum Length of perimeter
  * @param {Number} maxLength Maximum Length of perimeter
  * @return {Array.<cv.Point>} Four corners of the contour
  */
-function extractCorners(contour, minLength, maxLength) {
+exports.extractCorners = function(contour, minLength, maxLength) {
 	let points = contour.getPoints();
-	let centroid = getCentroid(points);
+	let centroid = exports.getCentroid(points);
 
 	let corners = [];
 	// we grab the farest point from the centroid and the farest from the first one to get the diagonal
-	corners = addIfNotIn(corners, findfarestPointFrom(points, centroid)); 	
-	corners = addIfNotIn(corners, findfarestPointFrom(points, points[corners[0]])); 
+	corners = addIfNotIn(corners, findfarestPointFrom(points, centroid));
+	corners = addIfNotIn(corners, findfarestPointFrom(points, points[corners[0]]));
 
 	// Now we try to maximaxe the area
 	let areaMax = [0, 0];
@@ -191,7 +191,7 @@ function extractCorners(contour, minLength, maxLength) {
  * @param {Number} ratio Ratio Treshold
  * @returns {Boolean} True if ratios are good, false if not
  */
-function verifyShape(points, ratio = MAGIC_NUMBER1) {
+exports.verifyShape = function(points, ratio = MAGIC_NUMBER1) {
 	let ratioMin = 1 - ratio;
 	let ratioMax = 1 + ratio;
 	let distances = getDistances(points);
@@ -207,8 +207,8 @@ function verifyShape(points, ratio = MAGIC_NUMBER1) {
  * @param {Array.<cv.Point>} points Array of minimum three Opencv4NodeJS points
  * @returns {Number} Area of a rectangle (false area for other quad)
  */
-function getEstimatedArea(points) {
-	return distBetweenPoints(points[0], points[1]) * distBetweenPoints(points[1], points[2]);
+exports.getEstimatedArea = function(points) {
+	return exports.distBetweenPoints(points[0], points[1]) * exports.distBetweenPoints(points[1], points[2]);
 }
 
 /**
@@ -222,12 +222,14 @@ function strangeCrossProduct(p1, p2) {
 }
 
 /**
- * Check if the point is in the quad 
+ * Check if the point is in the quad
  * @param {Array.<cv.Point>} quad Array of four Opencv4NodeJS points
  * @param {cv.Point} point Opencv4NodeJS points
  * @returns {Boolean} True if all verification have the same sign, False if not
  */
-function inQuad(quad, point) {
+exports.inQuad = function (quad, point) {
+	if (!quad || ! point) return false;
+
 	let cross = [0, 0];
 
 	for (let i = 0; i < 4; ++i) {
@@ -243,7 +245,8 @@ function inQuad(quad, point) {
  * @param {Array.<cv.Point>} doc Array of four Opencv4NodeJS points
  * @returns {Array.<cv.Point>} Array sorted
  */
-function sortDocCorners(doc) {
+exports.sortDocCorners = function (doc) {
+	if (!doc) return undefined;
 	let min = doc[0].x + doc[0].y;
 	let id = 0;
 
@@ -272,9 +275,10 @@ function sortDocCorners(doc) {
 /**
  * Get the coordinates of the center of the image
  * @param {cv.Mat} image Image
- * @returns {cv.Point} The coordinates of the center of the image 
+ * @returns {cv.Point} The coordinates of the center of the image
  */
 exports.getCenter = function (image) {
+	if(!image)	return undefined;
 	return new cv.Point(image.cols / 2, image.rows / 2);
 }
 
@@ -285,13 +289,15 @@ exports.getCenter = function (image) {
  * @returns {Array.<cv.Point>} Array of Opencv4NodeJS points selected
  */
 exports.getNearestdocFrom = function (docs, from) {
+	if(!docs || !from) return docs;
+
 	let distMin = Number.MAX_SAFE_INTEGER;
 	let idMin = 0;
 
 	docs.forEach(function (doc, index) {
-		let centroid = getCentroid(doc);
+		let centroid = exports.getCentroid(doc);
 
-		let dist = distBetweenPoints(from, centroid);
+		let dist = exports.distBetweenPoints(from, centroid);
 		if (dist < distMin) {
 			distMin = dist;
 			idMin = index;
