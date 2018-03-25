@@ -24,6 +24,93 @@ using namespace cv;
 const string PATH = "../images/";
 const vector<string> NAMES = {"A", "B", "C", "D", "E", "F", "G", "H", "I"};
 const string EXT = ".jpg";
+const vector<string> EDGE_TIMES_NAMES = { 
+	"Read", "Gray", "Blur", 
+	"Bilateral", "Adaptative Mean", "Adaptative Gaussian",
+	"Background Tresh", "Adaptative on Bg Tresh", "Canny on Gray",
+	"Canny on Blur", "Canny on Bilateral", "Canny on Bg Tresh" 
+};
+
+const vector<string> CONT_SRC = {"NBC", "BT", "BTA"};
+
+const vector<string> CONT_TIMES_NAMES = {
+	"Find Contour (Binary->C0)" ,
+	"First Clean (C0->C1)",
+	"Approx after First Clean (C1->C2)",
+	"Convex Hull after Approx (C2->C3)" ,
+	"Extract 4 Corners after Convex Hull (C3->C4)",
+	"Last Clean (C4->C5)",
+	"Convex Hull after Approx (C1->C6)",
+	"Approx after Hull (C6->C7)",
+	"Extract 4 Corners after Approx (C7->C8)",
+	"Last Clean (C8->C9)",
+	"Extract 4 Corners after First Clean (C1->C10)",
+	"Last Clean (C10->C11)",
+	"Rotated Rectangle after First Clean (C1->C12)",
+	"Last Clean (C12->C13)"
+};
+
+
+//*******************
+//***** VECTORS *****
+//*******************
+vector<vector<double>> EdgeDuration;
+vector<vector<double>> ContourDuration;
+
+void InitVector(int k)
+{
+	EdgeDuration.resize(k);
+	ContourDuration.resize(k);
+
+	for (int i = 0; i < k; ++i) {
+		EdgeDuration[i].resize(EDGE_TIMES_NAMES.size());
+		ContourDuration[i].resize(CONT_TIMES_NAMES.size()*3);
+	}
+}
+
+void SaveCSV(int k)
+{
+	ofstream EdgeFile, ContourFile;
+	cout << "Save Edge Duration...";
+	EdgeFile.open(PATH + "EdgeDuration.csv");
+	EdgeFile << "Step";
+	for (int i = 0; i < k; ++i) {
+		EdgeFile << ";" << NAMES[i];
+	}
+	EdgeFile << "\n";
+
+	for (int j = 0; j < EDGE_TIMES_NAMES.size(); ++j){
+		EdgeFile << EDGE_TIMES_NAMES[j];
+		for (int i = 0; i < k; ++i) {
+			EdgeFile << ";" << EdgeDuration[i][j];
+		}
+		EdgeFile << "\n";
+	}
+	EdgeFile.close();
+	cout <<" Done"<<endl;
+
+
+	cout << "Save Contour Duration...";
+	ContourFile.open(PATH + "ContourDuration.csv");
+	ContourFile << "Step";
+	for (int i = 0; i < k; ++i) {
+		ContourFile << ";" << NAMES[i];
+	}
+	ContourFile << "\n";
+
+	for (int j = 0; j < CONT_TIMES_NAMES.size(); ++j) {
+		for (int h = 0; h < 3; ++h) {
+			ContourFile << CONT_TIMES_NAMES[j] <<" "<< CONT_SRC[h];
+			for (int i = 0; i < k; ++i) {
+				ContourFile << ";" << ContourDuration[i][j * 3 + h];
+			}
+			ContourFile << "\n";
+		}
+	}
+	ContourFile.close();
+	cout << " Done" << endl;
+
+}
 
 //*****************
 //***** TESTS *****
@@ -37,70 +124,84 @@ void TestsEdge(const int i = 0)
 		Im_adapt_mean, Im_adapt_gauss, Im_adapt_mean_bg_tresh,
 		Im_canny_gray, Im_canny_blur, Im_canny_bilateral, Im_canny_bg_tresh;
 
+	int j = 0;
+
 	auto T1 = high_resolution_clock::now();
 	const Mat Src = imread(PATH + NAMES[i] + EXT, CV_LOAD_IMAGE_COLOR);
 	if (Src.cols == 0 || Src.rows == 0) { return; }
 	duration<double, std::milli> Fp_ms = high_resolution_clock::now() - T1;
-	cout << "Time Read : \t\t\t" << Fp_ms.count() << " ms" << endl;
+	EdgeDuration[i][j] = Fp_ms.count();
+	cout << "Time Read : \t\t\t" << EdgeDuration[i][j++] << " ms" << endl;
 
 	T1 = high_resolution_clock::now();
 	cvtColor(Src, Im_gray_scale, CV_BGR2GRAY);
 	Fp_ms = high_resolution_clock::now() - T1;
-	cout << "Time Gray : \t\t\t" << Fp_ms.count() << " ms" << endl;
+	EdgeDuration[i][j] = Fp_ms.count();
+	cout << "Time Gray : \t\t\t" << EdgeDuration[i][j++] << " ms" << endl;
 
 	T1 = high_resolution_clock::now();
 	blur(Im_gray_scale, Im_blur, Size(3, 3));
 	Fp_ms = high_resolution_clock::now() - T1;
-	cout << "Time Blur : \t\t\t" << Fp_ms.count() << " ms" << endl;
+	EdgeDuration[i][j] = Fp_ms.count();
+	cout << "Time Blur : \t\t\t" << EdgeDuration[i][j++] << " ms" << endl;
 
 	T1 = high_resolution_clock::now();
 	bilateralFilter(Im_gray_scale, Im_bilateral, 0, 20, 20);
 	Fp_ms = high_resolution_clock::now() - T1;
-	cout << "Time Bilateral : \t\t" << Fp_ms.count() << " ms" << endl;
+	EdgeDuration[i][j] = Fp_ms.count();
+	cout << "Time Bilateral : \t\t" << EdgeDuration[i][j++] << " ms" << endl;
 
 	T1 = high_resolution_clock::now();
 	adaptiveThreshold(Im_gray_scale, Im_adapt_mean, 255, CV_ADAPTIVE_THRESH_MEAN_C, CV_THRESH_BINARY, 5, 4);
 	bitwise_not(Im_adapt_mean, Im_adapt_mean);
 	Fp_ms = high_resolution_clock::now() - T1;
-	cout << "Time Adaptative Mean : \t\t" << Fp_ms.count() << " ms" << endl;
+	EdgeDuration[i][j] = Fp_ms.count();
+	cout << "Time Adaptative Mean : \t\t" << EdgeDuration[i][j++] << " ms" << endl;
 
 	T1 = high_resolution_clock::now();
 	adaptiveThreshold(Im_gray_scale, Im_adapt_gauss, 255, CV_ADAPTIVE_THRESH_GAUSSIAN_C, CV_THRESH_BINARY, 5, 4);
 	bitwise_not(Im_adapt_gauss, Im_adapt_gauss);
 	Fp_ms = high_resolution_clock::now() - T1;
-	cout << "Time Adaptative Gaussian : \t" << Fp_ms.count() << " ms" << endl;
+	EdgeDuration[i][j] = Fp_ms.count();
+	cout << "Time Adaptative Gaussian : \t" << EdgeDuration[i][j++] << " ms" << endl;
 
 	//Desk color approx (25,25,25) with 25 threshold approx (0, 0, 0)->(50, 50, 50)
 	T1 = high_resolution_clock::now();
 	inRange(Src, Scalar(0, 0, 0), Scalar(50, 50, 50), Im_bg_tresh);
 	Fp_ms = high_resolution_clock::now() - T1;
-	cout << "Time Background Tresh : \t" << Fp_ms.count() << " ms" << endl;
+	EdgeDuration[i][j] = Fp_ms.count();
+	cout << "Time Background Tresh : \t" << EdgeDuration[i][j++] << " ms" << endl;
 
 	T1 = high_resolution_clock::now();
 	adaptiveThreshold(Im_bg_tresh, Im_adapt_mean_bg_tresh, 255, CV_ADAPTIVE_THRESH_MEAN_C, CV_THRESH_BINARY, 5, 4);
 	bitwise_not(Im_adapt_mean_bg_tresh, Im_adapt_mean_bg_tresh);
 	Fp_ms = high_resolution_clock::now() - T1;
-	cout << "Time Adaptative on Bg Tresh : \t" << Fp_ms.count() << " ms" << endl;
+	EdgeDuration[i][j] = Fp_ms.count();
+	cout << "Time Adaptative on Bg Tresh : \t" << EdgeDuration[i][j++] << " ms" << endl;
 
 	T1 = high_resolution_clock::now();
 	Canny(Im_gray_scale, Im_canny_gray, 50, 205, 3);
 	Fp_ms = high_resolution_clock::now() - T1;
-	cout << "Time Canny on Gray : \t\t" << Fp_ms.count() << " ms" << endl;
+	EdgeDuration[i][j] = Fp_ms.count();
+	cout << "Time Canny on Gray : \t\t" << EdgeDuration[i][j++] << " ms" << endl;
 
 	T1 = high_resolution_clock::now();
 	Canny(Im_blur, Im_canny_blur, 50, 205, 3);
 	Fp_ms = high_resolution_clock::now() - T1;
-	cout << "Time Canny on Blur : \t\t" << Fp_ms.count() << " ms" << endl;
+	EdgeDuration[i][j] = Fp_ms.count();
+	cout << "Time Canny on Blur : \t\t" << EdgeDuration[i][j++] << " ms" << endl;
 
 	T1 = high_resolution_clock::now();
 	Canny(Im_bilateral, Im_canny_bilateral, 50, 205, 3);
 	Fp_ms = high_resolution_clock::now() - T1;
-	cout << "Time Canny on Bilateral : \t" << Fp_ms.count() << " ms" << endl;
+	EdgeDuration[i][j] = Fp_ms.count();
+	cout << "Time Canny on Bilateral : \t" << EdgeDuration[i][j++] << " ms" << endl;
 
 	T1 = high_resolution_clock::now();
 	Canny(Im_bg_tresh, Im_canny_bg_tresh, 50, 205, 3);
 	Fp_ms = high_resolution_clock::now() - T1;
-	cout << "Time Canny on Bg Tresh : \t" << Fp_ms.count() << " ms" << endl;
+	EdgeDuration[i][j] = Fp_ms.count();
+	cout << "Time Canny on Bg Tresh : \t" << EdgeDuration[i][j] << " ms" << endl;
 
 
 	//***** Save *****
@@ -129,6 +230,7 @@ void TestsContour(const int i = 0)
 	cout << "===== Test Contour Image " << NAMES[i] << " Begin =====" << endl;
 
 	//***** Variables Inits *****
+	int j = 0;
 	vector<Mat> Init_Ims;
 	vector<vector<Mat>> Contours_Ims;
 	vector<vector<vector<vector<Point>>>> Contours;
@@ -180,7 +282,8 @@ void TestsContour(const int i = 0)
 		const auto T1 = high_resolution_clock::now();
 		findContours(Init_Ims[k + 3], Contours[0][k], CV_RETR_LIST, CV_CHAIN_APPROX_SIMPLE);
 		const duration<double, std::milli> Fp_ms = high_resolution_clock::now() - T1;
-		cout << Print_Type[k] << Fp_ms.count() << " ms" << endl;
+		ContourDuration[i][j] = Fp_ms.count();
+		cout << Print_Type[k] << ContourDuration[i][j++] << " ms" << endl;
 	}
 
 	//First Clean obligatory
@@ -189,7 +292,8 @@ void TestsContour(const int i = 0)
 		const auto T1 = high_resolution_clock::now();
 		CleanBasic(Contours[0][k], Contours[1][k], Length_min, Length_max);
 		const duration<double, std::milli> Fp_ms = high_resolution_clock::now() - T1;
-		cout << Print_Type[k] << Fp_ms.count() << " ms" << endl;
+		ContourDuration[i][j] = Fp_ms.count();
+		cout << Print_Type[k] << ContourDuration[i][j++] << " ms" << endl;
 	}
 
 	//***** FIRST WAY ****
@@ -200,7 +304,8 @@ void TestsContour(const int i = 0)
 		const auto T1 = high_resolution_clock::now();
 		Approxs(Contours[1][k], Contours[2][k], Length_min, Length_max);
 		const duration<double, std::milli> Fp_ms = high_resolution_clock::now() - T1;
-		cout << Print_Type[k] << Fp_ms.count() << " ms" << endl;
+		ContourDuration[i][j] = Fp_ms.count();
+		cout << Print_Type[k] << ContourDuration[i][j++] << " ms" << endl;
 	}
 
 	//Convex Hull After Approx
@@ -209,7 +314,8 @@ void TestsContour(const int i = 0)
 		const auto T1 = high_resolution_clock::now();
 		Hulls(Contours[2][k], Contours[3][k], Length_min, Length_max);
 		const duration<double, std::milli> Fp_ms = high_resolution_clock::now() - T1;
-		cout << Print_Type[k] << Fp_ms.count() << " ms" << endl;
+		ContourDuration[i][j] = Fp_ms.count();
+		cout << Print_Type[k] << ContourDuration[i][j++] << " ms" << endl;
 	}
 
 	//Extract After Hull
@@ -218,7 +324,8 @@ void TestsContour(const int i = 0)
 		const auto T1 = high_resolution_clock::now();
 		Extract4Corners(Contours[3][k], Contours[4][k], Length_min, Length_max);
 		const duration<double, std::milli> Fp_ms = high_resolution_clock::now() - T1;
-		cout << Print_Type[k] << Fp_ms.count() << " ms" << endl;
+		ContourDuration[i][j] = Fp_ms.count();
+		cout << Print_Type[k] << ContourDuration[i][j++] << " ms" << endl;
 	}
 
 	//Final Clean
@@ -227,7 +334,8 @@ void TestsContour(const int i = 0)
 		const auto T1 = high_resolution_clock::now();
 		FinalClean(Contours[4][k], Contours[5][k], Length_min, Length_max, Center_dist_min);
 		const duration<double, std::milli> Fp_ms = high_resolution_clock::now() - T1;
-		cout << Print_Type[k] << Fp_ms.count() << " ms" << endl;
+		ContourDuration[i][j] = Fp_ms.count();
+		cout << Print_Type[k] << ContourDuration[i][j++] << " ms" << endl;
 	}
 
 	//***** SECOND WAY ****
@@ -238,7 +346,8 @@ void TestsContour(const int i = 0)
 		const auto T1 = high_resolution_clock::now();
 		Hulls(Contours[1][k], Contours[6][k], Length_min, Length_max);
 		const duration<double, std::milli> Fp_ms = high_resolution_clock::now() - T1;
-		cout << Print_Type[k] << Fp_ms.count() << " ms" << endl;
+		ContourDuration[i][j] = Fp_ms.count();
+		cout << Print_Type[k] << ContourDuration[i][j++] << " ms" << endl;
 	}
 
 	//Approx After Convex Hull
@@ -247,7 +356,8 @@ void TestsContour(const int i = 0)
 		const auto T1 = high_resolution_clock::now();
 		Approxs(Contours[6][k], Contours[7][k], Length_min, Length_max);
 		const duration<double, std::milli> Fp_ms = high_resolution_clock::now() - T1;
-		cout << Print_Type[k] << Fp_ms.count() << " ms" << endl;
+		ContourDuration[i][j] = Fp_ms.count();
+		cout << Print_Type[k] << ContourDuration[i][j++] << " ms" << endl;
 	}
 
 	//Extract After Approx
@@ -256,7 +366,8 @@ void TestsContour(const int i = 0)
 		const auto T1 = high_resolution_clock::now();
 		Extract4Corners(Contours[7][k], Contours[8][k], Length_min, Length_max);
 		const duration<double, std::milli> Fp_ms = high_resolution_clock::now() - T1;
-		cout << Print_Type[k] << Fp_ms.count() << " ms" << endl;
+		ContourDuration[i][j] = Fp_ms.count();
+		cout << Print_Type[k] << ContourDuration[i][j++] << " ms" << endl;
 	}
 
 	//Final Clean
@@ -265,7 +376,8 @@ void TestsContour(const int i = 0)
 		const auto T1 = high_resolution_clock::now();
 		FinalClean(Contours[8][k], Contours[9][k], Length_min, Length_max, Center_dist_min);
 		const duration<double, std::milli> Fp_ms = high_resolution_clock::now() - T1;
-		cout << Print_Type[k] << Fp_ms.count() << " ms" << endl;
+		ContourDuration[i][j] = Fp_ms.count();
+		cout << Print_Type[k] << ContourDuration[i][j++] << " ms" << endl;
 	}
 
 	//***** THIRD WAY ****
@@ -276,7 +388,8 @@ void TestsContour(const int i = 0)
 		const auto T1 = high_resolution_clock::now();
 		Extract4Corners(Contours[1][k], Contours[10][k], Length_min, Length_max);
 		const duration<double, std::milli> Fp_ms = high_resolution_clock::now() - T1;
-		cout << Print_Type[k] << Fp_ms.count() << " ms" << endl;
+		ContourDuration[i][j] = Fp_ms.count();
+		cout << Print_Type[k] << ContourDuration[i][j++] << " ms" << endl;
 	}
 
 	//Final Clean
@@ -285,7 +398,8 @@ void TestsContour(const int i = 0)
 		const auto T1 = high_resolution_clock::now();
 		FinalClean(Contours[10][k], Contours[11][k], Length_min, Length_max, Center_dist_min);
 		const duration<double, std::milli> Fp_ms = high_resolution_clock::now() - T1;
-		cout << Print_Type[k] << Fp_ms.count() << " ms" << endl;
+		ContourDuration[i][j] = Fp_ms.count();
+		cout << Print_Type[k] << ContourDuration[i][j++] << " ms" << endl;
 	}
 
 	//***** FOURTH WAY ****
@@ -296,7 +410,8 @@ void TestsContour(const int i = 0)
 		const auto T1 = high_resolution_clock::now();
 		Rects(Contours[1][k], Contours[12][k], Length_min, Length_max);
 		const duration<double, std::milli> Fp_ms = high_resolution_clock::now() - T1;
-		cout << Print_Type[k] << Fp_ms.count() << " ms" << endl;
+		ContourDuration[i][j] = Fp_ms.count();
+		cout << Print_Type[k] << ContourDuration[i][j++] << " ms" << endl;
 	}
 
 	//Final Clean
@@ -305,12 +420,13 @@ void TestsContour(const int i = 0)
 		const auto T1 = high_resolution_clock::now();
 		FinalClean(Contours[12][k], Contours[13][k], Length_min, Length_max, Center_dist_min);
 		const duration<double, std::milli> Fp_ms = high_resolution_clock::now() - T1;
-		cout << Print_Type[k] << Fp_ms.count() << " ms" << endl;
+		ContourDuration[i][j] = Fp_ms.count();
+		cout << Print_Type[k] << ContourDuration[i][j] << " ms" << endl;
 	}
 
 	//***** Prints *****
 	cout << endl << "Nb contours :" << endl;
-	for (int j = 0; j < Contours.size(); ++j) {
+	for (j = 0; j < Contours.size(); ++j) {
 		cout << Print_Methods[j] << " :\t";
 		for (int k = 0; k < 3; ++k) {
 			cout << "[" << j << "][" << k << "] : " << Contours[j][k].size() << "\t";
@@ -319,7 +435,7 @@ void TestsContour(const int i = 0)
 	}
 
 	cout << endl << "Nb Point On Contours : " << endl;
-	for (int j = 1; j < Contours.size(); ++j) {
+	for (j = 1; j < Contours.size(); ++j) {
 		cout << Print_Methods[j] << " : " << endl;
 		for (int k = 0; k < 3; ++k) {
 			cout << "\t[" << j << "][" << k << "] : ";
@@ -330,7 +446,7 @@ void TestsContour(const int i = 0)
 
 	//***** Draws *****
 	cout << endl << "Draws... ";
-	for (int j = 1; j < Contours.size(); ++j) {
+	for (j = 1; j < Contours.size(); ++j) {
 		for (int k = 0; k < 3; ++k) {
 			DrawCont(Init_Ims[0], Contours_Ims[j][k], Contours[j][k], true);
 		}
@@ -345,7 +461,7 @@ void TestsContour(const int i = 0)
 		imwrite(Path + NAMES[i] + Name_Type[k] + EXT, Init_Ims[k + 3]);
 	}
 	//Contour Images
-	for (int j = 1; j < Contours.size(); ++j) {
+	for (j = 1; j < Contours.size(); ++j) {
 		for (int k = 0; k < 3; ++k) {
 			imwrite(Path + NAMES[i] + Name_Type[k] + "_C" + to_string(j) + EXT, Contours_Ims[j][k]);
 		}
@@ -480,14 +596,16 @@ int main(int argc, char *argv[])
 
 	cout.precision(5);
 	cout << fixed;
-	
+	InitVector(NAMES.size());
+
 	for (int i = 0; i < NAMES.size(); ++i) {
-		//TestsEdge(i);
-		//TestsContour(i);
+		TestsEdge(i);
+		TestsContour(i);
 		//TestsDLLFunction(i);
 	}
-	
-	TestsReco();
+	SaveCSV(NAMES.size());
+
+	//TestsReco();
 	cout << endl << "That's all Folks !" << endl;
 	_getch();
 	return EXIT_SUCCESS;
