@@ -64,11 +64,23 @@ public class RequestLauncher : Singleton<RequestLauncher> {
         public int B;
     }
 
-    #endregion
+	#endregion
 
-    #region Document requests
+	#region Utils requests
 
-    public void MatchOrCreateDocument(CameraFrame frame, OnRequestResponse<RequestAnswerDocument> callback)
+	public class PingRequestData : RequestData
+	{ }
+
+	public void Ping(OnRequestResponse<PingRequestData> callback) {
+		RequestData data = new PingRequestData();
+		StartCoroutine(LaunchRocket<PingRequestData>(data, "/utils/ping", callback));
+	}
+
+	#endregion
+
+	#region Document requests
+
+	public void MatchOrCreateDocument(CameraFrame frame, OnRequestResponse<RequestAnswerDocument> callback)
     {
 		MatchOrCreateRequestData data = new MatchOrCreateRequestData {
 			image = frame
@@ -237,7 +249,7 @@ public class RequestLauncher : Singleton<RequestLauncher> {
         UnityWebRequest www = new UnityWebRequest(url, method, downloader, uploader);
 
         yield return www.SendWebRequest();
-        
+
         T answer = JsonUtility.FromJson<T>(www.downloadHandler.text);
         if (onResponse != null)
         {
