@@ -5,12 +5,9 @@ EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Scenes:
-  - enabled: 0
-    path: 
-    guid: 00000000000000000000000000000000
-  - enabled: 0
-    path: Assets/Scenes/WelcomeScene.unity
-    guid: 7d72269db4fb46741a89485e60c97940
+  - enabled: 1
+    path: Assets/Scenes/Configuration.unity
+    guid: 48a9773f093aeb8498e81b34fbffe3b4
   - enabled: 1
     path: Assets/Scenes/HoloDoc.unity
     guid: 6197ec11876cabf4d98fbb3ca13857e2

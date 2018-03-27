@@ -59,6 +59,7 @@ public class ServerIpConfig : MonoBehaviour
 	}
 
 	public void TryConnection() {
+        Debug.Log("trying");
 		this.isTryingToConnect = true;
 		PersistentData.ServerIp = this.ipAddress.text;
 		this.ipAddress.text = "Connecting";
@@ -67,7 +68,8 @@ public class ServerIpConfig : MonoBehaviour
 	}
 
 	private void OnPingRequest(RequestLauncher.PingRequestData item, bool success) {
-		if (success) {
+        Debug.Log("on ping");
+        if (success) {
 			OnConnectionSucceed();
 		}
 		else {
