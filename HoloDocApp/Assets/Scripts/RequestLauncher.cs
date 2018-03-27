@@ -13,7 +13,7 @@ public class RequestLauncher : Singleton<RequestLauncher> {
     {
         public virtual string ToJSON()
         {
-            return JsonUtility.ToJson(this);
+            return "{ \"data\"}";
         }
     }
 
@@ -69,7 +69,8 @@ public class RequestLauncher : Singleton<RequestLauncher> {
 	#region Utils requests
 
 	public class PingRequestData : RequestData
-	{ }
+	{
+    }
 
 	public void Ping(OnRequestResponse<PingRequestData> callback) {
 		RequestData data = new PingRequestData();
@@ -239,6 +240,7 @@ public class RequestLauncher : Singleton<RequestLauncher> {
         string payload = data.ToJSON();
         //Debug.Log(payload);
         string url = "http://" + PersistentData.ServerIp + ":" + PersistentData.ServerPort + request;
+        Debug.Log(url);
         string method = UnityWebRequest.kHttpVerbPOST;
 		UploadHandler uploader = new UploadHandlerRaw(Encoding.ASCII.GetBytes(payload)) {
 			contentType = "custom/content-type"
