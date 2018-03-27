@@ -1,0 +1,9 @@
+.git
+.gitignore
+README.md
+docker-compose.yml
+node_modules
+test
+tests
+coverage
+mochawesome-report
