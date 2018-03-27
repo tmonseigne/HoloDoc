@@ -1,4 +1,4 @@
-const cv = require('opencv4nodejs');
+const cv = require('/usr/lib/node_modules/opencv4nodejs');
 
 const HIST_BINS = 25;
 exports.HIST_BINS = HIST_BINS;

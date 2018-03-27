@@ -1,4 +1,4 @@
-const cv = require('opencv4nodejs');
+const cv = require('/usr/lib/node_modules/opencv4nodejs');
 
 var MAGIC_NUMBER1 = 0.5;
 var MAGIC_NUMBER2 = 25;

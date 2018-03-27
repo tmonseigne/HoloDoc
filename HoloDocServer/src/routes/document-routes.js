@@ -1,7 +1,7 @@
 var express = require('express');
 var router = express.Router();
 const fs = require('fs');
-const cv = require('opencv4nodejs');
+const cv = require('/usr/lib/node_modules/opencv4nodejs');
 
 const utils = require('./route-utils');
 const improc = require('../improc/improc');
